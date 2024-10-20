@@ -1,19 +1,19 @@
 package pl.mateusz.example.friendoo.post;
 
-
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.time.LocalDateTime;
 
+
+@SuppressWarnings("checkstyle:MissingJavadocType")
 @Getter
 @Setter
 @NoArgsConstructor
-//Post to jest wiadomość napisana na tablicy strony
 public abstract class Post {
 
-    private LocalDateTime createdAt;
+  private LocalDateTime createdAt;
 
-    private String content;
+  private String content;
 
 }
