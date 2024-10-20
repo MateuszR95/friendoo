@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:friendoo
+    username: sa
+    password:
+  liquibase:
+    contexts: dev
+    change-log: classpath:/db/changelog/master.xml
+
