@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet id="001_create_initial_schema" author="mrojek">
+
+        <createTable tableName="users">
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="first_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(120)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="varchar(120)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_of_birth" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bio" type="varchar(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="varchar(45)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_number" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_gender_id"  type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="joined_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="profile_photo_id"  type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="background_photo_id"  type="bigint">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+
+        <createTable tableName="user_role">
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="role" type="varchar(45)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="users_roles">
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="users_roles"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_users_roles_user_id"/>
+        <addForeignKeyConstraint baseTableName="users_roles"
+                                 baseColumnNames="role_id"
+                                 referencedTableName="user_role"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_users_roles_role_id"/>
+
+        <createTable tableName="user_friends">
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="friend_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="user_friends"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_user_friends_user"/>
+        <addForeignKeyConstraint baseTableName="user_friends"
+                                 baseColumnNames="friend_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_user_friends_friend"/>
+
+
+        <createTable tableName="page">
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="profile_photo_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="background_photo_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_by_user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="page"
+                                 baseColumnNames="created_by_user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_page_created_by_user"/>
+
+
+        <createTable tableName="page_admins">
+            <column name="page_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="page_admins"
+                                 baseColumnNames="page_id"
+                                 referencedTableName="page"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_page_admins_page"/>
+
+        <addForeignKeyConstraint baseTableName="page_admins"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_page_admins_user"/>
+
+        <createTable tableName="page_post">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="page_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+
+        <addForeignKeyConstraint baseTableName="page_post"
+                                 baseColumnNames="page_id"
+                                 referencedTableName="page"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_page_post_page"/>
+
+        <addForeignKeyConstraint baseTableName="page_post"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_page_post_user"/>
+
+        <createTable tableName="user_likes">
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="page_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="user_likes"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_user_likes_user" />
+
+        <addForeignKeyConstraint
+                baseTableName="user_likes"
+                baseColumnNames="page_id"
+                referencedTableName="page"
+                referencedColumnNames="id"
+                constraintName="fk_user_likes_page" />
+
+        <createTable tableName="user_post">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+
+        <addForeignKeyConstraint baseTableName="user_post"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_user_post_user"/>
+
+        <createTable tableName="reaction">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="reaction_type" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="page_photo">
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="page_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="photo_url" type="varchar(500)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="photo_uploaded_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(500)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="page_photo"
+                                 baseColumnNames="page_id"
+                                 referencedTableName="page"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_page_photo_page"/>
+
+        <createTable tableName="page_photo_reaction">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="page_photo_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reaction_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comment_id" type="bigint"/>
+            <column name="reaction_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="page_photo_comment">
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="page_photo_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="varchar(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+
+        <addForeignKeyConstraint baseTableName="page_photo_comment"
+                                 baseColumnNames="page_photo_id"
+                                 referencedTableName="page_photo"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_page_photo_comment_photo"/>
+
+
+        <addForeignKeyConstraint baseTableName="page_photo_comment"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_page_photo_comment_user"/>
+
+
+        <addForeignKeyConstraint baseTableName="page_photo_reaction"
+                                 baseColumnNames="page_photo_id"
+                                 referencedTableName="page_photo"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_page_photo_reaction_page_photo"/>
+
+        <addForeignKeyConstraint baseTableName="page_photo_reaction"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_page_photo_reaction_user"/>
+
+        <addForeignKeyConstraint baseTableName="page_photo_reaction"
+                                 baseColumnNames="reaction_id"
+                                 referencedTableName="reaction"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_page_photo_reaction_reaction"/>
+
+        <addForeignKeyConstraint baseTableName="page_photo_reaction"
+                                 baseColumnNames="comment_id"
+                                 referencedTableName="page_photo_comment"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_page_photo_reaction_comment"/>
+
+        <createTable tableName="page_post_reaction">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="page_post_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reaction_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comment_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="reaction_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="page_post_comment">
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="post_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="varchar(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+
+        <addForeignKeyConstraint baseTableName="page_post_comment"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_page_post_comment_user"/>
+
+
+        <addForeignKeyConstraint baseTableName="page_post_comment"
+                                 baseColumnNames="post_id"
+                                 referencedTableName="page_post"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_page_post_comment_post"/>
+
+
+        <addForeignKeyConstraint baseTableName="page_post_reaction"
+                                 baseColumnNames="page_post_id"
+                                 referencedTableName="page_post"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_page_post_reaction_page_post"/>
+
+        <addForeignKeyConstraint baseTableName="page_post_reaction"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_page_post_reaction_user"/>
+
+        <addForeignKeyConstraint baseTableName="page_post_reaction"
+                                 baseColumnNames="reaction_id"
+                                 referencedTableName="reaction"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_page_post_reaction_reaction"/>
+
+        <addForeignKeyConstraint baseTableName="page_post_reaction"
+                                 baseColumnNames="comment_id"
+                                 referencedTableName="page_post_comment"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_page_post_reaction_comment"/>
+        <createTable tableName="user_photo">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_post_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="user_photo"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_user_photo_user"/>
+
+        <addForeignKeyConstraint baseTableName="user_photo"
+                                 baseColumnNames="user_post_id"
+                                 referencedTableName="user_post"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_user_photo_user_post"/>
+
+        <createTable tableName="user_photo_comment">
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_photo_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="varchar(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+
+        <addForeignKeyConstraint baseTableName="user_photo_comment"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_user_photo_comment_user"/>
+
+
+        <addForeignKeyConstraint baseTableName="user_photo_comment"
+                                 baseColumnNames="user_photo_id"
+                                 referencedTableName="user_photo"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_user_photo_comment_user_photo"/>
+
+        <createTable tableName="user_post_comment">
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="post_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="varchar(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+
+        <addForeignKeyConstraint baseTableName="user_post_comment"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_user_post_comment_user"/>
+
+
+        <addForeignKeyConstraint baseTableName="user_post_comment"
+                                 baseColumnNames="post_id"
+                                 referencedTableName="user_post"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_user_post_comment_post"/>
+
+        <createTable tableName="user_gender">
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="gender" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+
+
+        <createTable tableName="user_photo_reaction">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_photo_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reaction_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comment_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="reaction_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="user_photo_reaction"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_user_photo_reaction_user"/>
+
+        <addForeignKeyConstraint baseTableName="user_photo_reaction"
+                                 baseColumnNames="user_photo_id"
+                                 referencedTableName="user_photo"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_user_photo_reaction_user_photo"/>
+
+        <addForeignKeyConstraint baseTableName="user_photo_reaction"
+                                 baseColumnNames="reaction_id"
+                                 referencedTableName="reaction"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_user_photo_reaction_reaction"/>
+
+        <addForeignKeyConstraint baseTableName="user_photo_reaction"
+                                 baseColumnNames="comment_id"
+                                 referencedTableName="user_photo_comment"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_user_photo_reaction_comment"/>
+
+        <createTable tableName="user_post_reaction">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_post_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reaction_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comment_id" type="bigint">
+            <constraints nullable="true"/>
+        </column>
+            <column name="reaction_time" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="user_post_reaction"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_user_post_reaction_user"/>
+
+        <addForeignKeyConstraint baseTableName="user_post_reaction"
+                                 baseColumnNames="user_post_id"
+                                 referencedTableName="user_post"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_user_post_reaction_user_post"/>
+
+        <addForeignKeyConstraint baseTableName="user_post_reaction"
+                                 baseColumnNames="reaction_id"
+                                 referencedTableName="reaction"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_user_post_reaction_reaction"/>
+
+        <addForeignKeyConstraint baseTableName="user_post_reaction"
+                                 baseColumnNames="comment_id"
+                                 referencedTableName="user_post_comment"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_user_post_reaction_comment"/>
+    </changeSet>
+
+
+
+
+
+
+</databaseChangeLog>
