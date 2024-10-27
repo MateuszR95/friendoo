@@ -14,4 +14,3 @@ spring:
       mode: never
   profiles:
     default: dev
-
