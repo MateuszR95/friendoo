@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Witaj na Friendoo- zaloguj się lub zarejestruj</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+<div class="row res">
+    <div class="fb-form res">
+        <div class="card">
+            <h1>Friendoo</h1>
+            <p>Connect with friends and the world </p>
+            <p> around you on friendoo.</p>
+        </div>
+        <form th:action="@{/}" method="post">
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <div class="fb-submit">
+                <button type="submit" class="login">Login</button>
+                <a href="#" class="forgot">Forgot password?</a>
+            </div>
+            <hr>
+            <div class="button">
+                <a href="#">Create new account</a>
+            </div>
+        </form>
+    </div>
+</div>
+<footer>
+    <div class="footer-langs">
+        <small>friendoo© 2024</small>
+    </div>
+</footer>
+</body>
+
+</html>

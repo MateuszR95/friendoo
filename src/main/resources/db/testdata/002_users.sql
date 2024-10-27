@@ -1,6 +1,6 @@
 INSERT INTO users (id, first_name, last_name, email, password, date_of_birth, bio, city, phone_number, user_gender_id, joined_at, profile_photo_id, background_photo_id)
 VALUES
-    (1, 'Mateusz', 'Rojek', 'email-testowy2@wp.pl', '{noop}Haslo12345', '1995-07-20', 'Lubię wyzwania!', 'Warszawa', '883657799', 1, '2023-09-01 12:00:00', null, null),
+    (1, 'Mateusz', 'Rojek', 'email-testowy2@wp.pl', '{noop}abc123', '1995-07-20', 'Lubię wyzwania!', 'Warszawa', '883657799', 1, '2023-09-01 12:00:00', null, null),
     (2, 'Anna', 'Kowalska', 'akowalska@byom.de', '{noop}Haslo23456', '1990-05-15', 'Miłośniczka książek i podróży.', 'Kraków', '888123456', 2, '2023-10-02 12:00:00', null, null),
     (3, 'Piotr', 'Nowak', 'pnowak@byom.de', '{noop}Haslo34567', '1987-08-30', 'Sportowiec, pasjonat górskich wędrówek.', 'Gdańsk', '887654321', 1, '2023-10-03 12:00:00', null, null),
     (4, 'Karolina', 'Wiśniewska', 'kwisniewska@byom.de', '{noop}Haslo45678', '1992-11-25', 'Uwielbiam gotować i eksperymentować w kuchni.', 'Poznań', '889456123', 2, '2023-10-04 12:00:00', null, null),
