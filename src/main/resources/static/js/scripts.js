@@ -23,7 +23,7 @@ openLogoutModalBtn.addEventListener("click", (event) => {
     logoutModal.style.display = "block";
 });
 
-// Funkcje zamykające modale
+
 const closeModals = () => {
     pagesModal.style.display = "none";
     settingsModal.style.display = "none";
