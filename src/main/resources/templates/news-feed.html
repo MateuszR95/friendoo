@@ -1,23 +1,26 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layouts/default-layout}">
+      layout:decorate="~{/layouts/navbar-layout}">
 <head>
     <title>Friendoo</title>
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+
+
 </head>
 <body>
 <main layout:fragment="mainContent">
+
+
     <div class="container bootdey">
         <div class="col-md-12 bootstrap snippets">
             <div class="panel">
                 <div class="panel-body">
-                    <textarea class="form-control" rows="2" placeholder="What are you thinking?"></textarea>
+                    <textarea class="form-control" rows="2" th:placeholder="|O czym myślisz, ${user.firstName}?|" placeholder="O czym myślisz?"></textarea>
                     <div class="mar-top clearfix">
-                        <button class="btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-pencil fa-fw"></i> Share</button>
-                        <a class="btn btn-trans btn-icon fa fa-video-camera add-tooltip" href="#"></a>
-                        <a class="btn btn-trans btn-icon fa fa-camera add-tooltip" href="#"></a>
-                        <a class="btn btn-trans btn-icon fa fa-file add-tooltip" href="#"></a>
+                        <button class="btn btn-sm btn-primary pull-right" type="submit"><i class="fa fa-pencil fa-fw"></i> Udostępnij</button>
+                        <a class="btn btn-trans btn-icon fa fa-camera add-tooltip" href="#" title="Dodaj zdjęcie/film"></a>
+                        <a class="btn btn-trans btn-icon fa fa-user add-tooltip" href="#" title="Oznacz osoby"></a>
                     </div>
                 </div>
             </div>
@@ -30,7 +33,7 @@
                         <div class="media-body">
                             <div class="mar-btm">
                                 <a href="#" class="btn-link text-semibold media-heading box-inline">Lisa D.</a>
-                                <p class="text-muted text-sm"><i class="fa fa-mobile fa-lg"></i> - From Mobile - 11 min ago</p>
+                                <p class="text-muted text-sm"> 11 min ago</p>
                             </div>
                             <p>consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
                             <div class="pad-ver">
@@ -49,7 +52,7 @@
                                     <div class="media-body">
                                         <div class="mar-btm">
                                             <a href="#" class="btn-link text-semibold media-heading box-inline">Bobby Marz</a>
-                                            <p class="text-muted text-sm"><i class="fa fa-mobile fa-lg"></i> - From Mobile - 7 min ago</p>
+                                            <p class="text-muted text-sm"> 7 min ago</p>
                                         </div>
                                         <p>Sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
                                         <div class="pad-ver">
@@ -69,7 +72,7 @@
                                     <div class="media-body">
                                         <div class="mar-btm">
                                             <a href="#" class="btn-link text-semibold media-heading box-inline">Lucy Moon</a>
-                                            <p class="text-muted text-sm"><i class="fa fa-globe fa-lg"></i> - From Web - 2 min ago</p>
+                                            <p class="text-muted text-sm"> 2 min ago</p>
                                         </div>
                                         <p>Duis autem vel eum iriure dolor in hendrerit in vulputate ?</p>
                                         <div class="pad-ver">
@@ -96,7 +99,7 @@
                         <div class="media-body">
                             <div class="mar-btm">
                                 <a href="#" class="btn-link text-semibold media-heading box-inline">John Doe</a>
-                                <p class="text-muted text-sm"><i class="fa fa-mobile fa-lg"></i> - From Mobile - 11 min ago</p>
+                                <p class="text-muted text-sm"> 11 min ago</p>
                             </div>
                             <p>Lorem ipsum dolor sit amet.</p>
                             <img class="img-responsive thumbnail" src="https://www.bootdey.com/image/400x300" alt="Image">
@@ -117,7 +120,7 @@
                                     <div class="media-body">
                                         <div class="mar-btm">
                                             <a href="#" class="btn-link text-semibold media-heading box-inline">Maria Leanz</a>
-                                            <p class="text-muted text-sm"><i class="fa fa-globe fa-lg"></i> - From Web - 2 min ago</p>
+                                            <p class="text-muted text-sm"> 2 min ago</p>
                                         </div>
                                         <p>Duis autem vel eum iriure dolor in hendrerit in vulputate ?</p>
                                         <div>
@@ -138,6 +141,29 @@
             </div>
         </div>
     </div>
+
+    <div class="sidebar">
+        <a href="#home" title="Twój profil">
+            <i class="fa fa-fw fa-home"></i>
+            <span th:text="|${user.firstName} ${user.lastName}|">
+            Imię i nazwisko</a>
+        <a href="#services" title="Znajomi"><i class="fa fa-fw fa-users"></i> Znajomi (<span th:text="${friends.size()}"></span>)</a>
+        <a href="#clients" title="Wspomnienia"><i class="fa fa-fw fa-cake-candles"></i> Wspomnienia</a>
+        <a href="#contact" title="Grupy"><i class="fa fa-fw fa-people-group"></i> Grupy</a>
+        <a href="#contact" title="Strony"><i class="fa fa-fw fa-star"></i> Strony</a>
+        <a href="#contact" title="Wydarzenia"><i class="fa fa-fw fa-calendar-days"></i> Wydarzenia</a>
+    </div>
+    <div class="sidebar-right">
+        <h3>Kontakty (<span th:text="${friends.size()}"></span>)
+        </h3>
+        <div class="friend-list">
+            <a th:each="friend : ${friends}" th:href="'#' + ${friend}">
+                <img th:src="@{/img/default_avatar.jpg}" alt="Avatar" th:alt="'Avatar for ' + ${friend.firstName} + ' ' + ${friend.lastName}">
+                <span th:text="${friend.firstName} + ' ' + ${friend.lastName}"></span>
+            </a>
+        </div>
+    </div>
+
 </main>
 </body>
 </html>
