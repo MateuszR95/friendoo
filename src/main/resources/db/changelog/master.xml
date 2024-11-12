@@ -4,7 +4,6 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
-
     <include file="001_create_initial_schema.xml" relativeToChangelogFile="true" />
     <include file="../testdata/001_user_gender.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="../testdata/002_users.sql" relativeToChangelogFile="true" context="dev"/>
@@ -12,5 +11,36 @@
     <include file="../testdata/004_users_roles.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="../testdata/005_user_friends.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="../testdata/006_reaction.sql" relativeToChangelogFile="true" context="dev"/>
-
+    <include file="002_create_page_category_table.xml" relativeToChangelogFile="true" />
+    <include file="../testdata/007_page_category.sql" relativeToChangelogFile="true" context="dev"/>
+    <include file="003_page_add_page_category_column.xml" relativeToChangelogFile="true" />
+    <include file="004_create_page_visit_table.xml" relativeToChangelogFile="true" />
+    <include file="005_create_user_profile_visit_table.xml" relativeToChangelogFile="true" />
+    <include file="../testdata/008_page.sql" relativeToChangelogFile="true" context="dev"/>
+    <include file="006_page_post_add_content_created_at_columns.xml" relativeToChangelogFile="true"/>
+    <include file="../testdata/009_page_post.sql" relativeToChangelogFile="true" context="dev"/>
+    <include file="../testdata/010_page_admins.sql" relativeToChangelogFile="true" context="dev"/>
+    <include file="007_drop_table_user_likes.xml" relativeToChangelogFile="true"/>
+    <include file="008_create_page_like_table.xml" relativeToChangelogFile="true"/>
+    <include file="../testdata/011_page_like.sql" relativeToChangelogFile="true" context="dev"/>
+    <include file="009_add_post_id_column_to_page_photo_table.xml" relativeToChangelogFile="true"/>
+    <include file="../testdata/012_page_visit.sql" relativeToChangelogFile="true" context="dev"/>
+    <include file="010_rename_post_id_column_in_page_post_comment_table_to_page_post_id.xml" relativeToChangelogFile="true"/>
+    <include file="011_rename_user_id_column_in_page_post_comment_table_to_author_id.xml" relativeToChangelogFile="true"/>
+    <include file="../testdata/013_page_post_comment.sql" relativeToChangelogFile="true" context="dev"/>
+    <include file="012_drop_column_comment_id_from_page_post_reaction_table.xml" relativeToChangelogFile="true"/>
+    <include file="../testdata/014_page_post_reaction.sql" relativeToChangelogFile="true" context="dev"/>
+    <include file="013_create_invitation_to_friendship_table.xml" relativeToChangelogFile="true"/>
+    <include file="../testdata/015_invitation_to_friendship.sql" relativeToChangelogFile="true" context="dev"/>
+    <include file="014_rename_column_and_add_new_columns_to_user_post.xml" relativeToChangelogFile="true"/>
+    <include file="../testdata/016_user_post.sql" relativeToChangelogFile="true" context="dev"/>
+    <include file="015_rename_user_id_column_in_user_post_comment_table.xml" relativeToChangelogFile="true"/>
+    <include file="../testdata/017_user_post_comment.sql" relativeToChangelogFile="true" context="dev"/>
+    <include file="016_rename_user_id_column_and_drop_comment_id_column_in_user_post_reaction_table.xml" relativeToChangelogFile="true"/>
+    <include file="../testdata/018_user_post_reaction.sql" relativeToChangelogFile="true" context="dev"/>
+    <include file="../testdata/019_user_profile_visit.sql" relativeToChangelogFile="true" context="dev"/>
+    <include file="017_create_user_post_comment_reaction_table.xml" relativeToChangelogFile="true"/>
+    <include file="018_create_page_post_comment_reaction_table.xml" relativeToChangelogFile="true"/>
+    <include file="../testdata/020_user_post_comment_reaction.sql" relativeToChangelogFile="true" context="dev"/>
+    <include file="../testdata/021_page_post_comment_reaction.sql" relativeToChangelogFile="true" context="dev"/>
 </databaseChangeLog>

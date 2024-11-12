@@ -1,4 +1,4 @@
-package pl.mateusz.example.friendoo.config;
+package pl.mateusz.example.friendoo.config.security;
 
 
 import org.springframework.security.core.userdetails.User;

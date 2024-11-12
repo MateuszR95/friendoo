@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.mateusz.example.friendoo.comment.Comment;
 import pl.mateusz.example.friendoo.post.user.UserPost;
-import pl.mateusz.example.friendoo.reaction.user.UserPostReaction;
+import pl.mateusz.example.friendoo.reaction.user.UserPostCommentReaction;
 import pl.mateusz.example.friendoo.user.User;
 
 
@@ -31,7 +31,7 @@ public class UserPostComment extends Comment {
   private Long id;
 
   @ManyToOne
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "author_id")
   private User author;
 
   @ManyToOne
@@ -39,7 +39,6 @@ public class UserPostComment extends Comment {
   private UserPost post;
 
   @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
-  private Set<UserPostReaction> reactions = new HashSet<>();
-
+  private Set<UserPostCommentReaction> reactions = new HashSet<>();
 
 }

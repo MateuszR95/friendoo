@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.mateusz.example.friendoo.comment.page.PagePhotoComment;
 import pl.mateusz.example.friendoo.page.Page;
+import pl.mateusz.example.friendoo.post.page.PagePost;
 import pl.mateusz.example.friendoo.reaction.page.PagePhotoReaction;
 
 @SuppressWarnings("checkstyle:MissingJavadocType")
@@ -37,6 +38,10 @@ public class PagePhoto extends Photo {
 
   @OneToMany(mappedBy = "pagePhoto", cascade = CascadeType.ALL)
   private Set<PagePhotoComment> comments = new HashSet<>();
+
+  @ManyToOne
+  @JoinColumn(name = "post_id")
+  private PagePost pagePost;
 
 
 }

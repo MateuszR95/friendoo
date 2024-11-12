@@ -158,7 +158,7 @@
         </h3>
         <div class="friend-list">
             <a th:each="friend : ${friends}" th:href="'#' + ${friend}">
-                <img th:src="@{/img/default_avatar.jpg}" alt="Avatar" th:alt="'Avatar for ' + ${friend.firstName} + ' ' + ${friend.lastName}">
+                <img th:src="@{/img/default_profile_picture.jpg}" alt="Avatar" th:alt="'Avatar for ' + ${friend.firstName} + ' ' + ${friend.lastName}">
                 <span th:text="${friend.firstName} + ' ' + ${friend.lastName}"></span>
             </a>
         </div>

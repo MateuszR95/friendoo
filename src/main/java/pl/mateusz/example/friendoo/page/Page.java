@@ -17,9 +17,12 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.mateusz.example.friendoo.page.category.PageCategory;
 import pl.mateusz.example.friendoo.photo.PagePhoto;
 import pl.mateusz.example.friendoo.post.page.PagePost;
+import pl.mateusz.example.friendoo.reaction.page.PageLike;
 import pl.mateusz.example.friendoo.user.User;
+import pl.mateusz.example.friendoo.visit.PageVisit;
 
 
 @SuppressWarnings("checkstyle:MissingJavadocType")
@@ -59,12 +62,17 @@ public class Page {
   @JoinColumn(name = "background_photo_id")
   private PagePhoto backgroundPhoto;
 
-
   @OneToMany(mappedBy = "page", cascade = CascadeType.ALL)
   private Set<PagePost> pagePosts = new HashSet<>();
 
-  @ManyToMany(mappedBy = "likedPages")
-  private Set<User> usersWhoLiked = new HashSet<>();
+  @OneToMany(mappedBy = "page", cascade = CascadeType.ALL)
+  private Set<PageLike> pageLikes = new HashSet<>();
 
+  @ManyToOne
+  @JoinColumn(name = "page_category_id")
+  private PageCategory pageCategory;
+
+  @OneToMany(mappedBy = "page", cascade = CascadeType.ALL)
+  private Set<PageVisit> pageVisits = new HashSet<>();
 
 }

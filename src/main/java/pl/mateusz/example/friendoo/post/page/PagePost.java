@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.mateusz.example.friendoo.comment.page.PagePostComment;
 import pl.mateusz.example.friendoo.page.Page;
+import pl.mateusz.example.friendoo.photo.PagePhoto;
 import pl.mateusz.example.friendoo.post.Post;
 import pl.mateusz.example.friendoo.reaction.page.PagePostReaction;
 import pl.mateusz.example.friendoo.user.User;
@@ -44,4 +45,7 @@ public class PagePost extends Post {
 
   @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
   private Set<PagePostComment> comments = new HashSet<>();
+
+  @OneToMany(mappedBy = "pagePost", cascade = CascadeType.ALL)
+  private Set<PagePhoto> photos = new HashSet<>();
 }

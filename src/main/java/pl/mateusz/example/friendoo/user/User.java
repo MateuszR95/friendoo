@@ -25,12 +25,18 @@ import lombok.Setter;
 import pl.mateusz.example.friendoo.comment.user.UserPhotoComment;
 import pl.mateusz.example.friendoo.comment.user.UserPostComment;
 import pl.mateusz.example.friendoo.gender.UserGender;
+import pl.mateusz.example.friendoo.invitation.InvitationToFriendship;
 import pl.mateusz.example.friendoo.page.Page;
 import pl.mateusz.example.friendoo.photo.UserPhoto;
 import pl.mateusz.example.friendoo.post.user.UserPost;
+import pl.mateusz.example.friendoo.reaction.page.PageLike;
+import pl.mateusz.example.friendoo.reaction.page.PagePostCommentReaction;
 import pl.mateusz.example.friendoo.reaction.user.UserPhotoReaction;
+import pl.mateusz.example.friendoo.reaction.user.UserPostCommentReaction;
 import pl.mateusz.example.friendoo.reaction.user.UserPostReaction;
 import pl.mateusz.example.friendoo.user.role.UserRole;
+import pl.mateusz.example.friendoo.visit.PageVisit;
+import pl.mateusz.example.friendoo.visit.UserProfileVisit;
 
 
 @SuppressWarnings("checkstyle:MissingJavadocType")
@@ -64,6 +70,11 @@ public class User {
   )
   private Set<UserRole> roles = new HashSet<>();
 
+  @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+  private Set<InvitationToFriendship> sentFriendRequests = new HashSet<>();
+
+  @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL)
+  private Set<InvitationToFriendship> receivedFriendRequests = new HashSet<>();
 
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
@@ -102,13 +113,20 @@ public class User {
   @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)
   private Set<Page> createdPages = new HashSet<>();
 
-  @ManyToMany
-  @JoinTable(
-      name = "user_likes",
-      joinColumns = @JoinColumn(name = "user_id"),
-      inverseJoinColumns = @JoinColumn(name = "page_id")
-  )
-  private Set<Page> likedPages = new HashSet<>();
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  private Set<PageLike> pageLikes = new HashSet<>();
+
+  @OneToMany(mappedBy = "viewer", cascade = CascadeType.ALL)
+  private Set<UserProfileVisit> profileVisits = new HashSet<>();
+
+  @OneToMany(mappedBy = "viewer", cascade = CascadeType.ALL)
+  private Set<PageVisit> pageVisits = new HashSet<>();
+
+  @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+  private Set<UserPostCommentReaction> userPostCommentReactions = new HashSet<>();
+
+  @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+  private Set<PagePostCommentReaction> pagePostCommentReactions = new HashSet<>();
 
 
 }
