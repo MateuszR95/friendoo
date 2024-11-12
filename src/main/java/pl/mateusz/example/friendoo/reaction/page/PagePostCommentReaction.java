@@ -8,14 +8,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.mateusz.example.friendoo.post.page.PagePost;
-import pl.mateusz.example.friendoo.reaction.Reaction;
-import pl.mateusz.example.friendoo.user.User;
-
+import pl.mateusz.example.friendoo.comment.page.PagePostComment;
+import pl.mateusz.example.friendoo.reaction.CommentReaction;
 
 @SuppressWarnings("checkstyle:MissingJavadocType")
 @Entity
@@ -23,27 +20,16 @@ import pl.mateusz.example.friendoo.user.User;
 @Setter
 @NoArgsConstructor
 @Table(
-    uniqueConstraints = @UniqueConstraint(columnNames = {"author_id", "page_post_id"})
+    uniqueConstraints = @UniqueConstraint(columnNames = {"page_post_comment_id", "author_id"})
 )
-public class PagePostReaction {
+public class PagePostCommentReaction extends CommentReaction {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @ManyToOne
-  @JoinColumn(name = "page_post_id")
-  private PagePost post;
-
-  @ManyToOne
-  @JoinColumn(name = "user_id")
-  private User user;
-
-  @ManyToOne
-  @JoinColumn(name = "reaction_id")
-  private Reaction reaction;
-
-  private LocalDateTime reactionTime;
-
+  @JoinColumn(name = "page_post_comment_id")
+  private PagePostComment comment;
 
 }

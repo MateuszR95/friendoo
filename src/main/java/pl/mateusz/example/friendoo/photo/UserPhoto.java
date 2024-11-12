@@ -35,7 +35,7 @@ public class UserPhoto extends Photo {
   private User user;
 
   @ManyToOne
-  @JoinColumn(name = "user_post_id", nullable = true)
+  @JoinColumn(name = "user_post_id")
   private UserPost userPost;
 
   @OneToMany(mappedBy = "userPhoto", cascade = CascadeType.ALL, orphanRemoval = true)

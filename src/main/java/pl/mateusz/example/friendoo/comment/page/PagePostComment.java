@@ -15,7 +15,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.mateusz.example.friendoo.comment.Comment;
 import pl.mateusz.example.friendoo.post.page.PagePost;
+import pl.mateusz.example.friendoo.reaction.page.PagePostCommentReaction;
 import pl.mateusz.example.friendoo.reaction.page.PagePostReaction;
+import pl.mateusz.example.friendoo.reaction.user.UserPostCommentReaction;
 import pl.mateusz.example.friendoo.user.User;
 
 @SuppressWarnings("checkstyle:MissingJavadocType")
@@ -30,14 +32,14 @@ public class PagePostComment extends Comment {
   private Long id;
 
   @ManyToOne
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "author_id")
   private User author;
+  
+  @ManyToOne
+  @JoinColumn(name = "page_post_id")
+  private PagePost post;
 
   @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
-  private Set<PagePostReaction> reactions = new HashSet<>();
-
-  @ManyToOne
-  @JoinColumn(name = "post_id")
-  private PagePost post;
+  private Set<PagePostCommentReaction> reactions = new HashSet<>();
 
 }

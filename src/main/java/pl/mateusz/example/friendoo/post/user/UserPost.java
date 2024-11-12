@@ -34,7 +34,7 @@ public class UserPost extends Post {
   private Long id;
 
   @ManyToOne
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "author_id")
   private User author;
 
   @OneToMany(mappedBy = "userPost", cascade = CascadeType.ALL)
