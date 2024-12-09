@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
     <meta charset="UTF-8">
     <title>Witaj na Friendoo- zaloguj się lub zarejestruj</title>
-    <link rel="stylesheet" href="../styles/styles.css">
+    <link rel="stylesheet" href="../styles/styles.css" th:href="@{styles/styles.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
-<body>
+<body class="index">
 <div class="row res">
     <div class="fb-form res">
         <div class="card">
@@ -16,15 +17,18 @@
             <p> around you on friendoo.</p>
         </div>
         <form th:action="@{/}" method="post">
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
+            <div th:if="${param.error}" class="alert alert-danger" role="alert">
+                Błąd logowania. Upewnij się, że podane dane są poprawne.
+            </div>
+            <input type="email" name="email" placeholder="Adres email" required>
+            <input type="password" name="password" placeholder="Hasło" required>
             <div class="fb-submit">
-                <button type="submit" class="login">Login</button>
-                <a href="#" class="forgot">Forgot password?</a>
+                <button type="submit" class="login">Zaloguj się</button>
+                <a href="#" class="forgot">Zapomniałeś hasła?</a>
             </div>
             <hr>
             <div class="button">
-                <a href="#">Create new account</a>
+                <a href="#" th:href="@{/registration}">Stwórz nowe konto</a>
             </div>
         </form>
     </div>

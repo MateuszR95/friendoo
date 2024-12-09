@@ -112,8 +112,10 @@
         <div class="modal-content">
             <h5>Wyloguj się</h5>
             <p>Czy na pewno chcesz się wylogować?</p>
-            <button class="closeModal">Anuluj</button>
-            <button class="closeModal">Tak, wyloguj się</button>
+            <form th:action="@{/logout}" method="post">
+                <button type="button" class="closeModal btn btn-secondary">Anuluj</button>
+                <button type="submit" class="closeModal btn btn-danger">Tak, wyloguj się</button>
+            </form>
         </div>
     </div>
 </header>

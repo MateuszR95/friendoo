@@ -17,4 +17,5 @@ public class UserCredentialsDto {
   private String email;
   private String password;
   private Set<String> roles = new HashSet<>();
+  private boolean isActiveAccount;
 }

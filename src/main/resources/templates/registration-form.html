@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <title>Zarejestruj się na Friendoo</title>
+    <link rel="stylesheet" href="../styles/styles.css" th:href="@{styles/styles.css}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="registration-form">
+
+<div class="container h-100">
+    <div class="row h-100">
+        <div class="col-sm-10 col-md-8 col-lg-6 mx-auto d-table h-100">
+            <div class="d-table-cell align-middle">
+                <div class="fb-form">
+                <h1>Friendoo</h1>
+                </div>
+
+                <div class="text-left">
+                    <a href="/" th:href="@{/}" class="back-arrow">
+                        <i class="fa fa-arrow-left"></i> Wróć do strony głównej
+                    </a>
+                </div>
+
+                <div class="text-center mt-4">
+                    <h1 class="h2">Utwórz nowe konto</h1>
+                    <p class="lead">
+                        Dołącz do społeczności Friendoo!
+                    </p>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="m-sm-4">
+                            <form th:action="@{/registration}" th:object="${userRegistrationDto}" method="post">
+                                <div class="form-group">
+                                    <label>Imię</label>
+                                    <input th:field="*{firstName}" class="form-control form-control-lg" type="text" name="firstName" placeholder="Podaj imię">
+                                    <p th:errors="*{firstName}" class="error">Błędy związane z imieniem</p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Nazwisko</label>
+                                    <input th:field="*{lastName}" class="form-control form-control-lg" type="text" name="lastName" placeholder="Podaj nazwisko">
+                                    <p th:errors="*{lastName}" class="error">Błędy związane z nazwiskiem</p>
+                                </div>
+                                <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+                                    <span th:text="${errorMessage}"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input th:field="*{email}" class="form-control form-control-lg" type="email" name="email" placeholder="Podaj adres email">
+                                    <p th:errors="*{email}" class="error">Błędy związane z emailem</p>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="dateOfBirth">Data urodzenia</label>
+                                    <input th:value="*{dateOfBirth}" class="form-control form-control-lg"
+                                           type="date"
+                                           name="dateOfBirth"
+                                           id="dateOfBirth"
+                                           max="">
+                                    <p th:errors="*{dateOfBirth}" class="error">Błędy związane z datą urodzenia</p>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="gender">Wybierz płeć</label>
+                                    <select th:field="*{gender}" id="gender" name="gender" class="form-control form-control-lg">
+                                        <option selected  value="">Wybierz płeć</option>
+                                        <option value="MAN">Mężczyzna</option>
+                                        <option value="WOMAN">Kobieta</option>
+                                        <option value="OTHER">Inna</option>
+                                    </select>
+                                    <p th:errors="*{gender}" class="error">Błędy związane z płcią</p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Hasło</label>
+                                    <input th:field="*{password}" class="form-control form-control-lg" type="password" name="password" placeholder="Podaj hasło">
+                                    <p th:errors="*{password}" class="error">Błędy związane z hasłem</p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Powtórz hasło</label>
+                                    <input th:field="*{repeatedPassword}" class="form-control form-control-lg" type="password" name="repeatedPassword" placeholder="Powtórz hasło">
+                                    <p th:errors="*{repeatedPassword}" class="error">Błędy związane z powtórzonym hasłem</p>
+                                    <div th:if="${#fields.hasErrors('global')}">
+                                        <p th:each="err : ${#fields.errors('global')}" th:text="${err}" class="error" />
+                                    </div>
+                                </div>
+
+
+                                <div class="text-center mt-3">
+                                     <button type="submit" class="btn btn-lg btn-primary">Zarejestruj się</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<footer>
+    <div class="footer-langs">
+        <small>friendoo© 2024</small>
+    </div>
+</footer>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const today = new Date().toISOString().split('T')[0];
+        const dateInput = document.getElementById('birthDate');
+        dateInput.setAttribute('max', today);
+    });
+</script>
+</body>
+
+</html>
