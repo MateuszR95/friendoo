@@ -1,5 +1,5 @@
-INSERT INTO user_gender (id, gender)
+INSERT INTO user_gender (gender)
 values
-    (1, 'MAN'),
-    (2, 'WOMAN'),
-    (3, 'OTHER');
+    ('MAN'),
+    ('WOMAN'),
+    ('OTHER');

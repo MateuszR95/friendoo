@@ -29,6 +29,7 @@
     margin-bottom: 90px;
 }
 
+
 .fb-form h1 {
     color: #1877f2;
     font-size: 4rem;
@@ -568,5 +569,144 @@ form input:focus {
         border-radius: 50%;
         margin-right: 10px;
     }
+
+    .registration-form {
+        background-color: #f2f3f8;
+        padding-top: 20px;
+    }
+
+    .registration-form .card {
+        margin-bottom: 1.5rem;
+        box-shadow: 0 1px 15px 1px rgba(52,40,104,.08);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 1px solid #e5e9f2;
+        border-radius: .2rem;
+        width: 100%;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+
+    .registration-form .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    .registration-form .row.h-100 {
+        width: 100%;
+    }
+
+    .registration-form .col-sm-10, .registration-form .col-md-8, .registration-form .col-lg-6 {
+        width: 100%;
+        max-width: 400px;
+        margin: auto;
+    }
+
+
+    .registration-form .text-center.mt-3 .btn {
+        width: 100%;
+    }
+
+
+    .registration-form .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .registration-form .form-control-lg {
+        padding: 1rem;
+        font-size: 1rem;
+    }
+
+    .registration-form .btn-primary {
+        background-color: #007bff;
+        color: white;
+        padding: 1rem;
+        font-size: 1.25rem;
+        border-radius: .2rem;
+        width: 100%;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .registration-form .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+
+    footer {
+        background-color: #f0f2f5;
+        padding: 20px 0;
+        text-align: center;
+    }
+
+    .footer-langs small {
+        color: #8b8b8b;
+    }
+
+    #gender {
+        width: 100%;
+        padding: 10px;
+        font-size: 1rem;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        background-color: #fff;
+        transition: border-color 0.3s ease;
+    }
+
+    /
+    #gender:focus {
+        border-color: #1877f2;
+        outline: none;
+    }
+
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+
+    label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    .error {
+        color: red;
+        font-size: 0.8rem;
+    }
+
+    .back-arrow {
+        color: #007bff;
+        font-weight: bold;
+        font-size: 18px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .back-arrow i {
+        margin-right: 5px;
+    }
+
+    .back-arrow:hover {
+        color: #0056b3;
+    }
+
+    .alert-danger {
+        color: red;
+        font-size: 0.9em;
+    }
+
 
 }

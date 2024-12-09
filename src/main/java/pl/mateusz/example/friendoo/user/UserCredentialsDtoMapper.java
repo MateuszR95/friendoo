@@ -6,7 +6,7 @@ import pl.mateusz.example.friendoo.user.role.Role;
 import pl.mateusz.example.friendoo.user.role.UserRole;
 
 @SuppressWarnings("checkstyle:MissingJavadocType")
-public class UserDtoMapper {
+public class UserCredentialsDtoMapper {
 
   @SuppressWarnings("checkstyle:Indentation")
   static UserCredentialsDto mapToUserCredentialsDto(User user) {
@@ -17,7 +17,8 @@ public class UserDtoMapper {
       .map(UserRole::getRole)
       .map(Role::name)
       .collect(Collectors.toSet());
-    return new UserCredentialsDto(email, password, roles);
+    boolean isActiveAccount = user.isActiveAccount();
+    return new UserCredentialsDto(email, password, roles, isActiveAccount);
   }
 
   static UserDisplayDto mapToUserDisplayDto(User user) {

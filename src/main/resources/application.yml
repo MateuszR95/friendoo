@@ -1,4 +1,13 @@
 spring:
+  mail:
+    host: smtp.wp.pl
+    username: email-testowy2@wp.pl
+    password: 7V+UnGtAdx?=dw!
+    port: 465
+    properties:
+      mail.smtp.ssl.enable: true
+      smtp:
+        auth=true
   datasource:
     username: sa
     password:
@@ -14,3 +23,9 @@ spring:
       mode: never
   profiles:
     default: dev
+geonames:
+  username: mateuszr20471
+
+
+
+

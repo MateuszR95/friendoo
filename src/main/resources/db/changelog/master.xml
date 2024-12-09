@@ -6,6 +6,8 @@
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
     <include file="001_create_initial_schema.xml" relativeToChangelogFile="true" />
     <include file="../testdata/001_user_gender.sql" relativeToChangelogFile="true" context="dev"/>
+    <include file="019_rename_city_column_to_current_city_and_constraints_adjustment_in_users_table.xml" relativeToChangelogFile="true"/>
+    <include file="021_add_is_active_account_column_in_users_table.xml" relativeToChangelogFile="true"/>
     <include file="../testdata/002_users.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="../testdata/003_user_role.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="../testdata/004_users_roles.sql" relativeToChangelogFile="true" context="dev"/>
@@ -43,4 +45,7 @@
     <include file="018_create_page_post_comment_reaction_table.xml" relativeToChangelogFile="true"/>
     <include file="../testdata/020_user_post_comment_reaction.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="../testdata/021_page_post_comment_reaction.sql" relativeToChangelogFile="true" context="dev"/>
+    <include file="020_create_user_activation_token_table.xml" relativeToChangelogFile="true"/>
+
+
 </databaseChangeLog>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet id="019_rename_city_column_to_current_city_and_constraints_adjustment_in_users_table" author="mrojek">
+        <renameColumn tableName="users" oldColumnName="city"
+                      newColumnName="current_city" columnDataType="varchar(50)"/>
+        <addColumn tableName="users">
+            <column name="hometown" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <dropNotNullConstraint tableName="users" columnName="bio"/>
+        <dropNotNullConstraint tableName="users" columnName="current_city"/>
+        <dropNotNullConstraint tableName="users" columnName="phone_number"/>
+
+    </changeSet>
+
+</databaseChangeLog>

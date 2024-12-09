@@ -34,6 +34,7 @@ import pl.mateusz.example.friendoo.reaction.page.PagePostCommentReaction;
 import pl.mateusz.example.friendoo.reaction.user.UserPhotoReaction;
 import pl.mateusz.example.friendoo.reaction.user.UserPostCommentReaction;
 import pl.mateusz.example.friendoo.reaction.user.UserPostReaction;
+import pl.mateusz.example.friendoo.user.activation.UserActivationToken;
 import pl.mateusz.example.friendoo.user.role.UserRole;
 import pl.mateusz.example.friendoo.visit.PageVisit;
 import pl.mateusz.example.friendoo.visit.UserProfileVisit;
@@ -56,14 +57,15 @@ public class User {
   private String password;
   private LocalDate dateOfBirth;
   private String bio;
-  private String city;
+  private String hometown;
+  private String currentCity;
   private String phoneNumber;
   @ManyToOne
   @JoinColumn(name = "user_gender_id")
   private UserGender gender;
   private LocalDateTime joinedAt;
 
-  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinTable(name = "users_roles",
       joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
       inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
@@ -127,6 +129,9 @@ public class User {
 
   @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
   private Set<PagePostCommentReaction> pagePostCommentReactions = new HashSet<>();
+
+  private boolean isActiveAccount;
+
 
 
 }
