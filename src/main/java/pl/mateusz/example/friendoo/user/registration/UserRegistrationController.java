@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import pl.mateusz.example.friendoo.exceptions.AccountAlreadyActivatedException;
 import pl.mateusz.example.friendoo.exceptions.InvalidTokenException;
 import pl.mateusz.example.friendoo.exceptions.UserNotFoundException;
@@ -26,6 +26,7 @@ import pl.mateusz.example.friendoo.user.UserService;
 public class UserRegistrationController {
 
   private final UserService userService;
+
   private final Logger logger = LoggerFactory.getLogger(UserRegistrationController.class);
 
   public UserRegistrationController(UserService userService) {
@@ -43,14 +44,14 @@ public class UserRegistrationController {
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   @PostMapping("/registration")
   public String register(@Valid @ModelAttribute UserRegistrationDto userRegistrationDto,
-                         BindingResult bindingResult, RedirectAttributes redirectAttributes,
+                         BindingResult bindingResult,
                          Model model, HttpSession session) {
     if (bindingResult.hasErrors()) {
       return "registration-form";
     }
     try {
       userService.registerAccount(userRegistrationDto);
-      redirectAttributes.addFlashAttribute("userEmail", userRegistrationDto.getEmail());
+      session.setAttribute("pendingActivationEmail", userRegistrationDto.getEmail().toLowerCase());
       session.setAttribute("isActivationAllowed", true);
       return "redirect:/activation";
     } catch (MailSendException | UserValidationException e) {
@@ -63,16 +64,19 @@ public class UserRegistrationController {
 
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   @GetMapping("/activation")
-  public String displayAccountActivationForm(@ModelAttribute(value = "userEmail") String userEmail,
-                                             Model model, HttpSession session) {
-    Boolean isActivationAllowed = (Boolean) session.getAttribute("isActivationAllowed");
-    if (isActivationAllowed == null || !isActivationAllowed) {
+  public String displayAccountActivationForm(@SessionAttribute(value = "pendingActivationEmail",
+        required = false) String userEmail, Model model) {
+    if (userEmail == null || userEmail.isEmpty()) {
+      model.addAttribute("errorMessage", "Sesja wygasła. Zarejestruj się ponownie.");
+      return "redirect:/registration";
+    }
+    if (userService.isAccountActivated(userEmail)) {
       return "redirect:/";
     }
-    session.removeAttribute("isActivationAllowed");
     model.addAttribute("userEmail", userEmail);
     return "registration-activation";
   }
+
 
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   @PostMapping("/activation")
@@ -85,6 +89,7 @@ public class UserRegistrationController {
           -> model.addAttribute("userName", userDisplayDto.getFirstName()));
       return "activation-success";
     } catch (InvalidTokenException | UserNotFoundException | AccountAlreadyActivatedException e) {
+      logger.info(e.getMessage());
       model.addAttribute("userEmail", userEmail);
       model.addAttribute("errorMessage", e.getMessage());
       return "registration-activation";
