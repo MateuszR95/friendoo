@@ -22,7 +22,7 @@ public class CustomUsersDetailsService implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    return userService.findCredentialsByEmail(username)
+    return userService.findCredentialsByEmail(username.toLowerCase())
       .map(this::createUserDetails)
       .orElseThrow(() ->
         new UsernameNotFoundException(String.format("User with email %s not found", username)));

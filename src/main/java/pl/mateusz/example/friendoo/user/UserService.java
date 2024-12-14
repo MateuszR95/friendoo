@@ -122,7 +122,7 @@ public class UserService {
     User user = new User();
     user.setFirstName(dto.getFirstName());
     user.setLastName(dto.getLastName());
-    user.setEmail(dto.getEmail());
+    user.setEmail(dto.getEmail().toLowerCase());
     user.setDateOfBirth(dto.getDateOfBirth());
     UserGender userGender = validateUserGenderExistence(dto);
     user.setGender(userGender);
@@ -162,4 +162,10 @@ public class UserService {
   }
 
 
+  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  public Boolean isAccountActivated(String userEmail) {
+    User user = userRepository.findUserByEmail(userEmail).orElseThrow(()
+        -> new UserNotFoundException("Brak użytkownika o wskazanym adresie emailowym"));
+    return user.isActiveAccount();
+  }
 }
