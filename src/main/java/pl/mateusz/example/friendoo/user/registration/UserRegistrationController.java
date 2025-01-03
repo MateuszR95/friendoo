@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import pl.mateusz.example.friendoo.exceptions.AccountAlreadyActivatedException;
+import pl.mateusz.example.friendoo.exceptions.ExpiredActivationTokenException;
 import pl.mateusz.example.friendoo.exceptions.InvalidTokenException;
 import pl.mateusz.example.friendoo.exceptions.UserNotFoundException;
 import pl.mateusz.example.friendoo.exceptions.UserValidationException;
@@ -93,6 +94,14 @@ public class UserRegistrationController {
       model.addAttribute("userEmail", userEmail);
       model.addAttribute("errorMessage", e.getMessage());
       return "registration-activation";
+    } catch (ExpiredActivationTokenException e) {
+      logger.info(e.getMessage());
+      return "activation-failed";
     }
+  }
+
+  @GetMapping("/activation-failed")
+  public String displayActivationFailPage() {
+    return "activation-failed";
   }
 }

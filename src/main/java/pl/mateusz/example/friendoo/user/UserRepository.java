@@ -34,4 +34,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
       + " IS NULL))", nativeQuery = true)
   void deleteRolesForInactiveUsersWithoutValidActivationToken();
 
+
 }
