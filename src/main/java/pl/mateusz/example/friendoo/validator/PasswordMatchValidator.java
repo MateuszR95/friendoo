@@ -2,11 +2,10 @@ package pl.mateusz.example.friendoo.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import pl.mateusz.example.friendoo.user.registration.UserRegistrationDto;
 
 @SuppressWarnings("checkstyle:MissingJavadocType")
 public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch,
-    UserRegistrationDto> {
+    PasswordMatchable> {
 
   @Override
   public void initialize(PasswordMatch constraintAnnotation) {
@@ -14,12 +13,12 @@ public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch
   }
 
   @Override
-  public boolean isValid(UserRegistrationDto dto,
+  public boolean isValid(PasswordMatchable value,
                          ConstraintValidatorContext constraintValidatorContext) {
-    if (dto == null) {
+    if (value == null) {
       return false;
     }
-    return dto.getPassword().equals(dto.getRepeatedPassword());
-
+    return value.getPassword() != null && value.getPassword().equals(value.getRepeatedPassword());
   }
+
 }

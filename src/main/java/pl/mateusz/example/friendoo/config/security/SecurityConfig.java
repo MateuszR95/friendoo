@@ -26,7 +26,8 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
         .authorizeHttpRequests(requests -> requests
-        .requestMatchers("/", "/img/**", "/styles/**", "/js/**", "/registration").permitAll()
+        .requestMatchers("/", "/img/**", "/styles/**", "/js/**", "/registration",
+          "/password-reset-email", "/password-reset").permitAll()
         .requestMatchers("/home/**").authenticated()
         .requestMatchers("/activation").permitAll()
         .requestMatchers(PathRequest.toH2Console()).permitAll()

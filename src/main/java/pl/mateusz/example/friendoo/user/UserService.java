@@ -8,12 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailSendException;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.mateusz.example.friendoo.email.MailService;
 import pl.mateusz.example.friendoo.exceptions.AccountAlreadyActivatedException;
+import pl.mateusz.example.friendoo.exceptions.ExpiredActivationTokenException;
 import pl.mateusz.example.friendoo.exceptions.InvalidTokenException;
+import pl.mateusz.example.friendoo.exceptions.MailSendingException;
 import pl.mateusz.example.friendoo.exceptions.UserNotFoundException;
 import pl.mateusz.example.friendoo.exceptions.UserValidationException;
 import pl.mateusz.example.friendoo.gender.Gender;
@@ -22,6 +25,9 @@ import pl.mateusz.example.friendoo.gender.UserGenderRepository;
 import pl.mateusz.example.friendoo.user.activation.UserActivationToken;
 import pl.mateusz.example.friendoo.user.activation.UserActivationTokenDto;
 import pl.mateusz.example.friendoo.user.activation.UserActivationTokenService;
+import pl.mateusz.example.friendoo.user.passwordreset.UserPasswordResetDto;
+import pl.mateusz.example.friendoo.user.passwordreset.UserPasswordResetDtoMapper;
+import pl.mateusz.example.friendoo.user.passwordreset.UserPasswordResetTokenService;
 import pl.mateusz.example.friendoo.user.registration.UserRegistrationDto;
 import pl.mateusz.example.friendoo.user.role.Role;
 import pl.mateusz.example.friendoo.user.role.UserRole;
@@ -39,20 +45,23 @@ public class UserService {
   private final MailService mailService;
   private final UserActivationTokenService userActivationTokenService;
 
+  private final UserPasswordResetTokenService userPasswordResetTokenService;
+
   private static final int SECONDS_30 = 30000;
   Logger logger = LoggerFactory.getLogger(UserService.class);
 
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   public UserService(UserRepository userRepository, UserGenderRepository userGenderRepository,
                      UserRoleRepository userRoleRepository, PasswordEncoder passwordEncoder,
-                     MailService mailService, UserActivationTokenService
-                         userActivationTokenService) {
+                     MailService mailService, UserActivationTokenService userActivationTokenService,
+                     UserPasswordResetTokenService userPasswordResetTokenService) {
     this.userRepository = userRepository;
     this.userGenderRepository = userGenderRepository;
     this.userRoleRepository = userRoleRepository;
     this.passwordEncoder = passwordEncoder;
     this.mailService = mailService;
     this.userActivationTokenService = userActivationTokenService;
+    this.userPasswordResetTokenService = userPasswordResetTokenService;
   }
 
   public Optional<UserCredentialsDto> findCredentialsByEmail(String email) {
@@ -93,7 +102,7 @@ public class UserService {
   public void activateAccount(String userEmail, String enteredToken) {
     UserActivationTokenDto userActivationTokenDto = userActivationTokenService
         .getUserActivationTokenByUserEmail(userEmail).orElseThrow(()
-            -> new InvalidTokenException("Wprowadzony token jest niepoprawny lub wygasł"));
+            -> new ExpiredActivationTokenException("Twój kod aktywacyjny wygasł"));
     if (userActivationTokenDto.getToken().equals(enteredToken)) {
       User user = userRepository.findUserByEmail(userEmail).orElseThrow(()
           -> new UserNotFoundException("Nie znaleziono użytkownika"));
@@ -104,7 +113,7 @@ public class UserService {
       userRepository.save(user);
       userActivationTokenService.deleteTokenByUserEmail(user.getEmail());
     } else {
-      throw new InvalidTokenException("Wprowadzony token jest niepoprawny lub wygasł");
+      throw new InvalidTokenException("Wprowadzony kod aktywacyjny jest niepoprawny");
     }
   }
 
@@ -168,4 +177,34 @@ public class UserService {
         -> new UserNotFoundException("Brak użytkownika o wskazanym adresie emailowym"));
     return user.isActiveAccount();
   }
+
+  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  @Transactional
+  public void sendPasswordResetLink(String email) {
+    userPasswordResetTokenService.createAndSaveUserPasswordResetToken(email);
+    boolean passwordResetEmailSent = mailService.sendPasswordResetEmail(email);
+    if (!passwordResetEmailSent) {
+      throw new MailSendingException("Nie udało się wysłać wiadomości do " + email);
+    }
+  }
+
+  public Optional<UserPasswordResetDto> getUserPasswordResetDtoByEmail(String email) {
+    return userRepository.findUserByEmail(email).map(UserPasswordResetDtoMapper
+      ::mapToUserPasswordResetDto);
+  }
+
+  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  @Transactional
+  public boolean resetPassword(UserPasswordResetDto userPasswordResetDto) {
+    User user = userRepository.findUserByEmail(userPasswordResetDto.getEmail()).orElseThrow(() ->
+      new UsernameNotFoundException("Brak użytkownika o wskazanym adresie mailowym"));
+    if (userPasswordResetDto.getPassword().equals(
+          userPasswordResetDto.getRepeatedPassword())) {
+      user.setPassword(passwordEncoder.encode(userPasswordResetDto.getPassword()));
+      userRepository.save(user);
+      return true;
+    }
+    return false;
+  }
 }
+

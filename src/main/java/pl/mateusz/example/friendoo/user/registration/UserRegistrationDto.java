@@ -7,20 +7,18 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import pl.mateusz.example.friendoo.validator.PasswordMatch;
+import pl.mateusz.example.friendoo.validator.PasswordMatchable;
 import pl.mateusz.example.friendoo.validator.UserAge;
 import pl.mateusz.example.friendoo.validator.email.UniqueEmail;
+import pl.mateusz.example.friendoo.validator.pattern.ValidationPatterns;
 
-@PasswordMatch
 @SuppressWarnings("checkstyle:MissingJavadocType")
 @Data
-public class UserRegistrationDto {
-
-  private static final String EMAIL_REGEX_PATTERN =
-      "^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)"
-        + "*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
-  private static final String PASSWORD_REGEX_PATTERN = "^(?=.*[A-Z])"
-      + "(?=.*[a-z])(?=.*[#?!@$%^&*-]).+$";
+@NoArgsConstructor
+@PasswordMatch
+public class UserRegistrationDto implements PasswordMatchable {
 
   @NotBlank
   @Size(min = 2)
@@ -30,7 +28,7 @@ public class UserRegistrationDto {
   private String lastName;
   @NotBlank
   @Email
-  @Pattern(regexp = EMAIL_REGEX_PATTERN,
+  @Pattern(regexp = ValidationPatterns.EMAIL_REGEX_PATTERN,
       message = "Niewłaściwy format adresu email")
   @UniqueEmail
   private String email;
@@ -40,7 +38,8 @@ public class UserRegistrationDto {
   @NotBlank
   private String gender;
   @NotBlank
-  @Pattern(regexp = PASSWORD_REGEX_PATTERN, message = "Hasło musi zawierać przynajmniej 1 dużą "
+  @Pattern(regexp = ValidationPatterns.PASSWORD_REGEX_PATTERN,
+        message = "Hasło musi zawierać przynajmniej 1 dużą "
       + "literę, 1 małą literę, 1 znak specjalny oraz mieć co najmniej 8 znaków")
   private String password;
   @NotBlank
