@@ -161,8 +161,9 @@ public class UserService {
   }
 
   private UserGender validateUserGenderExistence(UserRegistrationDto dto) {
-    return userGenderRepository.getUserGenderByGender(
-        Gender.valueOf(dto.getGender())).orElseThrow(() ->
+    String genderName = dto.getGender();
+    Gender gender = Gender.valueOf(genderName);
+    return userGenderRepository.getUserGenderByGender(gender).orElseThrow(() ->
         new UserValidationException("Wybrano nieprawidłową płeć"));
   }
 

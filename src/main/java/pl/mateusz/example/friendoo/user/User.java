@@ -34,7 +34,6 @@ import pl.mateusz.example.friendoo.reaction.page.PagePostCommentReaction;
 import pl.mateusz.example.friendoo.reaction.user.UserPhotoReaction;
 import pl.mateusz.example.friendoo.reaction.user.UserPostCommentReaction;
 import pl.mateusz.example.friendoo.reaction.user.UserPostReaction;
-import pl.mateusz.example.friendoo.user.activation.UserActivationToken;
 import pl.mateusz.example.friendoo.user.passwordreset.UserPasswordResetToken;
 import pl.mateusz.example.friendoo.user.role.UserRole;
 import pl.mateusz.example.friendoo.visit.PageVisit;
@@ -135,9 +134,6 @@ public class User {
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private Set<UserPasswordResetToken> passwordResetTokens = new HashSet<>();
-
-
-
 
 
 }

@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.mateusz.example.friendoo.validator.PasswordMatch;
@@ -18,6 +20,8 @@ import pl.mateusz.example.friendoo.validator.pattern.ValidationPatterns;
 @Data
 @NoArgsConstructor
 @PasswordMatch
+@AllArgsConstructor
+@Builder
 public class UserRegistrationDto implements PasswordMatchable {
 
   @NotBlank

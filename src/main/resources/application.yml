@@ -2,7 +2,7 @@ spring:
   mail:
     host: smtp.wp.pl
     username: email-testowy2@wp.pl
-    password: ay9p=b_^3.mY@i-
+    password: ^/3.MPpa+#(QyEy
     port: 465
     properties:
       mail.smtp.ssl.enable: true

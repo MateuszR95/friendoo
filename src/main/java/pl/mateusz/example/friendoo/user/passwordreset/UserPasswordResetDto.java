@@ -3,6 +3,8 @@ package pl.mateusz.example.friendoo.user.passwordreset;
 import jakarta.validation.GroupSequence;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.mateusz.example.friendoo.validator.FirstOrder;
@@ -17,6 +19,8 @@ import pl.mateusz.example.friendoo.validator.pattern.ValidationPatterns;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @GroupSequence({UserPasswordResetDto.class, FirstOrder.class, SecondOrder.class,
   ThirdOrder.class})
 @PasswordMatch(groups = ThirdOrder.class)
