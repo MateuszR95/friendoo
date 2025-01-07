@@ -44,7 +44,7 @@ public class MailService {
         + token + "</strong></p>";
       content += "<p>Token jest ważny przez 15 minut.</p>";
       content += "</body></html>";
-      helper.setText(content, true);;
+      helper.setText(content, true);
       javaMailSender.send(mimeMessage);
       logger.info("Mail do {} wysłany pomyślnie", receiverMail);
       return true;
@@ -71,6 +71,7 @@ public class MailService {
     } catch (MessagingException e) {
       logger.error("Błąd podczas wysyłania wiadomości do {}: {}", userEmail, e.getMessage());
       return false;
+
     }
   }
 
