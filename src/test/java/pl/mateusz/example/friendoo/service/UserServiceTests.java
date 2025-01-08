@@ -1,4 +1,4 @@
-package pl.mateusz.example.friendoo;
+package pl.mateusz.example.friendoo.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
