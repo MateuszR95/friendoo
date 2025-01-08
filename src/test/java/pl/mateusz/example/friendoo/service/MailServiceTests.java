@@ -1,4 +1,4 @@
-package pl.mateusz.example.friendoo;
+package pl.mateusz.example.friendoo.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

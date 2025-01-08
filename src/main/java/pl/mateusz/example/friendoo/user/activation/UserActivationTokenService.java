@@ -44,15 +44,6 @@ public class UserActivationTokenService {
     userActivationTokenRepository.deleteExpiredTokens(LocalDateTime.now());
   }
 
-
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
-  public Optional<UserActivationTokenDto> getUserActivationTokenByTokenCode(String token) {
-    Optional<UserActivationToken> userActivationTokenByToken =
-        userActivationTokenRepository.getUserActivationTokenByToken(token);
-    return userActivationTokenByToken
-      .map(UserActivationTokenDtoMapper::mapToUserActivationTokenDto);
-  }
-
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   public Optional<UserActivationTokenDto> getUserActivationTokenByUserEmail(String email) {
     Optional<UserActivationToken> userActivationTokenByUserEmail = userActivationTokenRepository
