@@ -536,8 +536,6 @@ public class UserServiceTests {
       verify(userRepository, times(1)).findUserByEmail(passwordResetDto.getEmail());
     }
 
-
-
     @Test
     public void shouldNotResetPasswordWhereNewPasswordsDoNotMatch() {
       // given
