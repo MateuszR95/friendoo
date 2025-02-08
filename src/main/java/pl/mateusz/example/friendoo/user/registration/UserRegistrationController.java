@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.mateusz.example.friendoo.exceptions.AccountAlreadyActivatedException;
 import pl.mateusz.example.friendoo.exceptions.ExpiredActivationTokenException;
 import pl.mateusz.example.friendoo.exceptions.InvalidTokenException;
@@ -66,9 +67,10 @@ public class UserRegistrationController {
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   @GetMapping("/activation")
   public String displayAccountActivationForm(@SessionAttribute(value = "pendingActivationEmail",
-        required = false) String userEmail, Model model) {
-    if (userEmail == null || userEmail.isEmpty()) {
-      model.addAttribute("errorMessage", "Sesja wygasła. Zarejestruj się ponownie.");
+        required = false) String userEmail, Model model, RedirectAttributes redirectAttributes) {
+    if (userEmail == null || userEmail.isBlank()) {
+      redirectAttributes.addFlashAttribute("errorMessage",
+          "Sesja wygasła. Zarejestruj się ponownie.");
       return "redirect:/registration";
     }
     if (userService.isAccountActivated(userEmail)) {
