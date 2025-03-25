@@ -6,7 +6,7 @@ public enum PageCategoryType {
   BRAND("Marka/Produkt"),
   ARTIST("Artysta/Zespół/Muzyk"),
   ENTERTAINMENT("Rozrywka"),
-  SPORT("Sporty/Rekreacja"),
+  SPORT("Sport/Rekreacja"),
   PUBLIC_FIGURE("Osoba Publiczna"),
   COMMUNITY("Społeczność"),
   EDUCATION("Edukacja"),
@@ -16,9 +16,17 @@ public enum PageCategoryType {
   TRAVEL("Podróże"),
   HEALTH("Zdrowie");
 
-  private String text;
+  private String plName;
 
-  PageCategoryType(String text) {
-    this.text = text;
+  PageCategoryType(String plName) {
+    this.plName = plName;
+  }
+
+  public String getPlName() {
+    return plName;
+  }
+
+  public void setPlName(String plName) {
+    this.plName = plName;
   }
 }

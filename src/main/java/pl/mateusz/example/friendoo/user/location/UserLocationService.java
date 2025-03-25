@@ -34,9 +34,10 @@ public class UserLocationService {
           .toUriString();
     try {
       UserLocation[] locations = restTemplate.getForObject(url, UserLocation[].class);
-      assert locations != null;
-      List<UserLocation> locationsList  = Arrays.asList(locations);
-      return locationsList.stream()
+      if (locations == null) {
+        return Collections.emptyList();
+      }
+      return Arrays.stream(locations)
         .map(UserLocation::getDisplayName)
         .collect(Collectors.toList());
     } catch (RestClientException e) {

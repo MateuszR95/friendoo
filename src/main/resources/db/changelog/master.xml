@@ -48,4 +48,6 @@
     <include file="020_create_user_activation_token_table.xml" relativeToChangelogFile="true"/>
     <include file="022_create_user_password_reset_token_table.xml" relativeToChangelogFile="true"/>
     <include file="023_change_columns_length_in_users_table.xml" relativeToChangelogFile="true"/>
+    <include file="024_create_user_favourite_page_categories_table.xml" relativeToChangelogFile="true"/>
+    <include file="../testdata/023_user_favourite_page_categories.sql" relativeToChangelogFile="true" context="dev"/>
 </databaseChangeLog>

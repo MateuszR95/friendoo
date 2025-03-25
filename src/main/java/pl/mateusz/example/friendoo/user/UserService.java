@@ -3,6 +3,7 @@ package pl.mateusz.example.friendoo.user;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +23,13 @@ import pl.mateusz.example.friendoo.exceptions.UserValidationException;
 import pl.mateusz.example.friendoo.gender.Gender;
 import pl.mateusz.example.friendoo.gender.UserGender;
 import pl.mateusz.example.friendoo.gender.UserGenderRepository;
+import pl.mateusz.example.friendoo.page.category.PageCategory;
+import pl.mateusz.example.friendoo.page.category.PageCategoryRepository;
 import pl.mateusz.example.friendoo.user.activation.UserActivationToken;
 import pl.mateusz.example.friendoo.user.activation.UserActivationTokenDto;
 import pl.mateusz.example.friendoo.user.activation.UserActivationTokenService;
+import pl.mateusz.example.friendoo.user.favouritepagecategory.UserFavouritePageCategory;
+import pl.mateusz.example.friendoo.user.favouritepagecategory.UserFavouritePageCategoryRepository;
 import pl.mateusz.example.friendoo.user.passwordreset.UserPasswordResetDto;
 import pl.mateusz.example.friendoo.user.passwordreset.UserPasswordResetDtoMapper;
 import pl.mateusz.example.friendoo.user.passwordreset.UserPasswordResetTokenService;
@@ -47,6 +52,10 @@ public class UserService {
 
   private final UserPasswordResetTokenService userPasswordResetTokenService;
 
+  private final UserFavouritePageCategoryRepository userFavouritePageCategoryRepository;
+
+  private final PageCategoryRepository pageCategoryRepository;
+
   private static final int SECONDS_30 = 30000;
   Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -54,7 +63,9 @@ public class UserService {
   public UserService(UserRepository userRepository, UserGenderRepository userGenderRepository,
                      UserRoleRepository userRoleRepository, PasswordEncoder passwordEncoder,
                      MailService mailService, UserActivationTokenService userActivationTokenService,
-                     UserPasswordResetTokenService userPasswordResetTokenService) {
+                     UserPasswordResetTokenService userPasswordResetTokenService,
+                     UserFavouritePageCategoryRepository userFavouritePageCategoryRepository,
+                     PageCategoryRepository pageCategoryRepository) {
     this.userRepository = userRepository;
     this.userGenderRepository = userGenderRepository;
     this.userRoleRepository = userRoleRepository;
@@ -62,6 +73,8 @@ public class UserService {
     this.mailService = mailService;
     this.userActivationTokenService = userActivationTokenService;
     this.userPasswordResetTokenService = userPasswordResetTokenService;
+    this.userFavouritePageCategoryRepository = userFavouritePageCategoryRepository;
+    this.pageCategoryRepository = pageCategoryRepository;
   }
 
   public Optional<UserCredentialsDto> findCredentialsByEmail(String email) {
@@ -233,6 +246,15 @@ public class UserService {
     user.setCurrentCity(userAdditionalDetailsDto.getCurrentCity());
     user.setHometown(userAdditionalDetailsDto.getHometown());
     user.setPhoneNumber(userAdditionalDetailsDto.getPhoneNumber());
+    Set<Long> favouritePageCategoriesIds = userAdditionalDetailsDto.getFavouritePageCategoriesIds();
+    List<PageCategory> pageCategories = pageCategoryRepository
+        .findAllById(favouritePageCategoriesIds);
+    for (PageCategory pageCategory : pageCategories) {
+      UserFavouritePageCategory userFavouritePageCategory = new UserFavouritePageCategory();
+      userFavouritePageCategory.setUser(user);
+      userFavouritePageCategory.setPageCategory(pageCategory);
+      userFavouritePageCategoryRepository.save(userFavouritePageCategory);
+    }
     userRepository.save(user);
   }
 }
