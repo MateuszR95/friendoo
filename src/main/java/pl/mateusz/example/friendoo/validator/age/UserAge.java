@@ -1,4 +1,4 @@
-package pl.mateusz.example.friendoo.validator;
+package pl.mateusz.example.friendoo.validator.age;
 
 
 import static java.lang.annotation.ElementType.FIELD;

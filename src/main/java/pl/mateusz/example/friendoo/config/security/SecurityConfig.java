@@ -27,9 +27,9 @@ public class SecurityConfig {
     http
         .authorizeHttpRequests(requests -> requests
         .requestMatchers("/", "/img/**", "/styles/**", "/js/**", "/registration",
-          "/password-reset-email", "/password-reset").permitAll()
-        .requestMatchers("/home/**").authenticated()
-        .requestMatchers("/activation").permitAll()
+          "/password-reset-email", "/password-reset", "/save-details").permitAll()
+        .requestMatchers("/home/**", "/complete-profile").authenticated()
+        .requestMatchers("/activation", "/api/**").permitAll()
         .requestMatchers(PathRequest.toH2Console()).permitAll()
     );
     http.formLogin(login -> login.loginPage("/")

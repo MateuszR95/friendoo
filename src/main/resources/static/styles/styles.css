@@ -626,6 +626,10 @@ form input:focus {
         font-size: 1rem;
     }
 
+    textarea.form-control {
+        width: 100%;
+    }
+
     .registration-form .btn-primary {
         background-color: #007bff;
         color: white;
@@ -707,6 +711,52 @@ form input:focus {
         color: red;
         font-size: 0.9em;
     }
+
+    datalist {
+        width: 900px !important;
+    }
+
+    .custom-checkbox {
+        margin-top: 20px;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .custom-checkbox .form-check-input {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        margin-right: 10px;
+    }
+
+    .custom-checkbox .form-check-label {
+        font-size: 1rem;
+        font-weight: 400;
+        color: #333;
+        cursor: pointer;
+    }
+
+    .custom-checkbox .form-check-input:checked {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .custom-checkbox .form-check-input:checked::after {
+        content: '✔';
+        font-size: 16px;
+        color: white;
+        position: absolute;
+        top: 3px;
+        left: 3px;
+    }
+
+    .custom-checkbox label {
+        font-size: 1rem;
+        color: #444;
+    }
+
 
 
 }

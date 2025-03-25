@@ -1,4 +1,4 @@
-package pl.mateusz.example.friendoo.validator;
+package pl.mateusz.example.friendoo.validator.age;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

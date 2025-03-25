@@ -10,6 +10,8 @@ public class ValidationPatterns {
       "^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)"
       + "*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$";
 
+  public static final String USER_PHONE_NUMBER_PATTERN = "^\\+[1-9]\\d{1,14}$";
+
   private ValidationPatterns() {
   }
 }

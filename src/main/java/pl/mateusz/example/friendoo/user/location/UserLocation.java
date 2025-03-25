@@ -1,25 +1,36 @@
 package pl.mateusz.example.friendoo.user.location;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 import lombok.Data;
 
 @SuppressWarnings("checkstyle:MissingJavadocType")
 @Data
 public class UserLocation {
 
-  private String adminCode2;
-  private String adminCode3;
-  private String adminName3;
-  private String adminCode1;
-  private String adminName2;
-  private double lng;
-  private String countryCode;
-  private String postalCode;
-  private String adminName1;
-  @JsonProperty("ISO3166-2")
-  private String iso31662;
-  private String placeName;
+  @JsonProperty("place_id")
+  private long placeId;
+  private String licence;
+  @JsonProperty("osm_type")
+  private String osmType;
+  @JsonProperty("osm_id")
+  private long osmId;
   private double lat;
+  private double lon;
+  @JsonProperty("class")
+  private String clazz;
+  private String type;
+  @JsonProperty("place_rank")
+  private int placeRank;
+  private double importance;
+  @JsonProperty("addresstype")
+  private String addressType;
+  private String name;
+  @JsonProperty("display_name")
+  private String displayName;
+  private Address address;
+  private double[] boundingbox;
+
 
 }
 

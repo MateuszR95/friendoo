@@ -23,8 +23,6 @@ spring:
       mode: never
   profiles:
     default: dev
-geonames:
-  username: mateuszr20471
 
 
 

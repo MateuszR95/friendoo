@@ -1,7 +1,9 @@
-package pl.mateusz.example.friendoo.validator;
+package pl.mateusz.example.friendoo.validator.password;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import pl.mateusz.example.friendoo.validator.password.PasswordMatch;
+import pl.mateusz.example.friendoo.validator.password.PasswordMatchable;
 
 @SuppressWarnings("checkstyle:MissingJavadocType")
 public class PasswordMatchValidator implements ConstraintValidator<PasswordMatch,
