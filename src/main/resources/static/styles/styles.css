@@ -757,6 +757,31 @@ form input:focus {
         color: #444;
     }
 
+    .checkbox-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .custom-category-checkbox {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+    }
+
+
+    .checkbox-label {
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+
 
 
 }

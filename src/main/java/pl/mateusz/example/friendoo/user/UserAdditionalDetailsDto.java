@@ -2,6 +2,7 @@ package pl.mateusz.example.friendoo.user;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.mateusz.example.friendoo.validator.location.ValidLocation;
 import pl.mateusz.example.friendoo.validator.pattern.ValidationPatterns;
+
 
 @SuppressWarnings("checkstyle:MissingJavadocType")
 @Getter
@@ -32,5 +34,7 @@ public class UserAdditionalDetailsDto {
       message = "Niepoprawny format numeru telefonu."
         + " Użyj formatu międzynarodowego, np. +48123456789.")
   private String phoneNumber;
+  private Set<Long> favouritePageCategoriesIds;
+
 
 }

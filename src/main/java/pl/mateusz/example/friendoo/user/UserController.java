@@ -2,6 +2,7 @@ package pl.mateusz.example.friendoo.user;
 
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.TreeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -13,15 +14,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import pl.mateusz.example.friendoo.page.category.PageCategoryDto;
+import pl.mateusz.example.friendoo.page.category.PageCategoryService;
 
 @SuppressWarnings("checkstyle:MissingJavadocType")
 @Controller
 public class UserController {
   private final UserService userService;
+  private final PageCategoryService pageCategoryService;
   private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-  public UserController(UserService userService) {
+  public UserController(UserService userService, PageCategoryService pageCategoryService) {
     this.userService = userService;
+    this.pageCategoryService = pageCategoryService;
   }
 
   @GetMapping("/home")
@@ -45,7 +50,9 @@ public class UserController {
   @GetMapping("/complete-profile")
   String displayUserDetailsForm(Model model, @ModelAttribute("user")
       UserAdditionalDetailsDto userAdditionalDetailsDto) {
+    TreeSet<PageCategoryDto> allPageCategories = pageCategoryService.getAllPageCategories();
     model.addAttribute("user", userAdditionalDetailsDto);
+    model.addAttribute("pageCategories", allPageCategories);
     return "complete-user-profile";
   }
 
@@ -56,6 +63,7 @@ public class UserController {
       return "complete-user-profile";
     }
     userService.completeUserProfileDetails(userAdditionalDetailsDto);
+
     return "redirect:/home";
   }
 }
