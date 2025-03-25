@@ -500,7 +500,8 @@ VALUES
     ('Jakub', 'Zawadzki', 'jakub.zawadzki497@byom.de', '{noop}Haslo89366', '1987-11-11', 'Pasjonat zdrowego stylu życia.', 'Gdańsk', '1001234807', 1, '2024-04-17 06:15:00', null, null, 'Olsztyn', true),
     ('Agnieszka', 'Bąk', 'agnieszka.bak498@byom.de', '{noop}Haslo89367', '1989-05-28', 'Fan mody.', 'Kraków', '1001234808', 2, '2024-04-18 07:30:00', null, null, 'Warszawa', true),
     ('Grzegorz', 'Majewski', 'grzegorz.majewski499@byom.de', '{noop}Haslo89368', '1990-09-29', 'Pasjonat gier komputerowych.', 'Lublin', '1001234809', 1, '2024-04-19 08:45:00', null, null, 'Olsztyn', true),
-    ('Ola', 'Kaczmarek', 'ola.kaczmarek500@byom.de', '{noop}Haslo89369', '1991-12-05', 'Interesuje się sztuką.', 'Toruń', '1001234810', 2, '2024-04-20 10:00:00', null, null, 'Bydgoszcz', true);
+    ('Ola', 'Kaczmarek', 'ola.kaczmarek500@byom.de', '{noop}Haslo89369', '1991-12-05', 'Interesuje się sztuką.', 'Toruń', '1001234810', 2, '2024-04-20 10:00:00', null, null, 'Bydgoszcz', true),
+    ('Adam', 'Malysz', 'corridor@byom.de', '{noop}Abc123456', '1991-12-05', null, null, null, 2, '2024-04-20 10:00:00', null, null, null, true);
 
 
 

@@ -207,5 +207,33 @@ public class UserService {
     }
     return false;
   }
+
+  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  public boolean isUserProfileCompleted(String userEmail) {
+    User user = userRepository.findUserByEmail(userEmail).orElseThrow(()
+        -> new UserNotFoundException("Brak użytkownika o wskazanym adresie emailowym"));
+    return user.getBio() != null && user.getCurrentCity() != null && user.getHometown()
+      != null && user.getPhoneNumber() != null;
+  }
+
+  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  public UserAdditionalDetailsDto findUserToCompleteProfile(String email) {
+    User user = userRepository.findUserByEmail(email).orElseThrow(() ->
+      new UsernameNotFoundException("Brak użytkownika o wskazanym adresie emailowym"));
+    return UserAdditionalDetailsDtoMapper.mapToUserAdditionalDetailsDto(user);
+  }
+
+  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  @Transactional
+  public void completeUserProfileDetails(UserAdditionalDetailsDto userAdditionalDetailsDto) {
+    User user = userRepository.findUserByEmail(userAdditionalDetailsDto.getEmail())
+        .orElseThrow(() ->
+        new UsernameNotFoundException("Brak użytkownika o wskazanym adresie emailowym"));
+    user.setBio(userAdditionalDetailsDto.getBio());
+    user.setCurrentCity(userAdditionalDetailsDto.getCurrentCity());
+    user.setHometown(userAdditionalDetailsDto.getHometown());
+    user.setPhoneNumber(userAdditionalDetailsDto.getPhoneNumber());
+    userRepository.save(user);
+  }
 }
 

@@ -10,10 +10,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.mateusz.example.friendoo.validator.PasswordMatch;
-import pl.mateusz.example.friendoo.validator.PasswordMatchable;
-import pl.mateusz.example.friendoo.validator.UserAge;
+import pl.mateusz.example.friendoo.validator.age.UserAge;
 import pl.mateusz.example.friendoo.validator.email.UniqueEmail;
+import pl.mateusz.example.friendoo.validator.password.PasswordMatch;
+import pl.mateusz.example.friendoo.validator.password.PasswordMatchable;
 import pl.mateusz.example.friendoo.validator.pattern.ValidationPatterns;
 
 @SuppressWarnings("checkstyle:MissingJavadocType")
