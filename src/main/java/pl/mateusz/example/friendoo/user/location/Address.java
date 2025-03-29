@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.Data;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Represents an address.
+ */
 @Data
 public class Address {
 

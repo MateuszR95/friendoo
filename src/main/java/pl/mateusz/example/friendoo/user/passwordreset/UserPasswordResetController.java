@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.mateusz.example.friendoo.exceptions.MailSendingException;
 import pl.mateusz.example.friendoo.exceptions.UserNotFoundException;
 import pl.mateusz.example.friendoo.user.UserService;
-import pl.mateusz.example.friendoo.user.registration.UserRegistrationController;
 
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Controller for user password reset.
+ */
 @Controller
 public class UserPasswordResetController {
 
@@ -34,7 +34,12 @@ public class UserPasswordResetController {
     this.userPasswordResetTokenService = userPasswordResetTokenService;
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Handles GET requests to display the password reset email form.
+   *
+   * @param model the model to which the form data is added
+   * @return the name of the view to render
+   */
   @GetMapping("/password-reset-email")
   public String displayPasswordResetEmailForm(Model model) {
     UserPasswordResetEmailDto userPasswordResetEmailDto = new UserPasswordResetEmailDto();
@@ -42,7 +47,14 @@ public class UserPasswordResetController {
     return "password-reset-email-form";
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Handles POST requests to send a password reset email.
+   *
+   * @param dto the data transfer object containing the email address
+   * @param bindingResult the result of the binding
+   * @param model the model to which the form data is added
+   * @return the name of the view to render
+   */
   @PostMapping("/password-reset-email")
   public String passwordResetEmail(@Valid @ModelAttribute(name = "userResetEmail")
                                      UserPasswordResetEmailDto dto, BindingResult bindingResult,
@@ -69,7 +81,13 @@ public class UserPasswordResetController {
     }
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Handles GET requests to display the password reset form.
+   *
+   * @param key the token key
+   * @param model the model to which the form data is added
+   * @return the name of the view to render
+   */
   @GetMapping("/password-reset")
   public String displayPasswordResetForm(@RequestParam("key") String key, Model model) {
     userPasswordResetTokenService.invalidateExpiredAndUsedUserPasswordResetTokens();
@@ -87,7 +105,14 @@ public class UserPasswordResetController {
     }
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Handles POST requests to reset the password.
+   *
+   * @param key the token key
+   * @param userPasswordResetDto the data transfer object containing the new password
+   * @param bindingResult the result of the binding
+   * @return the name of the view to render
+   */
   @PostMapping("/password-reset")
   public String resetPassword(@RequestParam("key") String key,
                               @Valid @ModelAttribute UserPasswordResetDto userPasswordResetDto,

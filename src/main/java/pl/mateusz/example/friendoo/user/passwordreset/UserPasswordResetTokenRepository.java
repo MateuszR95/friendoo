@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import pl.mateusz.example.friendoo.user.User;
 
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Repository for user password reset token.
+ */
 public interface UserPasswordResetTokenRepository extends JpaRepository<UserPasswordResetToken,
     Long> {
 

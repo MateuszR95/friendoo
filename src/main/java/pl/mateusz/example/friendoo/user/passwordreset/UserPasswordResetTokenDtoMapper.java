@@ -1,6 +1,8 @@
 package pl.mateusz.example.friendoo.user.passwordreset;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Mapper for {@link UserPasswordResetTokenDto}.
+ */
 public class UserPasswordResetTokenDtoMapper {
 
   @SuppressWarnings("checkstyle:MissingJavadocMethod")

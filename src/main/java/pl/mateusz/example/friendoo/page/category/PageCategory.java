@@ -16,7 +16,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.mateusz.example.friendoo.page.Page;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Entity representing a category of pages.
+ */
 @Entity
 @Getter
 @Setter

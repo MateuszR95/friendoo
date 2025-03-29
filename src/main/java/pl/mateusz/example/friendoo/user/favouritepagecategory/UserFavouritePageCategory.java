@@ -14,7 +14,9 @@ import lombok.Setter;
 import pl.mateusz.example.friendoo.page.category.PageCategory;
 import pl.mateusz.example.friendoo.user.User;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Entity representing a user's favourite page category.
+ */
 @Entity
 @Getter
 @Setter

@@ -2,7 +2,9 @@ package pl.mateusz.example.friendoo.user.activation;
 
 import lombok.Data;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Data transfer object representing a user activation token.
+ */
 @Data
 public class UserActivationTokenDto {
 

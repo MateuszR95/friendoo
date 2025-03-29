@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 import pl.mateusz.example.friendoo.page.category.PageCategory;
 import pl.mateusz.example.friendoo.user.favouritepagecategory.UserFavouritePageCategory;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Mapper for user additional details DTO.
+ */
 public class UserAdditionalDetailsDtoMapper {
 
   static UserAdditionalDetailsDto mapToUserAdditionalDetailsDto(User user) {

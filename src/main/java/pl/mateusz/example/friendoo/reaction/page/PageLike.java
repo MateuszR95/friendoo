@@ -6,8 +6,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +13,9 @@ import lombok.Setter;
 import pl.mateusz.example.friendoo.page.Page;
 import pl.mateusz.example.friendoo.user.User;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Entity representing a like given to a page.
+ */
 @Entity
 @Getter
 @Setter

@@ -9,8 +9,9 @@ import lombok.Setter;
 import pl.mateusz.example.friendoo.user.User;
 import pl.mateusz.example.friendoo.user.UserToken;
 
-
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Entity representing a token used to activate a user account.
+ */
 @Entity
 @Getter
 @Setter

@@ -7,15 +7,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.mateusz.example.friendoo.validator.FirstOrder;
-import pl.mateusz.example.friendoo.validator.SecondOrder;
-import pl.mateusz.example.friendoo.validator.ThirdOrder;
-import pl.mateusz.example.friendoo.validator.email.EmailExists;
-import pl.mateusz.example.friendoo.validator.password.PasswordMatch;
-import pl.mateusz.example.friendoo.validator.password.PasswordMatchable;
-import pl.mateusz.example.friendoo.validator.pattern.ValidationPatterns;
+import pl.mateusz.example.friendoo.validation.FirstOrder;
+import pl.mateusz.example.friendoo.validation.SecondOrder;
+import pl.mateusz.example.friendoo.validation.ThirdOrder;
+import pl.mateusz.example.friendoo.validation.email.EmailExists;
+import pl.mateusz.example.friendoo.validation.password.PasswordMatch;
+import pl.mateusz.example.friendoo.validation.password.PasswordMatchable;
+import pl.mateusz.example.friendoo.validation.pattern.ValidationPatterns;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Data transfer object for user password reset.
+ */
 
 @Data
 @NoArgsConstructor

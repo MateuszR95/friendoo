@@ -16,11 +16,11 @@ import lombok.Setter;
 import pl.mateusz.example.friendoo.comment.Comment;
 import pl.mateusz.example.friendoo.post.page.PagePost;
 import pl.mateusz.example.friendoo.reaction.page.PagePostCommentReaction;
-import pl.mateusz.example.friendoo.reaction.page.PagePostReaction;
-import pl.mateusz.example.friendoo.reaction.user.UserPostCommentReaction;
 import pl.mateusz.example.friendoo.user.User;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Entity representing comment under page post.
+ */
 @Entity
 @Getter
 @Setter

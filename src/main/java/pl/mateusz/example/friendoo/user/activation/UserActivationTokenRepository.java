@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Repository for {@link UserActivationToken} entities.
+ */
 public interface UserActivationTokenRepository extends JpaRepository<UserActivationToken, Long> {
 
   Optional<UserActivationToken> getUserActivationTokenByUserEmail(String email);

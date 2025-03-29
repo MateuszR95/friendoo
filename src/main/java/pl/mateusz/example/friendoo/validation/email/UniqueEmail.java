@@ -1,5 +1,4 @@
-package pl.mateusz.example.friendoo.validator.age;
-
+package pl.mateusz.example.friendoo.validation.email;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -10,23 +9,38 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Custom annotation for validating email uniqueness.
+ */
 @Documented
-@Constraint(validatedBy = UserAgeValidator.class)
+@Constraint(validatedBy = UniqueEmailValidator.class)
 @Target({ FIELD })
 @Retention(RUNTIME)
-public @interface UserAge {
 
+public @interface UniqueEmail {
+  /**
+   * The default message for the email uniqueness validation.
+   *
+   * @return the default message
+   */
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
-  String message() default "{pl.mateusz.MinimumUserAge.message}";
+  String message() default "{pl.mateusz.UniqueEmail.message}";
+
+  /**
+   * The groups the constraint belongs to.
+   *
+   * @return the groups
+   */
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   Class<?>[] groups() default {};
+
+  /**
+   * The payload associated with the constraint.
+   *
+   * @return the payload
+   */
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   Class<? extends Payload>[] payload() default {};
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
-  int min() default 13;
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
-  int max() default 110;
-
 
 }
+

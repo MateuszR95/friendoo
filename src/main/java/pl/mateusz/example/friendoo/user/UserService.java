@@ -38,8 +38,9 @@ import pl.mateusz.example.friendoo.user.role.Role;
 import pl.mateusz.example.friendoo.user.role.UserRole;
 import pl.mateusz.example.friendoo.user.role.UserRoleRepository;
 
-
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Service for user operations.
+ */
 @Service
 public class UserService {
 
@@ -59,7 +60,9 @@ public class UserService {
   private static final int SECONDS_30 = 30000;
   Logger logger = LoggerFactory.getLogger(UserService.class);
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Constructs a UserService with the specified dependencies.
+   */
   public UserService(UserRepository userRepository, UserGenderRepository userGenderRepository,
                      UserRoleRepository userRoleRepository, PasswordEncoder passwordEncoder,
                      MailService mailService, UserActivationTokenService userActivationTokenService,
@@ -87,14 +90,23 @@ public class UserService {
       .map(UserCredentialsDtoMapper::mapToUserDisplayDto);
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Retrieves a list of friends for the user with the specified email.
+   *
+   * @param email the email of the user
+   * @return a list of UserDisplayDto representing the user's friends
+   */
   public List<UserDisplayDto> getUserFriendsList(String email) {
     List<User> friendsByEmail = userRepository.findFriendsByEmail(email);
     return friendsByEmail.stream().map(UserCredentialsDtoMapper::mapToUserDisplayDto)
       .collect(Collectors.toList());
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Registers a new user account.
+   *
+   * @param dto the data transfer object containing user registration details
+   */
   @Transactional
   public void registerAccount(UserRegistrationDto dto) {
     validateUserExistence(dto);
@@ -110,7 +122,16 @@ public class UserService {
     }
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Activates a user account if the provided token is valid.
+   *
+   * @param userEmail the email of the user
+   * @param enteredToken the activation token entered by the user
+   * @throws ExpiredActivationTokenException if the activation token has expired
+   * @throws UserNotFoundException if the user is not found
+   * @throws AccountAlreadyActivatedException if the account is already activated
+   * @throws InvalidTokenException if the provided token is invalid
+   */
   @Transactional
   public void activateAccount(String userEmail, String enteredToken) {
     UserActivationTokenDto userActivationTokenDto = userActivationTokenService
@@ -130,8 +151,10 @@ public class UserService {
     }
   }
 
-
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Deletes inactive users and their roles if they do not have a valid activation token.
+   * This method is scheduled to run at a fixed rate.
+   */
   @Transactional
   @Scheduled(fixedRate = SECONDS_30)
   protected void deleteInactiveUserAndRolesWithoutValidToken() {
@@ -184,15 +207,25 @@ public class UserService {
     return password.equals(repeatedPassword);
   }
 
-
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Checks if the user's account is activated.
+   *
+   * @param userEmail the email of the user
+   * @return true if the account is activated, false otherwise
+   * @throws UserNotFoundException if the user is not found
+   */
   public Boolean isAccountActivated(String userEmail) {
     User user = userRepository.findUserByEmail(userEmail).orElseThrow(()
         -> new UserNotFoundException("Brak użytkownika o wskazanym adresie emailowym"));
     return user.isActiveAccount();
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Sends a password reset link to the user with the specified email.
+   *
+   * @param email the email of the user
+   * @throws MailSendingException if the email cannot be sent
+   */
   @Transactional
   public void sendPasswordResetLink(String email) {
     userPasswordResetTokenService.createAndSaveUserPasswordResetToken(email);
@@ -207,7 +240,12 @@ public class UserService {
       ::mapToUserPasswordResetDto);
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Resets the user's password.
+   *
+   * @param userPasswordResetDto the data transfer object containing the new password
+   * @return true if the password was reset, false otherwise
+   */
   @Transactional
   public boolean resetPassword(UserPasswordResetDto userPasswordResetDto) {
     User user = userRepository.findUserByEmail(userPasswordResetDto.getEmail()).orElseThrow(() ->
@@ -221,7 +259,13 @@ public class UserService {
     return false;
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Checks if the user's profile is completed.
+   *
+   * @param userEmail the email of the user
+   * @return true if the profile is completed, false otherwise
+   * @throws UserNotFoundException if the user is not found
+   */
   public boolean isUserProfileCompleted(String userEmail) {
     User user = userRepository.findUserByEmail(userEmail).orElseThrow(()
         -> new UserNotFoundException("Brak użytkownika o wskazanym adresie emailowym"));
@@ -229,14 +273,25 @@ public class UserService {
       != null && user.getPhoneNumber() != null;
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Retrieves the user's additional details to complete the profile.
+   *
+   * @param email the email of the user
+   * @return a UserAdditionalDetailsDto representing the user's additional details
+   * @throws UserNotFoundException if the user is not found
+   */
   public UserAdditionalDetailsDto findUserToCompleteProfile(String email) {
     User user = userRepository.findUserByEmail(email).orElseThrow(() ->
       new UsernameNotFoundException("Brak użytkownika o wskazanym adresie emailowym"));
     return UserAdditionalDetailsDtoMapper.mapToUserAdditionalDetailsDto(user);
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Completes the user's profile details.
+   *
+   * @param userAdditionalDetailsDto the data transfer object containing the user's
+   *                                additional details
+   */
   @Transactional
   public void completeUserProfileDetails(UserAdditionalDetailsDto userAdditionalDetailsDto) {
     User user = userRepository.findUserByEmail(userAdditionalDetailsDto.getEmail())

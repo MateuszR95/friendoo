@@ -18,8 +18,9 @@ import pl.mateusz.example.friendoo.post.user.UserPost;
 import pl.mateusz.example.friendoo.reaction.user.UserPhotoReaction;
 import pl.mateusz.example.friendoo.user.User;
 
-
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Entity representing a photo uploaded by a user.
+ */
 @Entity
 @Getter
 @Setter

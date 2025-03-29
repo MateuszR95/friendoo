@@ -2,15 +2,21 @@ package pl.mateusz.example.friendoo.user.passwordreset;
 
 import pl.mateusz.example.friendoo.user.User;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Mapper for {@link UserPasswordResetDto}.
+ */
 public class UserPasswordResetDtoMapper {
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Maps a User entity to a UserPasswordResetDto.
+   *
+   * @param user the User entity to map
+   * @return the mapped UserPasswordResetDto
+   */
   public static UserPasswordResetDto mapToUserPasswordResetDto(User user) {
     UserPasswordResetDto userPasswordResetDto = new UserPasswordResetDto();
     userPasswordResetDto.setEmail(user.getEmail());
     return userPasswordResetDto;
   }
-
 
 }

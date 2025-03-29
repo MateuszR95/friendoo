@@ -1,6 +1,8 @@
 package pl.mateusz.example.friendoo.exceptions;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Exception thrown when an error occurs while fetching user location.
+ */
 public class UserLocationApiException extends RuntimeException {
 
   public UserLocationApiException(String message, Throwable cause) {

@@ -10,13 +10,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.mateusz.example.friendoo.validator.age.UserAge;
-import pl.mateusz.example.friendoo.validator.email.UniqueEmail;
-import pl.mateusz.example.friendoo.validator.password.PasswordMatch;
-import pl.mateusz.example.friendoo.validator.password.PasswordMatchable;
-import pl.mateusz.example.friendoo.validator.pattern.ValidationPatterns;
+import pl.mateusz.example.friendoo.validation.age.UserAge;
+import pl.mateusz.example.friendoo.validation.email.UniqueEmail;
+import pl.mateusz.example.friendoo.validation.password.PasswordMatch;
+import pl.mateusz.example.friendoo.validation.password.PasswordMatchable;
+import pl.mateusz.example.friendoo.validation.pattern.ValidationPatterns;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Data transfer object for user registration.
+ */
 @Data
 @NoArgsConstructor
 @PasswordMatch
@@ -48,6 +50,5 @@ public class UserRegistrationDto implements PasswordMatchable {
   private String password;
   @NotBlank
   private String repeatedPassword;
-
 
 }

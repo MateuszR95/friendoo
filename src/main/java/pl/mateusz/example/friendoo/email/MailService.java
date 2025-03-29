@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.mateusz.example.friendoo.user.passwordreset.UserPasswordResetTokenService;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Service class for sending emails.
+ */
 @Service
 public class MailService {
   private final JavaMailSender javaMailSender;
@@ -30,7 +32,14 @@ public class MailService {
     this.passwordResetTokenService = passwordResetTokenService;
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Sends an activation code to the specified email address.
+   *
+   * @param receiverMail the email address of the receiver
+   * @param receiverName the name of the receiver
+   * @param token the activation token to be sent
+   * @return true if the email was sent successfully, false otherwise
+   */
   public boolean sendActivationCode(String receiverMail, String receiverName, String token) {
     logger.info("Wysyłam maila do {}", receiverMail);
     try {
@@ -54,7 +63,12 @@ public class MailService {
     }
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Sends a password reset email to the specified email address.
+   *
+   * @param userEmail the email address of the user
+   * @return true if the email was sent successfully, false otherwise
+   */
   public boolean sendPasswordResetEmail(String userEmail) {
     logger.info("Wysyłam maila do {}", userEmail);
     try {

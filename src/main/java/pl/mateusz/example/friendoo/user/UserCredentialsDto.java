@@ -8,7 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Data transfer object for user credentials.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

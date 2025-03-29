@@ -23,7 +23,9 @@ import pl.mateusz.example.friendoo.exceptions.UserValidationException;
 import pl.mateusz.example.friendoo.user.UserDisplayDto;
 import pl.mateusz.example.friendoo.user.UserService;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Controller for user registration.
+ */
 @Controller
 public class UserRegistrationController {
 
@@ -35,7 +37,12 @@ public class UserRegistrationController {
     this.userService = userService;
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Displays the registration form.
+   *
+   * @param model the model to add attributes to
+   * @return the name of the registration form view
+   */
   @GetMapping("/registration")
   public String displayRegistrationForm(Model model) {
     UserRegistrationDto userRegistrationDto = new UserRegistrationDto();
@@ -43,7 +50,15 @@ public class UserRegistrationController {
     return "registration-form";
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Registers a new user account.
+   *
+   * @param userRegistrationDto the data transfer object containing the user registration data
+   * @param bindingResult the result of the binding
+   * @param model the model to add attributes to
+   * @param session the session to add attributes to
+   * @return the name of the view to render
+   */
   @PostMapping("/registration")
   public String register(@Valid @ModelAttribute UserRegistrationDto userRegistrationDto,
                          BindingResult bindingResult,
@@ -64,7 +79,14 @@ public class UserRegistrationController {
     }
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Displays the account activation form.
+   *
+   * @param userEmail the email address of the user from the session attribute
+   * @param model the model to add attributes to
+   * @param redirectAttributes the redirect attributes to add flash attributes to
+   * @return the name of the view to render
+   */
   @GetMapping("/activation")
   public String displayAccountActivationForm(@SessionAttribute(value = "pendingActivationEmail",
         required = false) String userEmail, Model model, RedirectAttributes redirectAttributes) {
@@ -80,8 +102,14 @@ public class UserRegistrationController {
     return "registration-activation";
   }
 
-
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Activates the user account.
+   *
+   * @param enteredToken the token entered by the user
+   * @param userEmail the email address of the user
+   * @param model the model to add attributes to
+   * @return the name of the view to render
+   */
   @PostMapping("/activation")
   public String activateAccount(@RequestParam String enteredToken,
                                 @RequestParam String userEmail, Model model) {

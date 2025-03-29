@@ -1,6 +1,9 @@
 package pl.mateusz.example.friendoo.exceptions;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Exception thrown when an attempt is made to perform an action on an account
+ * that is not activated.
+ */
 public class AccountNotActivatedException extends RuntimeException {
 
   public AccountNotActivatedException(String message) {

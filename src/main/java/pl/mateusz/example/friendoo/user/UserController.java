@@ -17,7 +17,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.mateusz.example.friendoo.page.category.PageCategoryDto;
 import pl.mateusz.example.friendoo.page.category.PageCategoryService;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Controller for user operations.
+ */
 @Controller
 public class UserController {
   private final UserService userService;
@@ -58,8 +60,10 @@ public class UserController {
 
   @PostMapping("/complete-profile")
   String completeUserDetails(@Valid @ModelAttribute("user") UserAdditionalDetailsDto
-                               userAdditionalDetailsDto, BindingResult bindingResult) {
+                               userAdditionalDetailsDto, BindingResult bindingResult, Model model) {
     if (bindingResult.hasErrors()) {
+      TreeSet<PageCategoryDto> allPageCategories = pageCategoryService.getAllPageCategories();
+      model.addAttribute("pageCategories", allPageCategories);
       return "complete-user-profile";
     }
     userService.completeUserProfileDetails(userAdditionalDetailsDto);

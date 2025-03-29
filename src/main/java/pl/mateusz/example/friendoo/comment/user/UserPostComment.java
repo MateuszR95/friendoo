@@ -18,8 +18,9 @@ import pl.mateusz.example.friendoo.post.user.UserPost;
 import pl.mateusz.example.friendoo.reaction.user.UserPostCommentReaction;
 import pl.mateusz.example.friendoo.user.User;
 
-
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Entity representing comment under user post.
+ */
 @Entity
 @Getter
 @Setter

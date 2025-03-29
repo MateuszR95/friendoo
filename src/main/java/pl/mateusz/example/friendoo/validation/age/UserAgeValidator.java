@@ -1,10 +1,12 @@
-package pl.mateusz.example.friendoo.validator.age;
+package pl.mateusz.example.friendoo.validation.age;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Custom validator for user age.
+ */
 public class UserAgeValidator implements ConstraintValidator<UserAge, LocalDate> {
   private static final int MINIMUM_AGE = 13;
 
@@ -28,22 +30,18 @@ public class UserAgeValidator implements ConstraintValidator<UserAge, LocalDate>
       return false;
     }
     int age = dateOfBirth.until(LocalDate.now()).getYears();
-
     if (age < MINIMUM_AGE) {
-
       constraintValidatorContext.disableDefaultConstraintViolation();
       constraintValidatorContext.buildConstraintViolationWithTemplate(
           MESSAGE_BELOW_MINIMUM_AGE).addConstraintViolation();
       return false;
     }
-
     if (age > MAXIMUM_AGE) {
       constraintValidatorContext.disableDefaultConstraintViolation();
       constraintValidatorContext.buildConstraintViolationWithTemplate(
           MESSAGE_ABOVE_MAXIMUM_AGE).addConstraintViolation();
       return false;
     }
-
     return true;
   }
 }

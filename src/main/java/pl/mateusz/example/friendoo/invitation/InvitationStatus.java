@@ -1,13 +1,15 @@
 package pl.mateusz.example.friendoo.invitation;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Enum representing the status of an invitation.
+ */
 public enum InvitationStatus {
 
   PENDING("oczekujące"),
   ACCEPTED("zaakceptowane"),
   DECLINED("odrzucone");
 
-  private String description;
+  private final String description;
 
   InvitationStatus(String description) {
     this.description = description;

@@ -1,6 +1,8 @@
 package pl.mateusz.example.friendoo.gender;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Enum representing the gender of a person.
+ */
 public enum Gender {
     MAN, WOMAN, OTHER
 

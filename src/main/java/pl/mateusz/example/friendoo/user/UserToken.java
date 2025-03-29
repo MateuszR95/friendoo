@@ -9,7 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Abstract class representing a user token.
+ */
 @MappedSuperclass
 @Getter
 @Setter

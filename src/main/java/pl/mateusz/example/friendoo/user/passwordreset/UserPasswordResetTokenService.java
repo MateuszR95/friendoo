@@ -12,7 +12,9 @@ import pl.mateusz.example.friendoo.exceptions.UserPasswordResetTokenException;
 import pl.mateusz.example.friendoo.user.User;
 import pl.mateusz.example.friendoo.user.UserRepository;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Service for user password reset token.
+ */
 @Service
 public class UserPasswordResetTokenService {
 
@@ -27,7 +29,12 @@ public class UserPasswordResetTokenService {
     this.userRepository = userRepository;
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Creates and saves a new user password reset token for the specified email.
+   *
+   * @param email the email address of the user
+   * @throws UserNotFoundException if no user is found with the specified email
+   */
   @Transactional
   public void createAndSaveUserPasswordResetToken(String email) {
     User user = userRepository.findUserByEmail(email).orElseThrow(()
@@ -45,7 +52,11 @@ public class UserPasswordResetTokenService {
     userPasswordResetTokenRepository.save(userPasswordResetToken);
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Invalidates all valid user password reset tokens for the specified email.
+   *
+   * @param email the email address of the user
+   */
   public UserPasswordResetToken getUserPasswordResetTokenByEmail(String email) {
     return userPasswordResetTokenRepository
       .findFirstByUserEmailAndIsUsedFalseAndExpireDateIsAfterOrderByCreationDateDesc(
@@ -80,7 +91,13 @@ public class UserPasswordResetTokenService {
     userPasswordResetToken.setValid(false);
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Retrieves a valid user password reset token by its token code.
+   *
+   * @param tokenCode the token code
+   * @return an Optional containing the UserPasswordResetTokenDto if found and valid, otherwise
+   *      empty
+   */
   @Transactional
   public Optional<UserPasswordResetTokenDto> getValidUserPasswordResetTokenByTokenCode(
       String tokenCode) {

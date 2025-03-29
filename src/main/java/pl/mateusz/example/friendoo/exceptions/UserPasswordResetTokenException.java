@@ -1,6 +1,8 @@
 package pl.mateusz.example.friendoo.exceptions;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Exception thrown when a user password reset token is invalid.
+ */
 public class UserPasswordResetTokenException extends RuntimeException {
 
   public UserPasswordResetTokenException(String message) {

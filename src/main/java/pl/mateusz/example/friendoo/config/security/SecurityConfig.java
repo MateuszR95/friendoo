@@ -10,18 +10,21 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import pl.mateusz.example.friendoo.exceptions.AccountNotActivatedException;
-import pl.mateusz.example.friendoo.user.role.Role;
-import pl.mateusz.example.friendoo.user.role.UserRole;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Security configuration class.
+ */
 @Configuration
 public class SecurityConfig {
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Configures the security filter chain for the application.
+   *
+   * @param http the {@link HttpSecurity} to modify
+   * @return the {@link SecurityFilterChain} that defines the security configuration
+   * @throws Exception if an error occurs while configuring the security filter chain
+   */
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http

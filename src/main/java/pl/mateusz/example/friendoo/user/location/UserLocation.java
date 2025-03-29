@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import lombok.Data;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Represents a user location.
+ */
 @Data
 public class UserLocation {
 

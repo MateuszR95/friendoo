@@ -1,6 +1,8 @@
 package pl.mateusz.example.friendoo.invitation;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Service class for managing invitations to friendship.
+ */
 public class InvitationToFriendshipService {
 
   private final InvitationToFriendshipService invitationToFriendshipService;

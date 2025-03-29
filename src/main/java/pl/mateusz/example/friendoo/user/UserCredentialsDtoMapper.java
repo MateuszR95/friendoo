@@ -5,18 +5,19 @@ import java.util.stream.Collectors;
 import pl.mateusz.example.friendoo.user.role.Role;
 import pl.mateusz.example.friendoo.user.role.UserRole;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Mapper for user credentials DTO.
+ */
 public class UserCredentialsDtoMapper {
 
-  @SuppressWarnings("checkstyle:Indentation")
   static UserCredentialsDto mapToUserCredentialsDto(User user) {
     String email = user.getEmail();
     String password = user.getPassword();
     Set<String> roles = user.getRoles()
-      .stream()
-      .map(UserRole::getRole)
-      .map(Role::name)
-      .collect(Collectors.toSet());
+         .stream()
+          .map(UserRole::getRole)
+         .map(Role::name)
+          .collect(Collectors.toSet());
     boolean isActiveAccount = user.isActiveAccount();
     return new UserCredentialsDto(email, password, roles, isActiveAccount);
   }

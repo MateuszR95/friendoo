@@ -14,7 +14,9 @@ import lombok.Setter;
 import pl.mateusz.example.friendoo.comment.user.UserPostComment;
 import pl.mateusz.example.friendoo.reaction.CommentReaction;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Entity representing a reaction given to a comment on a user post.
+ */
 @Entity
 @Getter
 @Setter
