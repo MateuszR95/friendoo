@@ -1,6 +1,8 @@
-package pl.mateusz.example.friendoo.validator.pattern;
+package pl.mateusz.example.friendoo.validation.pattern;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Utility class containing regex patterns for validation.
+ */
 public class ValidationPatterns {
 
   public static final String PASSWORD_REGEX_PATTERN = "^(?=.*[A-Z])"

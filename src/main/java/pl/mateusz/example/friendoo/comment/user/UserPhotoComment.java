@@ -18,8 +18,9 @@ import pl.mateusz.example.friendoo.photo.UserPhoto;
 import pl.mateusz.example.friendoo.reaction.user.UserPhotoReaction;
 import pl.mateusz.example.friendoo.user.User;
 
-
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Entity representing comment under user photo.
+ */
 @Entity
 @Getter
 @Setter

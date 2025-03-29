@@ -6,7 +6,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Configuration class for mail.
+ */
 @Configuration
 public class MailConfiguration {
 

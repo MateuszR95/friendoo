@@ -8,11 +8,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.mateusz.example.friendoo.validator.location.ValidLocation;
-import pl.mateusz.example.friendoo.validator.pattern.ValidationPatterns;
+import pl.mateusz.example.friendoo.validation.location.ValidLocation;
+import pl.mateusz.example.friendoo.validation.pattern.ValidationPatterns;
 
-
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Data transfer object for user additional details.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

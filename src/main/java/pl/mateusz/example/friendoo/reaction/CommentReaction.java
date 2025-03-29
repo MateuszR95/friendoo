@@ -6,7 +6,9 @@ import jakarta.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 import pl.mateusz.example.friendoo.user.User;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Abstract class representing a reaction given to a comment.
+ */
 @MappedSuperclass
 public abstract class CommentReaction {
   @ManyToOne

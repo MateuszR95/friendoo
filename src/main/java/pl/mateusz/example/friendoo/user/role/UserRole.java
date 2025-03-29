@@ -10,7 +10,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Entity representing a user role.
+ */
 @Entity
 @Getter
 @Setter

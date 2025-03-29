@@ -9,8 +9,9 @@ import pl.mateusz.example.friendoo.exceptions.AccountNotActivatedException;
 import pl.mateusz.example.friendoo.user.UserCredentialsDto;
 import pl.mateusz.example.friendoo.user.UserService;
 
-
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Custom implementation of UserDetailsService.
+ */
 @Service
 public class CustomUsersDetailsService implements UserDetailsService {
 

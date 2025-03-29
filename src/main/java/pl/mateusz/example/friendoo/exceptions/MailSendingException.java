@@ -1,6 +1,8 @@
 package pl.mateusz.example.friendoo.exceptions;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Exception thrown when an error occurs while sending an email.
+ */
 public class MailSendingException extends RuntimeException {
 
   public MailSendingException(String message) {

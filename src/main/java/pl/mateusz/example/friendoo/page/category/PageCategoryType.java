@@ -1,12 +1,17 @@
 package pl.mateusz.example.friendoo.page.category;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+import lombok.Getter;
+
+/**
+ * Enum representing page category type.
+ */
+@Getter
 public enum PageCategoryType {
-  BUSINESS("Firma/Organizacja"),
-  BRAND("Marka/Produkt"),
-  ARTIST("Artysta/Zespół/Muzyk"),
+  BUSINESS("Biznes"),
+  BRAND("Marka"),
+  ARTIST("Artysta"),
   ENTERTAINMENT("Rozrywka"),
-  SPORT("Sport/Rekreacja"),
+  SPORT("Sport"),
   PUBLIC_FIGURE("Osoba Publiczna"),
   COMMUNITY("Społeczność"),
   EDUCATION("Edukacja"),
@@ -16,17 +21,10 @@ public enum PageCategoryType {
   TRAVEL("Podróże"),
   HEALTH("Zdrowie");
 
-  private String plName;
+  private final String plName;
 
   PageCategoryType(String plName) {
     this.plName = plName;
   }
 
-  public String getPlName() {
-    return plName;
-  }
-
-  public void setPlName(String plName) {
-    this.plName = plName;
-  }
 }

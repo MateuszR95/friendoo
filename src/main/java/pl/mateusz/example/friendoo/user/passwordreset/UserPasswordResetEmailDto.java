@@ -5,13 +5,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.mateusz.example.friendoo.validator.FirstOrder;
-import pl.mateusz.example.friendoo.validator.SecondOrder;
-import pl.mateusz.example.friendoo.validator.ThirdOrder;
-import pl.mateusz.example.friendoo.validator.email.EmailExists;
-import pl.mateusz.example.friendoo.validator.pattern.ValidationPatterns;
+import pl.mateusz.example.friendoo.validation.FirstOrder;
+import pl.mateusz.example.friendoo.validation.SecondOrder;
+import pl.mateusz.example.friendoo.validation.ThirdOrder;
+import pl.mateusz.example.friendoo.validation.email.EmailExists;
+import pl.mateusz.example.friendoo.validation.pattern.ValidationPatterns;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Data transfer object for user password reset email.
+ */
 @Data
 @NoArgsConstructor
 @GroupSequence({UserPasswordResetEmailDto.class, FirstOrder.class, SecondOrder.class,
@@ -24,7 +26,11 @@ public class UserPasswordResetEmailDto {
   @EmailExists(groups = ThirdOrder.class)
   private String email;
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Sets the email address.
+   *
+   * @param email the email address to set
+   */
   public void setEmail(String email) {
     if (email != null) {
       this.email = email.trim();
@@ -32,4 +38,5 @@ public class UserPasswordResetEmailDto {
       this.email = null;
     }
   }
+
 }

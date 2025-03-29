@@ -5,7 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Configuration class for RestTemplate.
+ */
 @Getter
 @Configuration
 public class RestTemplateConfig {

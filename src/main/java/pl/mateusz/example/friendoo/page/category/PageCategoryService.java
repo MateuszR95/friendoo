@@ -1,11 +1,12 @@
 package pl.mateusz.example.friendoo.page.category;
 
-import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Service class for managing page categories.
+ */
 @Service
 public class PageCategoryService {
 

@@ -15,8 +15,9 @@ import pl.mateusz.example.friendoo.photo.PagePhoto;
 import pl.mateusz.example.friendoo.reaction.Reaction;
 import pl.mateusz.example.friendoo.user.User;
 
-
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Entity representing a reaction given to a photo on a page.
+ */
 @Entity
 @Getter
 @Setter

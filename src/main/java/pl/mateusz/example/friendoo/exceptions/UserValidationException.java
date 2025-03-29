@@ -1,6 +1,8 @@
 package pl.mateusz.example.friendoo.exceptions;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Exception thrown when a user validation fails.
+ */
 public class UserValidationException extends RuntimeException {
 
   public UserValidationException(String message) {

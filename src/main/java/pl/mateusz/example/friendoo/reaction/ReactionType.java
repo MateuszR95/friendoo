@@ -1,6 +1,8 @@
 package pl.mateusz.example.friendoo.reaction;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Enum representing different types of reactions.
+ */
 public enum ReactionType {
   LIKE("Lubię to"),
   LOVE("Super"),
@@ -8,9 +10,9 @@ public enum ReactionType {
   WOW("Wow"),
   SAD("Przykro mi"),
   ANGRY("Wrr");
-  private final String text;
+  private final String plName;
 
   ReactionType(String text) {
-    this.text = text;
+    this.plName = text;
   }
 }

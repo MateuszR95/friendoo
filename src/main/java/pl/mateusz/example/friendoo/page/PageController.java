@@ -2,7 +2,9 @@ package pl.mateusz.example.friendoo.page;
 
 import org.springframework.stereotype.Controller;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Controller class for managing pages.
+ */
 @Controller
 public class PageController {
 }

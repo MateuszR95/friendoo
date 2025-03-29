@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@SuppressWarnings({"checkstyle:EmptyLineSeparator", "checkstyle:MissingJavadocType"})
+/**
+ * Data transfer object for displaying user data.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

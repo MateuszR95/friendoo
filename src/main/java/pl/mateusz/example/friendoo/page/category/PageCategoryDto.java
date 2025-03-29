@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * DTO representing a category of pages.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

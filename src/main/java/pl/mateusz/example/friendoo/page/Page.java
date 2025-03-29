@@ -24,8 +24,9 @@ import pl.mateusz.example.friendoo.reaction.page.PageLike;
 import pl.mateusz.example.friendoo.user.User;
 import pl.mateusz.example.friendoo.visit.PageVisit;
 
-
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Entity representing a page.
+ */
 @Entity
 @Getter
 @Setter

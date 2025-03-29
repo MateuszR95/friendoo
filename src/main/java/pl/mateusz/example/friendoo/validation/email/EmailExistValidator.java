@@ -1,4 +1,4 @@
-package pl.mateusz.example.friendoo.validator.email;
+package pl.mateusz.example.friendoo.validation.email;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -6,28 +6,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.mateusz.example.friendoo.user.UserRepository;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Validator for checking if the email exists in the database.
+ */
 @Service
-public class UniqueEmailValidator implements ConstraintValidator<UniqueEmail, String> {
+public class EmailExistValidator implements ConstraintValidator<EmailExists, String> {
 
-  private UserRepository userRepository;
+  private final UserRepository userRepository;
 
   @Autowired
-  public UniqueEmailValidator(UserRepository userRepository) {
+  public EmailExistValidator(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
 
-  public UniqueEmailValidator() {
-  }
-
   @Override
-  public void initialize(UniqueEmail constraintAnnotation) {
+  public void initialize(EmailExists constraintAnnotation) {
     ConstraintValidator.super.initialize(constraintAnnotation);
   }
 
   @Override
   public boolean isValid(String email, ConstraintValidatorContext constraintValidatorContext) {
-    return !userRepository.existsUserByEmail(email.toLowerCase().trim());
+    return userRepository.existsUserByEmail(email.toLowerCase().trim());
   }
-
 }

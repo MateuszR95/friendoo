@@ -1,7 +1,8 @@
 package pl.mateusz.example.friendoo.user.activation;
 
-
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Mapper class for mapping {@link UserActivationToken} to {@link UserActivationTokenDto}.
+ */
 public class UserActivationTokenDtoMapper {
 
   @SuppressWarnings("checkstyle:MissingJavadocMethod")

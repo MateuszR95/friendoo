@@ -11,7 +11,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.mateusz.example.friendoo.exceptions.UserLocationApiException;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Service for managing user location.
+ */
 @Service
 public class UserLocationService {
 
@@ -22,7 +24,12 @@ public class UserLocationService {
     this.restTemplate = restTemplate;
   }
 
-  @SuppressWarnings("checkstyle:MissingJavadocMethod")
+  /**
+   * Returns a list of locations based on the query.
+   *
+   * @param query the query
+   * @return the list of locations
+   */
   public List<String> getLocations(String query) {
     String queryWithoutDiacritics  = StringUtils.stripAccents(query);
     String url = UriComponentsBuilder.fromHttpUrl(USER_LOCATION_API_URL)
@@ -44,8 +51,5 @@ public class UserLocationService {
       throw new UserLocationApiException("Błąd połączenia", e);
     }
   }
-
-
-
 
 }

@@ -11,7 +11,6 @@ import jakarta.persistence.OneToMany;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.mateusz.example.friendoo.comment.Comment;
 import pl.mateusz.example.friendoo.photo.PagePhoto;
@@ -19,11 +18,12 @@ import pl.mateusz.example.friendoo.reaction.page.PagePhotoReaction;
 import pl.mateusz.example.friendoo.user.User;
 
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Entity representing comment under page photo.
+ */
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 public class PagePhotoComment extends Comment {
 
   @Id

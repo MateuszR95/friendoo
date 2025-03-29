@@ -10,7 +10,9 @@ import lombok.Setter;
 import pl.mateusz.example.friendoo.user.User;
 import pl.mateusz.example.friendoo.user.UserToken;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Entity representing a user password reset token.
+ */
 @Entity
 @Getter
 @Setter

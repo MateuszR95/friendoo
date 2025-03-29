@@ -1,6 +1,8 @@
 package pl.mateusz.example.friendoo.exceptions;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Exception thrown when an invalid token is provided.
+ */
 public class InvalidTokenException extends RuntimeException {
 
   public InvalidTokenException(String message) {

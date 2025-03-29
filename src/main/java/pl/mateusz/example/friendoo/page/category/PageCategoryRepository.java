@@ -4,10 +4,12 @@ import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Repository for the PageCategory entity.
+ */
 public interface PageCategoryRepository extends JpaRepository<PageCategory, Long> {
 
   Set<PageCategory> findAllBy();
 
-  Optional<PageCategory> findById(Long id);
+  Optional<PageCategory> findPageCategoryById(Long id);
 }

@@ -6,7 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Abstract class for visit.
+ */
 @Getter
 @Setter
 @NoArgsConstructor

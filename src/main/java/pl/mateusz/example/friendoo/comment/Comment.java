@@ -5,9 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
-
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Abstract class representing comment.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,6 +17,5 @@ public abstract class Comment {
   private LocalDateTime createdAt;
 
   private String content;
-
 
 }

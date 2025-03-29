@@ -16,8 +16,9 @@ import pl.mateusz.example.friendoo.post.page.PagePost;
 import pl.mateusz.example.friendoo.reaction.Reaction;
 import pl.mateusz.example.friendoo.user.User;
 
-
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Entity representing a reaction given to a post on a page.
+ */
 @Entity
 @Getter
 @Setter

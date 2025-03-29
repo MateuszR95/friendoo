@@ -40,8 +40,9 @@ import pl.mateusz.example.friendoo.user.role.UserRole;
 import pl.mateusz.example.friendoo.visit.PageVisit;
 import pl.mateusz.example.friendoo.visit.UserProfileVisit;
 
-
-@SuppressWarnings("checkstyle:MissingJavadocType")
+/**
+ * Entity representing a user.
+ */
 @Entity
 @Getter
 @Setter
