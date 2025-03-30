@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet id="025_create_user_adresses_table" author="mrojek">
+        <createTable tableName="user_addresses">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="isolated_dwelling" type="varchar(200)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="city" type="varchar(200)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="town" type="varchar(200)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="administrative" type="varchar(200)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="village" type="varchar(200)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="municipality" type="varchar(200)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="state_district" type="varchar(200)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="county" type="varchar(200)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="state" type="varchar(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="iso" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country_code" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint
+                tableName="user_addresses"
+                columnNames="city, village, administrative,state, country"
+                constraintName="uq_user_address"/>
+    </changeSet>
+</databaseChangeLog>

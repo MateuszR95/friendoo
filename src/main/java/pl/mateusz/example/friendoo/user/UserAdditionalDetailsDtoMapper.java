@@ -12,8 +12,6 @@ public class UserAdditionalDetailsDtoMapper {
 
   static UserAdditionalDetailsDto mapToUserAdditionalDetailsDto(User user) {
     String bio = user.getBio();
-    String currentCity = user.getCurrentCity();
-    String hometown = user.getHometown();
     String phoneNumber = user.getPhoneNumber();
     String email = user.getEmail();
     Set<Long> favouritePageCategoryIds = user.getFavouritePageCategories().stream()
@@ -21,7 +19,7 @@ public class UserAdditionalDetailsDtoMapper {
         .stream()
         .map(PageCategory::getId)
         .collect(Collectors.toSet());
-    return new UserAdditionalDetailsDto(email, bio, currentCity, hometown, phoneNumber,
+    return new UserAdditionalDetailsDto(email, bio, null, null, phoneNumber,
       favouritePageCategoryIds);
   }
 }

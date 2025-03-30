@@ -4,9 +4,12 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+    <include file="025_create_user_adresses_table.xml" relativeToChangelogFile="true"/>
+    <include file="../testdata/024_user_adresses.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="001_create_initial_schema.xml" relativeToChangelogFile="true" />
     <include file="../testdata/001_user_gender.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="019_rename_city_column_to_current_city_and_constraints_adjustment_in_users_table.xml" relativeToChangelogFile="true"/>
+    <include file="026_change_current_city_and_hometown_columns_types_in_user_table.xml" relativeToChangelogFile="true"/>
     <include file="021_add_is_active_account_column_in_users_table.xml" relativeToChangelogFile="true"/>
     <include file="../testdata/002_users.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="../testdata/003_user_role.sql" relativeToChangelogFile="true" context="dev"/>
@@ -47,7 +50,6 @@
     <include file="../testdata/021_page_post_comment_reaction.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="020_create_user_activation_token_table.xml" relativeToChangelogFile="true"/>
     <include file="022_create_user_password_reset_token_table.xml" relativeToChangelogFile="true"/>
-    <include file="023_change_columns_length_in_users_table.xml" relativeToChangelogFile="true"/>
     <include file="024_create_user_favourite_page_categories_table.xml" relativeToChangelogFile="true"/>
     <include file="../testdata/023_user_favourite_page_categories.sql" relativeToChangelogFile="true" context="dev"/>
 </databaseChangeLog>
