@@ -14,12 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.mateusz.example.friendoo.email.MailService;
-import pl.mateusz.example.friendoo.exceptions.AccountAlreadyActivatedException;
-import pl.mateusz.example.friendoo.exceptions.ExpiredActivationTokenException;
-import pl.mateusz.example.friendoo.exceptions.InvalidTokenException;
-import pl.mateusz.example.friendoo.exceptions.MailSendingException;
-import pl.mateusz.example.friendoo.exceptions.UserNotFoundException;
-import pl.mateusz.example.friendoo.exceptions.UserValidationException;
+import pl.mateusz.example.friendoo.exceptions.*;
 import pl.mateusz.example.friendoo.gender.Gender;
 import pl.mateusz.example.friendoo.gender.UserGender;
 import pl.mateusz.example.friendoo.gender.UserGenderRepository;
@@ -30,6 +25,9 @@ import pl.mateusz.example.friendoo.user.activation.UserActivationTokenDto;
 import pl.mateusz.example.friendoo.user.activation.UserActivationTokenService;
 import pl.mateusz.example.friendoo.user.favouritepagecategory.UserFavouritePageCategory;
 import pl.mateusz.example.friendoo.user.favouritepagecategory.UserFavouritePageCategoryRepository;
+import pl.mateusz.example.friendoo.user.location.UserAddress;
+import pl.mateusz.example.friendoo.user.location.UserAddressService;
+import pl.mateusz.example.friendoo.user.location.UserLocationService;
 import pl.mateusz.example.friendoo.user.passwordreset.UserPasswordResetDto;
 import pl.mateusz.example.friendoo.user.passwordreset.UserPasswordResetDtoMapper;
 import pl.mateusz.example.friendoo.user.passwordreset.UserPasswordResetTokenService;
@@ -57,6 +55,11 @@ public class UserService {
 
   private final PageCategoryRepository pageCategoryRepository;
 
+  private final UserLocationService userLocationService;
+
+  private final UserAddressService userAddressService;
+
+
   private static final int SECONDS_30 = 30000;
   Logger logger = LoggerFactory.getLogger(UserService.class);
 
@@ -68,7 +71,8 @@ public class UserService {
                      MailService mailService, UserActivationTokenService userActivationTokenService,
                      UserPasswordResetTokenService userPasswordResetTokenService,
                      UserFavouritePageCategoryRepository userFavouritePageCategoryRepository,
-                     PageCategoryRepository pageCategoryRepository) {
+                     PageCategoryRepository pageCategoryRepository, UserLocationService userLocationService,
+                     UserAddressService userAddressService) {
     this.userRepository = userRepository;
     this.userGenderRepository = userGenderRepository;
     this.userRoleRepository = userRoleRepository;
@@ -78,6 +82,8 @@ public class UserService {
     this.userPasswordResetTokenService = userPasswordResetTokenService;
     this.userFavouritePageCategoryRepository = userFavouritePageCategoryRepository;
     this.pageCategoryRepository = pageCategoryRepository;
+    this.userLocationService = userLocationService;
+    this.userAddressService = userAddressService;
   }
 
   public Optional<UserCredentialsDto> findCredentialsByEmail(String email) {
@@ -294,13 +300,14 @@ public class UserService {
    */
   @Transactional
   public void completeUserProfileDetails(UserAdditionalDetailsDto userAdditionalDetailsDto) {
-    User user = userRepository.findUserByEmail(userAdditionalDetailsDto.getEmail())
-        .orElseThrow(() ->
-        new UsernameNotFoundException("Brak użytkownika o wskazanym adresie emailowym"));
-    user.setBio(userAdditionalDetailsDto.getBio());
-    user.setCurrentCity(userAdditionalDetailsDto.getCurrentCity());
-    user.setHometown(userAdditionalDetailsDto.getHometown());
-    user.setPhoneNumber(userAdditionalDetailsDto.getPhoneNumber());
+    User user = getUserByEmail(userAdditionalDetailsDto);
+    setBasicUserInfo(userAdditionalDetailsDto, user);
+    setUserAddresses(userAdditionalDetailsDto, user);
+    setUserFavouriteCategories(userAdditionalDetailsDto, user);
+    userRepository.save(user);
+  }
+
+  private void setUserFavouriteCategories(UserAdditionalDetailsDto userAdditionalDetailsDto, User user) {
     Set<Long> favouritePageCategoriesIds = userAdditionalDetailsDto.getFavouritePageCategoriesIds();
     List<PageCategory> pageCategories = pageCategoryRepository
         .findAllById(favouritePageCategoriesIds);
@@ -310,7 +317,29 @@ public class UserService {
       userFavouritePageCategory.setPageCategory(pageCategory);
       userFavouritePageCategoryRepository.save(userFavouritePageCategory);
     }
-    userRepository.save(user);
   }
+
+  private void setUserAddresses(UserAdditionalDetailsDto userAdditionalDetailsDto, User user) {
+    UserAddress currentCity = userLocationService.chooseLocation(userAdditionalDetailsDto
+        .getCurrentCity()).orElseThrow(() -> new UserLocationNotFoundException(
+          "Nie znaleziono lokalizacji"));
+    UserAddress hometown = userLocationService.chooseLocation(userAdditionalDetailsDto
+        .getHometown()).orElseThrow(() ->
+         new UserLocationNotFoundException("Nie znaleziono lokalizacji"));
+    userAddressService.assignAddressesToUser(currentCity, user, hometown);
+  }
+
+  private static void setBasicUserInfo(UserAdditionalDetailsDto userAdditionalDetailsDto,
+                                          User user) {
+    user.setBio(userAdditionalDetailsDto.getBio());
+    user.setPhoneNumber(userAdditionalDetailsDto.getPhoneNumber());
+  }
+
+  private User getUserByEmail(UserAdditionalDetailsDto userAdditionalDetailsDto) {
+    return userRepository.findUserByEmail(userAdditionalDetailsDto.getEmail())
+        .orElseThrow(() ->
+        new UsernameNotFoundException("Brak użytkownika o wskazanym adresie emailowym"));
+  }
+
 }
 

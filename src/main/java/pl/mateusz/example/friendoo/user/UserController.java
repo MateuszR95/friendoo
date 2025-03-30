@@ -67,7 +67,6 @@ public class UserController {
       return "complete-user-profile";
     }
     userService.completeUserProfileDetails(userAdditionalDetailsDto);
-
     return "redirect:/home";
   }
 }

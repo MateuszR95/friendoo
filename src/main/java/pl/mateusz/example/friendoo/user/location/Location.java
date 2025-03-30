@@ -1,14 +1,13 @@
 package pl.mateusz.example.friendoo.user.location;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.List;
 import lombok.Data;
 
 /**
  * Represents a user location.
  */
 @Data
-public class UserLocation {
+public class Location {
 
   @JsonProperty("place_id")
   private long placeId;
@@ -30,7 +29,7 @@ public class UserLocation {
   private String name;
   @JsonProperty("display_name")
   private String displayName;
-  private Address address;
+  private UserAddress address;
   private double[] boundingbox;
 
 

@@ -2,7 +2,8 @@ package pl.mateusz.example.friendoo.user.location;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -28,9 +29,9 @@ public class UserLocationService {
    * Returns a list of locations based on the query.
    *
    * @param query the query
-   * @return the list of locations
+   * @return the set of locations
    */
-  public List<String> getLocations(String query) {
+  public Set<String> getLocations(String query) {
     String queryWithoutDiacritics  = StringUtils.stripAccents(query);
     String url = UriComponentsBuilder.fromHttpUrl(USER_LOCATION_API_URL)
           .queryParam("q", queryWithoutDiacritics)
@@ -40,13 +41,39 @@ public class UserLocationService {
           .build()
           .toUriString();
     try {
-      UserLocation[] locations = restTemplate.getForObject(url, UserLocation[].class);
+      Location[] locations = restTemplate.getForObject(url, Location[].class);
       if (locations == null) {
-        return Collections.emptyList();
+        return Collections.emptySet();
       }
       return Arrays.stream(locations)
-        .map(UserLocation::getDisplayName)
-        .collect(Collectors.toList());
+        .map(Location::getDisplayName)
+        .collect(Collectors.toSet());
+    } catch (RestClientException e) {
+      throw new UserLocationApiException("Błąd połączenia", e);
+    }
+  }
+
+  /**
+   * Returns a location based on the query.
+   *
+   * @param query the query
+   * @return the location
+   */
+  public Optional<UserAddress> chooseLocation(String query) {
+    String queryWithoutDiacritics  = StringUtils.stripAccents(query);
+    String url = UriComponentsBuilder.fromHttpUrl(USER_LOCATION_API_URL)
+          .queryParam("q", queryWithoutDiacritics)
+          .queryParam("format", "json")
+          .queryParam("addressdetails", 1)
+          .queryParam("limit", 1)
+          .build()
+          .toUriString();
+    try {
+      Location[] locations = restTemplate.getForObject(url, Location[].class);
+      if (locations == null) {
+        return Optional.empty();
+      }
+      return Optional.of(locations[0].getAddress());
     } catch (RestClientException e) {
       throw new UserLocationApiException("Błąd połączenia", e);
     }

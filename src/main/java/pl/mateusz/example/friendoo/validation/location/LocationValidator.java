@@ -3,6 +3,8 @@ package pl.mateusz.example.friendoo.validation.location;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import java.util.List;
+import java.util.Set;
+
 import pl.mateusz.example.friendoo.user.location.UserLocationService;
 
 /**
@@ -23,9 +25,12 @@ public class LocationValidator implements ConstraintValidator<ValidLocation, Str
 
   @Override
   public boolean isValid(String location, ConstraintValidatorContext constraintValidatorContext) {
-    List<String> locations = userLocationService.getLocations(location);
+    Set<String> locations = userLocationService.getLocations(location);
     return locations.stream()
       .anyMatch(query -> query.equalsIgnoreCase(location));
+//    List<String> locations = userLocationService.getLocations(location);
+//    return locations.stream()
+//      .anyMatch(query -> query.equalsIgnoreCase(location));
   }
 
 }

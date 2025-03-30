@@ -35,6 +35,7 @@ import pl.mateusz.example.friendoo.reaction.user.UserPhotoReaction;
 import pl.mateusz.example.friendoo.reaction.user.UserPostCommentReaction;
 import pl.mateusz.example.friendoo.reaction.user.UserPostReaction;
 import pl.mateusz.example.friendoo.user.favouritepagecategory.UserFavouritePageCategory;
+import pl.mateusz.example.friendoo.user.location.UserAddress;
 import pl.mateusz.example.friendoo.user.passwordreset.UserPasswordResetToken;
 import pl.mateusz.example.friendoo.user.role.UserRole;
 import pl.mateusz.example.friendoo.visit.PageVisit;
@@ -59,8 +60,12 @@ public class User {
   private String password;
   private LocalDate dateOfBirth;
   private String bio;
-  private String hometown;
-  private String currentCity;
+  @ManyToOne
+  @JoinColumn(name = "hometown_id")
+  private UserAddress hometown;
+  @ManyToOne
+  @JoinColumn(name = "current_city_id")
+  private UserAddress currentCity;
   private String phoneNumber;
   @ManyToOne
   @JoinColumn(name = "user_gender_id")

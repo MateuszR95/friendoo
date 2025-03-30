@@ -1,6 +1,6 @@
 package pl.mateusz.example.friendoo.user.location;
 
-import java.util.List;
+import java.util.Set;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,9 +22,10 @@ public class UserLocationController {
 
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
   @GetMapping("/search")
-  public ResponseEntity<List<String>> searchLocationByCityName(@RequestParam(name = "query")
+  public ResponseEntity<Set<String>> searchLocationByCityName(@RequestParam(name = "query")
                                                                  String query) {
-    List<String> locations = userLocationService.getLocations(query);
+//    List<String> locations = userLocationService.getLocations(query);
+    Set<String> locations = userLocationService.getLocations(query);
     return ResponseEntity.ok(locations);
   }
 

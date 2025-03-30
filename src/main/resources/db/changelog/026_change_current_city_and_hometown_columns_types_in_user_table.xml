@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet id="026_change_current_city_and_hometown_columns_types_in_user_table" author="mrojek">
+
+        <dropColumn columnName="current_city"
+                    tableName="users">
+        </dropColumn>
+        <dropColumn columnName="hometown"
+                    tableName="users">
+        </dropColumn>
+        <addColumn tableName="users">
+            <column name="hometown_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="current_city_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>
