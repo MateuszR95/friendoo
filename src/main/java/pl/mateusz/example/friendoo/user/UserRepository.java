@@ -15,6 +15,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   Optional<User> findUserByEmail(String email);
 
+  Optional<User> findUserByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndId(String firstName,
+                                     String lastName, Long id);
+
   boolean existsUserByEmail(String email);
 
   @Query(value = "SELECT f.* FROM users u JOIN user_friends uf ON u.id = uf.user_id "

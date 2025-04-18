@@ -18,6 +18,7 @@ import lombok.Setter;
 @Builder
 public class UserCredentialsDto {
 
+  private Long id;
   private String email;
   private String password;
   private Set<String> roles = new HashSet<>();

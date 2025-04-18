@@ -1,0 +1,28 @@
+
+
+
+<div th:fragment="sidebar">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+    <div class="sidebar">
+        <a th:href="@{/{firstName}.{lastName}.{id}(firstName=${#strings.toUpperCase(currentUser.firstName)},
+                            lastName=${#strings.toUpperCase(currentUser.lastName)}, id=${currentUser.id})}"
+           title="Twój profil">
+            <i class="fa fa-fw fa-home"></i>
+            Twój profil
+        </a>
+        <a href="#services" title="Znajomi"><i class="fa fa-fw fa-users"></i> Znajomi (<span th:text="${friends.size()}"></span>)</a>
+        <a href="#clients" title="Wspomnienia"><i class="fa fa-fw fa-cake-candles"></i> Wspomnienia</a>
+        <a href="#contact" title="Grupy"><i class="fa-solid fa-people-roof"></i> Grupy</a>
+        <a href="#contact" title="Strony"><i class="fa fa-fw fa-star"></i> Strony</a>
+        <a href="#contact" title="Wydarzenia"><i class="fa fa-fw fa-calendar-days"></i> Wydarzenia</a>
+    </div>
+    <div class="sidebar-right">
+        <h3>Kontakty (<span th:text="${friends.size()}"></span>)</h3>
+        <div class="friend-list">
+            <a th:each="friend : ${friends}" th:href="@{'#' + ${friend.firstName}}">
+                <img th:src="@{/img/default_profile_picture.jpg}" th:alt="'Avatar for ' + ${friend.firstName} + ' ' + ${friend.lastName}">
+                <span th:text="|${friend.firstName} ${friend.lastName}|"></span>
+            </a>
+        </div>
+    </div>
+</div>

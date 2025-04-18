@@ -1,6 +1,6 @@
 INSERT INTO user_post(author_id, created_at, content)
 VALUES
-    (1, '2024-10-01 08:15:00', 'Wspaniały dzisiaj dzień, co ciekawego robicie?'),
+    (1, '2025-04-09 08:15:00', 'Wspaniały dzisiaj dzień, co ciekawego robicie?'),
     (1, '2024-10-02 12:20:00', 'Dziś mam zamiar spróbować czegoś nowego!'),
     (1, '2024-10-03 10:30:00', 'Zaczynam dzień od kawy i porannego biegu!'),
     (1, '2024-10-04 09:40:00', 'Czy ktoś zna dobry przepis na szybki obiad?'),

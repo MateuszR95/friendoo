@@ -9,12 +9,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailSendException;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.mateusz.example.friendoo.email.MailService;
-import pl.mateusz.example.friendoo.exceptions.*;
+import pl.mateusz.example.friendoo.exceptions.AccountAlreadyActivatedException;
+import pl.mateusz.example.friendoo.exceptions.ExpiredActivationTokenException;
+import pl.mateusz.example.friendoo.exceptions.InvalidTokenException;
+import pl.mateusz.example.friendoo.exceptions.MailSendingException;
+import pl.mateusz.example.friendoo.exceptions.UserLocationNotFoundException;
+import pl.mateusz.example.friendoo.exceptions.UserNotFoundException;
+import pl.mateusz.example.friendoo.exceptions.UserValidationException;
 import pl.mateusz.example.friendoo.gender.Gender;
 import pl.mateusz.example.friendoo.gender.UserGender;
 import pl.mateusz.example.friendoo.gender.UserGenderRepository;
@@ -71,7 +79,8 @@ public class UserService {
                      MailService mailService, UserActivationTokenService userActivationTokenService,
                      UserPasswordResetTokenService userPasswordResetTokenService,
                      UserFavouritePageCategoryRepository userFavouritePageCategoryRepository,
-                     PageCategoryRepository pageCategoryRepository, UserLocationService userLocationService,
+                     PageCategoryRepository pageCategoryRepository,
+                     UserLocationService userLocationService,
                      UserAddressService userAddressService) {
     this.userRepository = userRepository;
     this.userGenderRepository = userGenderRepository;
@@ -93,7 +102,7 @@ public class UserService {
 
   public Optional<UserDisplayDto> findUserToDisplay(String email) {
     return userRepository.findUserByEmail(email)
-      .map(UserCredentialsDtoMapper::mapToUserDisplayDto);
+      .map(UserDisplayDtoMapper::mapToUserDisplayDto);
   }
 
   /**
@@ -104,7 +113,7 @@ public class UserService {
    */
   public List<UserDisplayDto> getUserFriendsList(String email) {
     List<User> friendsByEmail = userRepository.findFriendsByEmail(email);
-    return friendsByEmail.stream().map(UserCredentialsDtoMapper::mapToUserDisplayDto)
+    return friendsByEmail.stream().map(UserDisplayDtoMapper::mapToUserDisplayDto)
       .collect(Collectors.toList());
   }
 
@@ -307,7 +316,8 @@ public class UserService {
     userRepository.save(user);
   }
 
-  private void setUserFavouriteCategories(UserAdditionalDetailsDto userAdditionalDetailsDto, User user) {
+  private void setUserFavouriteCategories(UserAdditionalDetailsDto userAdditionalDetailsDto,
+                                          User user) {
     Set<Long> favouritePageCategoriesIds = userAdditionalDetailsDto.getFavouritePageCategoriesIds();
     List<PageCategory> pageCategories = pageCategoryRepository
         .findAllById(favouritePageCategoriesIds);
@@ -339,6 +349,38 @@ public class UserService {
     return userRepository.findUserByEmail(userAdditionalDetailsDto.getEmail())
         .orElseThrow(() ->
         new UsernameNotFoundException("Brak użytkownika o wskazanym adresie emailowym"));
+  }
+
+  /**
+   * Finds a user by their ID.
+   *
+   * @param id the ID of the user
+   * @return an Optional containing the UserDisplayDto if found, or empty if not found
+   */
+  public Optional<UserDisplayDto> findUserById(Long id) {
+    User user = userRepository.findById(id)
+        .orElseThrow(() -> new UsernameNotFoundException("Brak użytkownika o wskazanym id"));
+    return Optional.of(UserDisplayDtoMapper.mapToUserDisplayDto(user));
+  }
+
+  public Optional<UserDisplayDto> findUserByNameAndId(String firstName, String lastName, Long id) {
+    return userRepository.findUserByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndId(firstName,
+      lastName, id).map(UserDisplayDtoMapper::mapToUserDisplayDto);
+  }
+
+  /**
+   * Retrieves the IDs of the current logged-in user's friends.
+   *
+   * @param authentication the authentication object containing user details
+   * @return a list of friend IDs
+   */
+  public List<Long> getCurrentLoggedUserFriendsIds(Authentication authentication) {
+    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    return getUserFriendsList(userDetails
+        .getUsername())
+      .stream()
+      .map(UserDisplayDto::getId)
+      .toList();
   }
 
 }

@@ -76,7 +76,11 @@
                         Konto
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="/home">Mój profil</a>
+                        <a class="dropdown-item" href="#"
+                           th:href="@{/{firstName}.{lastName}.{id}(firstName=${#strings.toUpperCase(currentUser.firstName)},
+                            lastName=${#strings.toUpperCase(currentUser.lastName)}, id=${currentUser.id})}">
+                            Mój profil
+                        </a>
                         <a class="dropdown-item" href="#" id="openPagesModal">Moje strony</a>
                         <a class="dropdown-item" href="#" id="openSettingsModal">Ustawienia i prywatność</a>
                         <a class="dropdown-item" href="#" id="openLogoutModal">Wyloguj się</a>
@@ -120,9 +124,9 @@
     </div>
 </header>
 
-
 <main layout:fragment="mainContent">
 </main>
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
 <footer>
 </footer>
