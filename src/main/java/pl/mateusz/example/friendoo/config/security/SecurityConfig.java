@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,10 +29,13 @@ public class SecurityConfig {
     http
         .authorizeHttpRequests(requests -> requests
         .requestMatchers("/", "/img/**", "/styles/**", "/js/**", "/registration",
-          "/password-reset-email", "/password-reset", "/save-details").permitAll()
-        .requestMatchers("/home/**", "/complete-profile").authenticated()
-        .requestMatchers("/activation", "/api/**").permitAll()
-        .requestMatchers(PathRequest.toH2Console()).permitAll()
+          "/password-reset-email", "/password-reset", "/save-details", "/activation")
+          .permitAll()
+          .requestMatchers(PathRequest.toH2Console()).permitAll()
+        .requestMatchers("/home/**", "/complete-profile", "/profile", "/api/reactions")
+          .authenticated()
+          .requestMatchers("/**").authenticated()
+
     );
     http.formLogin(login -> login.loginPage("/")
         .usernameParameter("email")
@@ -48,8 +50,8 @@ public class SecurityConfig {
         .logoutSuccessUrl("/").permitAll()
     );
 
-    http.csrf(AbstractHttpConfigurer::disable);
     http.csrf(csrf -> csrf.ignoringRequestMatchers(PathRequest.toH2Console()));
+    http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"));
     http.headers(
         config -> config.frameOptions(
           HeadersConfigurer.FrameOptionsConfig::sameOrigin

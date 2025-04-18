@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/navbar-layout}">
+<head>
+    <title>Friendoo</title>
+    <link rel="stylesheet" href="../styles/user-activity-page-style.css">
+</head>
+<body>
+<main layout:fragment="mainContent">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="content" class="content content-full-width">
+                    <!-- begin profile -->
+                    <div class="profile">
+                        <div class="profile-header">
+                            <!-- BEGIN profile-header-cover -->
+                            <div class="profile-header-cover"></div>
+                            <!-- END profile-header-cover -->
+                            <!-- BEGIN profile-header-content -->
+                            <div class="profile-header-content">
+                                <!-- BEGIN profile-header-img -->
+                                <div class="profile-header-img">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
+                                </div>
+                                <!-- END profile-header-img -->
+                                <!-- BEGIN profile-header-info -->
+                                <div class="profile-header-info">
+                                    <h4 class="m-t-10 m-b-5" th:text="|${user.firstName} ${user.lastName}|">Imię
+                                        Nazwisko</h4>
+                                    <p class="m-b-10">UXUI + Frontend Developer</p>
+                                    <a href="#" class="btn btn-sm btn-info mb-2">Edytuj profil</a>
+                                </div>
+                                <!-- END profile-header-info -->
+                            </div>
+                            <!-- END profile-header-content -->
+                            <!-- BEGIN profile-header-tab -->
+                            <ul class="profile-header-tab nav nav-tabs">
+                                <li class="nav-item"><a
+                                        th:href="@{'/{firstName}.{lastName}.{id}'(firstName=${user.firstName}, lastName=${user.lastName}, id=${user.id})}"
+                                        class="nav-link_">INFORMACJE</a></li>
+                                <li class="nav-item"><a
+                                        th:href="@{'/{firstName}.{lastName}.{id}/activity'(firstName=${user.firstName}, lastName=${user.lastName}, id=${user.id})}">AKTYWNOŚĆ</a>
+                                </li>
+                                <li class="nav-item"><a href="https://www.bootdey.com/snippets/view/profile-photos"
+                                                        target="__blank" class="nav-link_">ZDJĘCIA</a></li>
+                                <li class="nav-item"><a
+                                        href="https://www.bootdey.com/snippets/view/bs4-profile-friend-list"
+                                        target="__blank" class="nav-link_ active show">ZNAJOMI</a></li>
+                            </ul>
+                            <!-- END profile-header-tab -->
+                        </div>
+                    </div>
+                    <!-- end profile -->
+                    <!-- begin profile-content -->
+                    <div class="profile-content">
+                        <!-- begin tab-content -->
+                        <div class="tab-content p-0">
+                            <!-- begin #profile-post tab -->
+                            <div class="tab-pane fade active show" id="profile-post">
+                                <!-- begin timeline -->
+                                <ul class="timeline" th:if="${!posts.isEmpty()}">
+                                    <li th:each="post: ${posts}">
+                                        <!-- begin timeline-time -->
+                                        <div class="timeline-time">
+                                            <span class="date" th:text="${post.createdAtDisplay}">Date</span>
+                                            <span class="time" th:text="${#temporals.format(post.createdAt, 'HH:mm')}">04:20</span>
+                                        </div>
+                                        <!-- end timeline-time -->
+                                        <!-- begin timeline-icon -->
+                                        <div class="timeline-icon">
+                                            <a href="javascript:;">&nbsp;</a>
+                                        </div>
+                                        <!-- end timeline-icon -->
+                                        <!-- begin timeline-body -->
+                                        <div class="timeline-body">
+                                            <div class="timeline-header">
+                                                <span class="userimage"><img
+                                                        src="https://bootdey.com/img/Content/avatar/avatar3.png" alt=""></span>
+                                                <span class="username"><a th:href="@{'/{firstName}.{lastName}.{id}'(firstName=${user.firstName}, lastName=${user.lastName},
+                                                 id=${user.id})}" th:text="|${user.firstName} ${user.lastName}|">Imie Nazwisko</a> <small></small></span>
+                                            </div>
+                                            <div class="timeline-content">
+                                                <p th:text="${post.content}">
+                                                    Post content
+                                                </p>
+                                            </div>
+                                            <div class="timeline-likes">
+                                                <div class="stats-right">
+                                                    <span class="stats-text" th:if="${post.getCommentsCount() == 1}"
+                                                          th:text="|${post.getCommentsCount()} komentarz|">
+                                                        Liczba komentarzy</span>
+                                                    <span class="stats-text"
+                                                          th:if="${post.getCommentsCount() > 1 && post.getCommentsCount() < 5}"
+                                                          th:text="|${post.getCommentsCount()} komentarze|">
+                                                        Liczba komentarzy</span>
+                                                    <span class="stats-text" th:if="${post.getCommentsCount() > 4}"
+                                                          th:text="|${post.getCommentsCount()} komentarzy|">
+                                                        Liczba komentarzy</span>
+                                                </div>
+
+                                                <div class="stats">
+
+                                                    <div class="reaction" th:each="entry : ${post.getUserPostReactionDtoByReactionType()}">
+                                                        <span class="emoji" th:text="${entry.key.emoji}">👍</span>
+                                                        <div class="reaction-tooltip">
+                                                            <div class="reaction-header">
+                                                                <strong th:text="|${entry.key.plName} (${entry.value.size()})|">Like(0)</strong>
+                                                            </div>
+                                                            <ul th:each="reaction : ${entry.value}">
+                                                                <li>
+                                                                    <div class="user-hover-content">
+                                                                        <img class="user-avatar"
+                                                                             th:src="@{/img/default_profile_picture.jpg}"
+                                                                             alt="avatar"/>
+                                                                        <div class="user-info">
+                                                                            <a class="user-link"
+                                                                               th:href="@{/{firstName}.{lastName}.{id}(firstName=${#strings.toUpperCase(reaction.authorFirstName)},
+                                                                  lastName=${#strings.toUpperCase(reaction.authorLastName)},
+                                                                  id=${reaction.authorId})}"
+                                                                               th:text="|${reaction.authorFirstName} ${reaction.authorLastName}|">
+                                                                            </a>
+                                                                            <button class="message-btn"
+                                                                                    th:if="${currentLoggedUserFriendsIds.contains(reaction.authorId)}">Wyślij wiadomość</button>
+                                                                            <button class="add-friend-btn"
+                                                                                    th:unless="${currentLoggedUserFriendsIds.contains(reaction.authorId)}">Dodaj znajomego</button>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+
+                                                    <span class="stats-total"
+                                                          th:if="${post.getReactionsCount() gt 0 and post.getReactionsCount() lt 1000}"
+                                                          th:text="${post.getReactionsCount()}">
+                                    Liczba reakcji
+                                    </span>
+                                                    <span class="stats-total"
+                                                          th:if="${post.getReactionsCount() >= 1000}"
+                                                          th:text="${#numbers.formatDecimal(post.getReactionsCount() / 1000.0, 1, 'POINT', 'COMMA')} + 'k'">
+                                    Liczba reakcji
+                                    </span>
+
+                             </div>
+                          </div>
+                                            <div class="timeline-footer">
+                                                <div class="reaction-button-wrapper" th:attr="data-post-id=${post.id}">
+                                                    <button class="like-btn">
+                                                    <span class="reaction-label"
+                                                          th:utext="${!post.isUserPostReactedByCurrentLoggedUserId(currentLoggedUser.id) ?
+                                                                '<i class=&quot;fa fa-thumbs-up fa-fw fa-lg m-r-3&quot;></i> Lubię to': post.getUserPostReactionTypeByCurrentLoggedUserId(currentLoggedUser.id).emoji}">
+                                                    </span>
+                                                    </button>
+                                                    <div class="reaction-picker">
+                                                         <span class="reaction-option"
+                                                               th:each="reaction : ${T(pl.mateusz.example.friendoo.reaction.ReactionType).values()}"
+                                                               th:attr="data-reaction=${reaction.name()}, title=${reaction.plName}"
+                                                               th:text="${reaction.emoji}">emoji</span>
+                                                    </div>
+                                                </div>
+
+
+                                                <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i
+                                                        class="fa fa-comments fa-fw fa-lg m-r-3"></i> Skomentuj</a>
+
+                                                <a href="javascript:;" class="m-r-15 text-inverse-lighter">
+                                                    <i class="fa fa-share fa-fw fa-lg m-r-3"></i> Udostępnij</a>
+                                            </div>
+                                            <div class="timeline-comment-box">
+                                                <div class="user"><img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt=""></div>
+                                                <div class="input">
+                                                    <form action="">
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control rounded-corner"
+                                                                   placeholder="Napisz komentarz...">
+                                                            <span class="input-group-btn p-l-10">
+                                          <button class="btn btn-primary f-s-12 rounded-corner"
+                                                  type="button">Comment</button>
+                                          </span>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- end timeline-body -->
+                                    </li>
+                                    <li>
+                                        <!-- begin timeline-icon -->
+                                        <div class="timeline-icon">
+                                            <a href="javascript:;">&nbsp;</a>
+                                        </div>
+                                        <!-- end timeline-icon -->
+                                        <!-- begin timeline-body -->
+                                        <div class="timeline-body">
+                                        </div>
+                                        <!-- begin timeline-body -->
+                                    </li>
+                                </ul>
+                                <!-- end timeline -->
+                                <div class="timeline" th:if="${posts.isEmpty()}">
+                                    <p class="text-center">Brak aktywności do wyświetlenia.</p>
+                                </div>
+                                <!-- end #profile-post tab -->
+                            </div>
+                            <!-- end tab-content -->
+                        </div>
+                        <!-- end profile-content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<div class="modal fade" id="reactionModal" tabindex="-1" aria-labelledby="reactionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reactionModalLabel">Reakcje</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            </div>
+            <div class="modal-body">
+                <ul id="reactionList" class="list-group">
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/scripts.js"></script>
+</body>
+</html>

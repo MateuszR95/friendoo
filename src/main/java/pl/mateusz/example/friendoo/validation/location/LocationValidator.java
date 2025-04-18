@@ -2,9 +2,7 @@ package pl.mateusz.example.friendoo.validation.location;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import java.util.List;
 import java.util.Set;
-
 import pl.mateusz.example.friendoo.user.location.UserLocationService;
 
 /**

@@ -24,7 +24,6 @@ public class UserLocationController {
   @GetMapping("/search")
   public ResponseEntity<Set<String>> searchLocationByCityName(@RequestParam(name = "query")
                                                                  String query) {
-//    List<String> locations = userLocationService.getLocations(query);
     Set<String> locations = userLocationService.getLocations(query);
     return ResponseEntity.ok(locations);
   }

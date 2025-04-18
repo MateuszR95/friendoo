@@ -6,12 +6,9 @@
     <title>Friendoo</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
 
-
 </head>
 <body>
 <main layout:fragment="mainContent">
-
-
     <div class="container bootdey">
         <div class="col-md-12 bootstrap snippets">
             <div class="panel">
@@ -142,27 +139,6 @@
         </div>
     </div>
 
-    <div class="sidebar">
-        <a href="#home" title="Twój profil">
-            <i class="fa fa-fw fa-home"></i>
-            <span th:text="|${user.firstName} ${user.lastName}|">
-            Imię i nazwisko</a>
-        <a href="#services" title="Znajomi"><i class="fa fa-fw fa-users"></i> Znajomi (<span th:text="${friends.size()}"></span>)</a>
-        <a href="#clients" title="Wspomnienia"><i class="fa fa-fw fa-cake-candles"></i> Wspomnienia</a>
-        <a href="#contact" title="Grupy"><i class="fa fa-fw fa-people-group"></i> Grupy</a>
-        <a href="#contact" title="Strony"><i class="fa fa-fw fa-star"></i> Strony</a>
-        <a href="#contact" title="Wydarzenia"><i class="fa fa-fw fa-calendar-days"></i> Wydarzenia</a>
-    </div>
-    <div class="sidebar-right">
-        <h3>Kontakty (<span th:text="${friends.size()}"></span>)
-        </h3>
-        <div class="friend-list">
-            <a th:each="friend : ${friends}" th:href="'#' + ${friend}">
-                <img th:src="@{/img/default_profile_picture.jpg}" alt="Avatar" th:alt="'Avatar for ' + ${friend.firstName} + ' ' + ${friend.lastName}">
-                <span th:text="${friend.firstName} + ' ' + ${friend.lastName}"></span>
-            </a>
-        </div>
-    </div>
 
 </main>
 </body>

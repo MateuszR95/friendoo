@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/navbar-layout}">
+<head>
+    <title>Friendoo</title>
+    <link rel="stylesheet" href="../styles/user-profile-page-style.css">
+</head>
+<body>
+<main layout:fragment="mainContent">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="content" class="content content-full-width">
+                                <!-- begin profile -->
+                                <div class="profile">
+                                    <div class="profile-header">
+                                        <!-- BEGIN profile-header-cover -->
+                                        <div class="profile-header-cover"></div>
+                                        <!-- END profile-header-cover -->
+                                        <!-- BEGIN profile-header-content -->
+                                        <div class="profile-header-content">
+                                            <!-- BEGIN profile-header-img -->
+                                            <div class="profile-header-img">
+                                                <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
+                                            </div>
+                                            <!-- END profile-header-img -->
+                                            <!-- BEGIN profile-header-info -->
+                                            <div class="profile-header-info">
+                                                <h4 class="m-t-10 m-b-5" th:text="|${user.firstName} ${user.lastName}|">Imię Nazwisko</h4>
+                                                <p class="m-b-10">UXUI + Frontend Developer</p>
+                                                <a href="#" class="btn btn-sm btn-info mb-2">Edytuj profil</a>
+                                            </div>
+                                            <!-- END profile-header-info -->
+                                        </div>
+                                        <!-- END profile-header-content -->
+                                        <!-- BEGIN profile-header-tab -->
+                                        <ul class="profile-header-tab nav nav-tabs">
+                                            <li class="nav-item"><a th:href="@{'/{firstName}.{lastName}.{id}'(firstName=${user.firstName}, lastName=${user.lastName}, id=${user.id})}"
+                                                                    class="nav-link_">INFORMACJE</a></li>
+                                            <li class="nav-item">
+                                                <a th:href="@{'/{firstName}.{lastName}.{id}/activity'(firstName=${user.firstName}, lastName=${user.lastName}, id=${user.id})}"
+                                                    class="nav-link_">AKTYWNOŚĆ</a>
+                                                </li>
+                                            <li class="nav-item"><a href="https://www.bootdey.com/snippets/view/profile-photos" target="__blank" class="nav-link_">ZDJĘCIA</a></li>
+                                            <li class="nav-item"><a href="https://www.bootdey.com/snippets/view/bs4-profile-friend-list" target="__blank" class="nav-link_ active show">ZNAJOMI</a></li>
+                                        </ul>
+                                        <!-- END profile-header-tab -->
+                                    </div>
+                                </div>
+                                <!-- end profile -->
+                                <!-- begin profile-content -->
+                                <div class="profile-content">
+                                    <!-- begin tab-content -->
+                                    <div class="tab-content p-0">
+
+                                        <!-- begin #profile-about tab -->
+                                        <div class="tab-pane fade in active show" id="profile-about">
+                                            <!-- begin table -->
+                                            <div class="table-responsive">
+                                                <table class="table table-profile">
+                                                    <thead>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr class="divider">
+                                                        <td colspan="2"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="field">Numer telefonu</td>
+                                                        <td><i class="fa fa-mobile fa-lg m-r-5"></i> <span th:text="${user.phoneNumber}"></span>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="field">Miejscowość rodzinna</td>
+                                                        <td> <span th:text="${user.homeAddress}"></span>
+                                                    </tr>
+                                                    <tr class="divider">
+                                                        <td colspan="2"></td>
+                                                    </tr>
+                                                    <tr class="highlight">
+                                                        <td class="field">O mnie</td>
+                                                        <td> <span th:text="${user.bio}"></span>
+                                                    </tr>
+                                                    <tr class="divider">
+                                                        <td colspan="2"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="field">Kraj</td>
+                                                        <td>
+                                                            <span th:text="${user.country}"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="field">Mieszka w</td>
+                                                        <td>
+                                                        <span th:text="${user.currentCity}"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="field">Płeć</td>
+                                                        <td>
+                                                            <span th:text="${user.gender}"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="field">Data urodzenia</td>
+                                                        <td>
+                                                            <span th:text="${#temporals.format(user.birthDate, 'yyy-MM-dd')}"></span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="divider">
+                                                        <td colspan="2"></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!-- end table -->
+                                        </div>
+                                        <!-- end #profile-about tab -->
+                                    </div>
+                                    <!-- end tab-content -->
+                                </div>
+                                <!-- end profile-content -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
