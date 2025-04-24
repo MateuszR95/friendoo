@@ -11,21 +11,18 @@ import pl.mateusz.example.friendoo.user.role.UserRole;
 public class UserCredentialsDtoMapper {
 
   static UserCredentialsDto mapToUserCredentialsDto(User user) {
-    String email = user.getEmail();
-    String password = user.getPassword();
     Set<String> roles = user.getRoles()
-         .stream()
-          .map(UserRole::getRole)
-         .map(Role::name)
-          .collect(Collectors.toSet());
-    boolean isActiveAccount = user.isActiveAccount();
-    return new UserCredentialsDto(email, password, roles, isActiveAccount);
+        .stream()
+        .map(UserRole::getRole)
+        .map(Role::name)
+        .collect(Collectors.toSet());
+    return UserCredentialsDto.builder()
+        .id(user.getId())
+        .email(user.getEmail())
+        .password(user.getPassword())
+        .roles(roles)
+        .isActiveAccount(user.isActiveAccount())
+        .build();
   }
 
-  static UserDisplayDto mapToUserDisplayDto(User user) {
-    Long id = user.getId();
-    String firstName = user.getFirstName();
-    String lastName = user.getLastName();
-    return new UserDisplayDto(id, firstName, lastName);
-  }
 }

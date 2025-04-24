@@ -13,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface UserRepository extends JpaRepository<User, Long> {
 
+  @Query("SELECT u FROM User u JOIN FETCH u.roles WHERE u.email = :email")
+  Optional<User> findByEmailWithRoles(@Param("email") String email);
+
   Optional<User> findUserByEmail(String email);
 
   Optional<User> findUserByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndId(String firstName,
@@ -20,9 +23,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   boolean existsUserByEmail(String email);
 
-  @Query(value = "SELECT f.* FROM users u JOIN user_friends uf ON u.id = uf.user_id "
-      + "JOIN users f ON uf.friend_id = f.id WHERE u.email = :email", nativeQuery = true)
-  List<User> findFriendsByEmail(@Param("email") String email);
+  @Query("""
+  SELECT DISTINCT f FROM User u
+  JOIN u.friends f
+  LEFT JOIN FETCH f.roles
+  LEFT JOIN FETCH f.gender
+  LEFT JOIN FETCH f.hometown
+  LEFT JOIN FETCH f.currentCity
+  WHERE u.email = :email
+      """)
+  List<User> findFriendsByUserEmail(@Param("email") String email);
+
 
   @Modifying
   @Transactional

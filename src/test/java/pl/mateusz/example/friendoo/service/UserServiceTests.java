@@ -176,7 +176,7 @@ public class UserServiceTests {
     public void shouldReturnEmptyListWhenUserDoesNotExist() {
       // given
       String email = "nonexistent@byom.de";
-      when(userRepository.findFriendsByEmail(email)).thenReturn(Collections.emptyList());
+      when(userRepository.findFriendsByUserEmail(email)).thenReturn(Collections.emptyList());
       // when
       List<UserDisplayDto> userFriendsList = userService.getUserFriendsList(email);
       // then
@@ -187,7 +187,7 @@ public class UserServiceTests {
     public void shouldReturnEmptyListWhenUserHasNoFriends() {
       // given
       String userEmail = "usertest@byom.de";
-      when(userRepository.findFriendsByEmail(userEmail)).thenReturn(Collections.emptyList());
+      when(userRepository.findFriendsByUserEmail(userEmail)).thenReturn(Collections.emptyList());
       // when
       List<UserDisplayDto> userFriendsList = userService.getUserFriendsList(userEmail);
       // then
@@ -204,7 +204,7 @@ public class UserServiceTests {
       User userFriend2 = createTestUser(3L, "Anna", "Kowalska", "akowalska@byom.de",
         LocalDate.of(1999, 9, 21), Gender.WOMAN, "test", LocalDateTime.now().minusDays(3),
         true);
-      when(userRepository.findFriendsByEmail(userEmail)).thenReturn(List.of(userFriend1, userFriend2));
+      when(userRepository.findFriendsByUserEmail(userEmail)).thenReturn(List.of(userFriend1, userFriend2));
       // when
       List<UserDisplayDto> userFriendsList = userService.getUserFriendsList(userEmail);
       // then
@@ -221,7 +221,7 @@ public class UserServiceTests {
       User userFriend1 = createTestUser(2L, "Adam", "Nowak", "anowak@byom.de",
         LocalDate.of(1993, 11, 11), Gender.MAN, "test", LocalDateTime.now().minusDays(5),
         true);
-      when(userRepository.findFriendsByEmail(userEmail)).thenReturn(List.of(userFriend1));
+      when(userRepository.findFriendsByUserEmail(userEmail)).thenReturn(List.of(userFriend1));
       // when
       List<UserDisplayDto> userFriendsList = userService.getUserFriendsList(userEmail);
       // then

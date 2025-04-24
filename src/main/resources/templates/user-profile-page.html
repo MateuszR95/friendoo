@@ -33,7 +33,11 @@
                                             <div class="profile-header-info">
                                                 <h4 class="m-t-10 m-b-5" th:text="|${user.firstName} ${user.lastName}|">Imię Nazwisko</h4>
                                                 <p class="m-b-10">UXUI + Frontend Developer</p>
-                                                <a href="#" class="btn btn-sm btn-info mb-2">Edytuj profil</a>
+                                                <a th:if="${currentUser.id == user.id}"
+                                                   href="#"
+                                                   class="btn btn-sm btn-info mb-2">Edytuj profil</a>
+                                                <a th:if="${currentUser.id != user.id}"
+                                                   class="btn btn-sm btn-info mb-2 invisible">Edytuj profil</a>
                                             </div>
                                             <!-- END profile-header-info -->
                                         </div>

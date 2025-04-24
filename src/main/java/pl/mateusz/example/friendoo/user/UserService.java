@@ -95,9 +95,16 @@ public class UserService {
     this.userAddressService = userAddressService;
   }
 
+  /**
+   * Finds a user by their email address and retrieves their credentials.
+   *
+   * @param email the email address of the user
+   * @return an Optional containing the UserCredentialsDto if found, or empty if not found
+   */
   public Optional<UserCredentialsDto> findCredentialsByEmail(String email) {
-    return userRepository.findUserByEmail(email)
+    return userRepository.findByEmailWithRoles(email)
       .map(UserCredentialsDtoMapper::mapToUserCredentialsDto);
+
   }
 
   public Optional<UserDisplayDto> findUserToDisplay(String email) {
@@ -112,7 +119,7 @@ public class UserService {
    * @return a list of UserDisplayDto representing the user's friends
    */
   public List<UserDisplayDto> getUserFriendsList(String email) {
-    List<User> friendsByEmail = userRepository.findFriendsByEmail(email);
+    List<User> friendsByEmail = userRepository.findFriendsByUserEmail(email);
     return friendsByEmail.stream().map(UserDisplayDtoMapper::mapToUserDisplayDto)
       .collect(Collectors.toList());
   }
