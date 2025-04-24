@@ -17,10 +17,12 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.mateusz.example.friendoo.comment.user.PostComment;
 import pl.mateusz.example.friendoo.page.category.PageCategory;
-import pl.mateusz.example.friendoo.photo.PagePhoto;
+import pl.mateusz.example.friendoo.photo.Photo;
 import pl.mateusz.example.friendoo.post.page.PagePost;
-import pl.mateusz.example.friendoo.reaction.page.PageLike;
+import pl.mateusz.example.friendoo.reaction.PageLike;
+import pl.mateusz.example.friendoo.reaction.PostReaction;
 import pl.mateusz.example.friendoo.user.User;
 import pl.mateusz.example.friendoo.visit.PageVisit;
 
@@ -41,7 +43,7 @@ public class Page {
   private LocalDateTime createdAt;
 
   @OneToMany(mappedBy = "page", cascade = CascadeType.ALL)
-  private Set<PagePhoto> photos = new HashSet<>();
+  private Set<Photo> photos = new HashSet<>();
 
   @ManyToOne
   @JoinColumn(name = "created_by_user_id")
@@ -57,17 +59,23 @@ public class Page {
 
   @OneToOne
   @JoinColumn(name = "profile_photo_id")
-  private PagePhoto profilePicture;
+  private Photo profilePicture;
 
   @OneToOne
   @JoinColumn(name = "background_photo_id")
-  private PagePhoto backgroundPhoto;
+  private Photo backgroundPhoto;
 
   @OneToMany(mappedBy = "page", cascade = CascadeType.ALL)
   private Set<PagePost> pagePosts = new HashSet<>();
 
   @OneToMany(mappedBy = "page", cascade = CascadeType.ALL)
   private Set<PageLike> pageLikes = new HashSet<>();
+
+  @OneToMany(mappedBy = "pageAuthor", cascade = CascadeType.ALL)
+  private Set<PostReaction> postReactions = new HashSet<>();
+
+  @OneToMany(mappedBy = "pageAuthor", cascade = CascadeType.ALL)
+  private Set<PostComment> postComments = new HashSet<>();
 
   @ManyToOne
   @JoinColumn(name = "page_category_id")

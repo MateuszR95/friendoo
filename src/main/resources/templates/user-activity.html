@@ -30,8 +30,14 @@
                                 <div class="profile-header-info">
                                     <h4 class="m-t-10 m-b-5" th:text="|${user.firstName} ${user.lastName}|">Imię
                                         Nazwisko</h4>
-                                    <p class="m-b-10">UXUI + Frontend Developer</p>
-                                    <a href="#" class="btn btn-sm btn-info mb-2">Edytuj profil</a>
+                                    <p class="m-b-10" style="visibility: hidden;">Opis</p>
+                                    <a th:if="${currentLoggedUser.id == user.id}"
+                                       href="#"
+                                       class="btn btn-sm btn-info mb-2">Edytuj profil</a>
+
+                                    <a th:if="${currentLoggedUser.id != user.id}"
+                                       class="btn btn-sm btn-info mb-2 invisible">Edytuj profil</a>
+
                                 </div>
                                 <!-- END profile-header-info -->
                             </div>
@@ -60,6 +66,24 @@
                         <div class="tab-content p-0">
                             <!-- begin #profile-post tab -->
                             <div class="tab-pane fade active show" id="profile-post">
+
+                                <div class="timeline-comment-box outer-comment-box">
+                                    <div class="user">
+                                        <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
+                                    </div>
+                                    <div class="input">
+                                        <form action="">
+                                            <div class="input-group">
+                                                <textarea class="form-control rounded-corner auto-expand" rows="1" placeholder="Co słychać?"></textarea>
+                                                <span class="input-group-btn p-l-10">
+                                            <button class="btn btn-primary f-s-12 rounded-corner" type="button">Opublikuj</button>
+                                            </span>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+
                                 <!-- begin timeline -->
                                 <ul class="timeline" th:if="${!posts.isEmpty()}">
                                     <li th:each="post: ${posts}">
@@ -103,7 +127,7 @@
 
                                                 <div class="stats">
 
-                                                    <div class="reaction" th:each="entry : ${post.getUserPostReactionDtoByReactionType()}">
+                                                    <div class="reaction" th:each="entry : ${post.getPostReactionDtoByReactionType()}">
                                                         <span class="emoji" th:text="${entry.key.emoji}">👍</span>
                                                         <div class="reaction-tooltip">
                                                             <div class="reaction-header">
@@ -119,13 +143,13 @@
                                                                             <a class="user-link"
                                                                                th:href="@{/{firstName}.{lastName}.{id}(firstName=${#strings.toUpperCase(reaction.authorFirstName)},
                                                                   lastName=${#strings.toUpperCase(reaction.authorLastName)},
-                                                                  id=${reaction.authorId})}"
+                                                                  id=${reaction.userAuthorId})}"
                                                                                th:text="|${reaction.authorFirstName} ${reaction.authorLastName}|">
                                                                             </a>
                                                                             <button class="message-btn"
-                                                                                    th:if="${currentLoggedUserFriendsIds.contains(reaction.authorId)}">Wyślij wiadomość</button>
+                                                                                    th:if="${currentLoggedUserFriendsIds.contains(reaction.userAuthorId)}">Wyślij wiadomość</button>
                                                                             <button class="add-friend-btn"
-                                                                                    th:unless="${currentLoggedUserFriendsIds.contains(reaction.authorId)}">Dodaj znajomego</button>
+                                                                                    th:unless="${currentLoggedUserFriendsIds.contains(reaction.userAuthorId)}">Dodaj znajomego</button>
                                                                         </div>
                                                                     </div>
                                                                 </li>
@@ -178,7 +202,7 @@
                                                                    placeholder="Napisz komentarz...">
                                                             <span class="input-group-btn p-l-10">
                                           <button class="btn btn-primary f-s-12 rounded-corner"
-                                                  type="button">Comment</button>
+                                                  type="button">Skomentuj</button>
                                           </span>
                                                         </div>
                                                     </form>

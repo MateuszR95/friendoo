@@ -127,7 +127,7 @@ public class UserRepositoryTests {
     public void shouldReturnListWithOneUserWhenUserHasOneFriend() {
       // given
       // when
-      List<User> friendsByEmail = userRepository.findFriendsByEmail(user2.getEmail());
+      List<User> friendsByEmail = userRepository.findFriendsByUserEmail(user2.getEmail());
       // then
       assertEquals(1, friendsByEmail.size());
     }
@@ -135,7 +135,7 @@ public class UserRepositoryTests {
     public void shouldReturnListWithTwoUsersWhenUserHasTwoFriends() {
       // given
       // when
-      List<User> friendsByEmail = userRepository.findFriendsByEmail(user.getEmail());
+      List<User> friendsByEmail = userRepository.findFriendsByUserEmail(user.getEmail());
       List<Long> friendsIdList = friendsByEmail.stream().map(User::getId).toList();
       List<String> friendEmailList = friendsByEmail.stream().map(User::getEmail).toList();
       // then
@@ -148,7 +148,7 @@ public class UserRepositoryTests {
     public void shouldReturnEmptyListWhenUserDoesNotHaveFriends() {
       // given
       // when
-      List<User> friendsByEmail = userRepository.findFriendsByEmail(user4.getEmail());
+      List<User> friendsByEmail = userRepository.findFriendsByUserEmail(user4.getEmail());
       // then
       assertEquals(0, friendsByEmail.size());
     }
@@ -158,7 +158,7 @@ public class UserRepositoryTests {
       // given
       String emptyEmail = "";
       // when
-      List<User> friendsByEmail = userRepository.findFriendsByEmail(emptyEmail);
+      List<User> friendsByEmail = userRepository.findFriendsByUserEmail(emptyEmail);
       // then
       assertTrue(friendsByEmail.isEmpty());
     }
@@ -167,7 +167,7 @@ public class UserRepositoryTests {
     public void shouldReturnEmptyListWhenEmailIsNull() {
       // given
       // when
-      List<User> friendsByEmail = userRepository.findFriendsByEmail(null);
+      List<User> friendsByEmail = userRepository.findFriendsByUserEmail(null);
       // then
       assertTrue(friendsByEmail.isEmpty());
     }

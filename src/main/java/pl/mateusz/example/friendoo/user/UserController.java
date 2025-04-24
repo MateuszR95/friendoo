@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.mateusz.example.friendoo.page.category.PageCategoryDto;
 import pl.mateusz.example.friendoo.page.category.PageCategoryService;
-import pl.mateusz.example.friendoo.post.user.UserPostDto;
+import pl.mateusz.example.friendoo.post.PostDto;
 import pl.mateusz.example.friendoo.post.user.UserPostService;
-import pl.mateusz.example.friendoo.reaction.user.UserPostReactionService;
+import pl.mateusz.example.friendoo.reaction.PostReactionService;
 
 /**
  * Controller for user operations.
@@ -30,23 +30,23 @@ public class UserController {
   private final UserService userService;
   private final PageCategoryService pageCategoryService;
   private final UserPostService userPostService;
-  private final UserPostReactionService userPostReactionService;
+  private final PostReactionService postReactionService;
   private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
   /**
    * Constructor for UserController.
    *
-   * @param userService         the user service
-   * @param pageCategoryService the page category service
-   * @param userPostService     the user post service
+   * @param userService          the user service
+   * @param pageCategoryService  the page category service
+   * @param userPostService      the user post service
+   * @param postReactionService  the post reaction service
    */
   public UserController(UserService userService, PageCategoryService pageCategoryService,
-                        UserPostService userPostService,
-                        UserPostReactionService userPostReactionService) {
+                        UserPostService userPostService, PostReactionService postReactionService) {
     this.userService = userService;
     this.pageCategoryService = pageCategoryService;
     this.userPostService = userPostService;
-    this.userPostReactionService = userPostReactionService;
+    this.postReactionService = postReactionService;
   }
 
   @GetMapping("/home")
@@ -110,7 +110,7 @@ public class UserController {
       logger.warn("Użytkownik {} {} o numerze id {} nie znaleziony", firstName, lastName, id);
       return "error/404";
     }
-    List<UserPostDto> userPostsByAuthorId = userPostService.getUserPostsByAuthorId(id);
+    List<PostDto> userPostsByAuthorId = userPostService.getUserPostsByAuthorId(id);
     List<Long> currentLoggedUserFriendsIds = userService
         .getCurrentLoggedUserFriendsIds(authentication);
     UserCredentialsDto currentLoggedUser = userService.findCredentialsByEmail(authentication

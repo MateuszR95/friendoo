@@ -22,18 +22,17 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.mateusz.example.friendoo.comment.user.UserPhotoComment;
-import pl.mateusz.example.friendoo.comment.user.UserPostComment;
+import pl.mateusz.example.friendoo.comment.user.PhotoComment;
+import pl.mateusz.example.friendoo.comment.user.PostComment;
 import pl.mateusz.example.friendoo.gender.UserGender;
 import pl.mateusz.example.friendoo.invitation.InvitationToFriendship;
 import pl.mateusz.example.friendoo.page.Page;
-import pl.mateusz.example.friendoo.photo.UserPhoto;
+import pl.mateusz.example.friendoo.photo.Photo;
 import pl.mateusz.example.friendoo.post.user.UserPost;
-import pl.mateusz.example.friendoo.reaction.page.PageLike;
-import pl.mateusz.example.friendoo.reaction.page.PagePostCommentReaction;
-import pl.mateusz.example.friendoo.reaction.user.UserPhotoReaction;
-import pl.mateusz.example.friendoo.reaction.user.UserPostCommentReaction;
-import pl.mateusz.example.friendoo.reaction.user.UserPostReaction;
+import pl.mateusz.example.friendoo.reaction.PageLike;
+import pl.mateusz.example.friendoo.reaction.PhotoReaction;
+import pl.mateusz.example.friendoo.reaction.PostCommentReaction;
+import pl.mateusz.example.friendoo.reaction.PostReaction;
 import pl.mateusz.example.friendoo.user.favouritepagecategory.UserFavouritePageCategory;
 import pl.mateusz.example.friendoo.user.location.UserAddress;
 import pl.mateusz.example.friendoo.user.passwordreset.UserPasswordResetToken;
@@ -72,7 +71,7 @@ public class User {
   private UserGender gender;
   private LocalDateTime joinedAt;
 
-  @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   @JoinTable(name = "users_roles",
       joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
       inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
@@ -96,28 +95,28 @@ public class User {
   @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
   private Set<UserPost> posts = new HashSet<>();
 
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-  private Set<UserPostReaction> postCommentReactions = new HashSet<>();
+  @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+  private Set<PostReaction> postCommentReactions = new HashSet<>();
 
   @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-  private Set<UserPostComment> postComments = new HashSet<>();
+  private Set<PostComment> postComments = new HashSet<>();
 
   @OneToOne
   @JoinColumn(name = "profile_photo_id")
-  private UserPhoto profilePicture;
+  private Photo profilePicture;
 
   @OneToOne
   @JoinColumn(name = "background_photo_id")
-  private UserPhoto backgroundPhoto;
+  private Photo backgroundPhoto;
 
   @OneToMany(mappedBy = "user")
-  private List<UserPhoto> photos = new ArrayList<>();
-
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-  private Set<UserPhotoReaction> photoReactions = new HashSet<>();
+  private List<Photo> photos = new ArrayList<>();
 
   @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-  private Set<UserPhotoComment> photoComments = new HashSet<>();
+  private Set<PhotoReaction> photoReactions = new HashSet<>();
+
+  @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+  private Set<PhotoComment> photoComments = new HashSet<>();
 
   @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL)
   private Set<Page> createdPages = new HashSet<>();
@@ -132,10 +131,7 @@ public class User {
   private Set<PageVisit> pageVisits = new HashSet<>();
 
   @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-  private Set<UserPostCommentReaction> userPostCommentReactions = new HashSet<>();
-
-  @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-  private Set<PagePostCommentReaction> pagePostCommentReactions = new HashSet<>();
+  private Set<PostCommentReaction> userPostCommentReactions = new HashSet<>();
 
   private boolean isActiveAccount;
 

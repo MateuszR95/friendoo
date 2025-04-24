@@ -20,10 +20,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public abstract class Post {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-
   private LocalDateTime createdAt;
 
   private String content;

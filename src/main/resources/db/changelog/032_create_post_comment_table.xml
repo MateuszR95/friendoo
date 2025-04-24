@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet id="032_create_post_comment_table" author="mrojek">
+        <createTable tableName="post_comment">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="page_post_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="user_post_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_at" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content" type="varchar(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="page_author_id" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint
+                baseTableName="post_comment"
+                baseColumnNames="user_post_id"
+                referencedTableName="user_post"
+                referencedColumnNames="id"
+                constraintName="fk_post_comment_user_post"/>
+
+        <addForeignKeyConstraint
+                baseTableName="post_comment"
+                baseColumnNames="page_post_id"
+                referencedTableName="page_post"
+                referencedColumnNames="id"
+                constraintName="fk_post_comment_page_post"/>
+
+        <addForeignKeyConstraint
+                baseTableName="post_comment"
+                baseColumnNames="author_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_post_comment_user"/>
+
+        <addForeignKeyConstraint
+                baseTableName="post_comment"
+                baseColumnNames="page_author_id"
+                referencedTableName="page"
+                referencedColumnNames="id"
+                constraintName="fk_post_comment_page"/>
+
+    </changeSet>
+</databaseChangeLog>

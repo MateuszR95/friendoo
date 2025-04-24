@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class UserPostController {
 
-  private final UserPostCommentService userPostCommentService;
+  private final PostCommentService postCommentService;
 
-  public UserPostController(UserPostCommentService userPostCommentService) {
-    this.userPostCommentService = userPostCommentService;
+  public UserPostController(PostCommentService postCommentService) {
+    this.postCommentService = postCommentService;
   }
 }

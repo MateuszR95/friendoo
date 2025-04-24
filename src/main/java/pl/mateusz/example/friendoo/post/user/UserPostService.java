@@ -1,10 +1,14 @@
 package pl.mateusz.example.friendoo.post.user;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import pl.mateusz.example.friendoo.reaction.user.UserPostReactionDto;
-import pl.mateusz.example.friendoo.reaction.user.UserPostReactionService;
+import pl.mateusz.example.friendoo.post.MappablePost;
+import pl.mateusz.example.friendoo.post.PostDto;
+import pl.mateusz.example.friendoo.post.UserPostWrapper;
+import pl.mateusz.example.friendoo.reaction.PostReactionDto;
+import pl.mateusz.example.friendoo.reaction.PostReactionService;
 
 /**
  * Service class for managing user posts.
@@ -15,42 +19,34 @@ public class UserPostService {
 
   private final UserPostRepository userPostRepository;
 
-  private final UserPostReactionService userPostReactionService;
+  private final PostReactionService postReactionService;
 
-  /**
-   * Constructor for UserPostService.
-   *
-   * @param userPostRepository         the user post repository
-   */
   public UserPostService(UserPostRepository userPostRepository,
-                         UserPostReactionService userPostReactionService) {
+                         PostReactionService postReactionService) {
     this.userPostRepository = userPostRepository;
-    this.userPostReactionService = userPostReactionService;
+    this.postReactionService = postReactionService;
   }
 
   /**
-   * Retrieves a set of user posts by the author's ID.
+   * Retrieves a list of user posts authored by a specific user,
+   * along with their associated reactions.
+   * This method avoids the N+1 query problem by fetching all reactions
+   * for the user's posts in a single batch query.
    *
-   * @param authorId the ID of the author whose posts are to be retrieved
-   * @return a list of UserPostDto representing the user's posts
+   * @param authorId the ID of the user whose posts are being retrieved
+   * @return a list of UserPostDto containing post data and reactions
    */
-  public List<UserPostDto> getUserPostsByAuthorId(Long authorId) {
-    return userPostRepository.findUserPostsByAuthorIdOrderByCreatedAtDesc(authorId)
-      .stream()
-      .map(this::createUserPostFromEntity)
+  public List<PostDto> getUserPostsByAuthorId(Long authorId) {
+    List<UserPost> posts = userPostRepository.findUserPostsByAuthorIdOrderByCreatedAtDesc(authorId);
+    List<Long> postIds = posts.stream().map(UserPost::getId).toList();
+    Map<Long, List<PostReactionDto>> reactionsMap = postReactionService
+        .getReactionsForMultipleUserPosts(postIds);
+    return posts.stream()
+      .map(post -> {
+        MappablePost wrapper = new UserPostWrapper(post);
+        return wrapper.toDto(reactionsMap.getOrDefault(post.getId(), List.of()));
+      })
       .collect(Collectors.toList());
-  }
-
-  /**
-   * Converts a {@link UserPost} entity to a {@link UserPostDto}, including its reactions.
-   *
-   * @param userPost the post entity to convert
-   * @return the corresponding DTO with post data and reactions
-   */
-  private UserPostDto createUserPostFromEntity(UserPost userPost) {
-    List<UserPostReactionDto> reactionsByPostId = userPostReactionService
-        .getReactionsByPostId(userPost.getId());
-    return UserPostDtoMapper.mapToUserPostDto(userPost, reactionsByPostId);
   }
 
 }
