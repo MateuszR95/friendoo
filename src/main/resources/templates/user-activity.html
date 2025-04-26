@@ -72,11 +72,14 @@
                                         <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
                                     </div>
                                     <div class="input">
-                                        <form action="">
+                                        <form id="postForm">
+                                            <div id="errorDiv"></div>
                                             <div class="input-group">
-                                                <textarea class="form-control rounded-corner auto-expand" rows="1" placeholder="Co słychać?"></textarea>
+
+                                            <textarea id="postContent" class="form-control rounded-corner auto-expand"
+                                            rows="1" placeholder="Co słychać?"></textarea>
                                                 <span class="input-group-btn p-l-10">
-                                            <button class="btn btn-primary f-s-12 rounded-corner" type="button">Opublikuj</button>
+                                            <button class="btn btn-primary f-s-12 rounded-corner" type="submit">Opublikuj</button>
                                             </span>
                                             </div>
                                         </form>
@@ -147,9 +150,11 @@
                                                                                th:text="|${reaction.authorFirstName} ${reaction.authorLastName}|">
                                                                             </a>
                                                                             <button class="message-btn"
-                                                                                    th:if="${currentLoggedUserFriendsIds.contains(reaction.userAuthorId)}">Wyślij wiadomość</button>
+                                                                                    th:if="${currentLoggedUserFriendsIds.contains(reaction.userAuthorId)
+                                                                                    and currentLoggedUser.id != user.id}">Wyślij wiadomość</button>
                                                                             <button class="add-friend-btn"
-                                                                                    th:unless="${currentLoggedUserFriendsIds.contains(reaction.userAuthorId)}">Dodaj znajomego</button>
+                                                                                    th:if="${!currentLoggedUserFriendsIds.contains(reaction.userAuthorId)
+                                                                                    and currentLoggedUser.id != user.id}">Dodaj znajomego</button>
                                                                         </div>
                                                                     </div>
                                                                 </li>

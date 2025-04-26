@@ -9,7 +9,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -51,5 +53,5 @@ public class PagePost extends Post {
   private Set<PostComment> comments = new HashSet<>();
 
   @OneToMany(mappedBy = "pagePost", cascade = CascadeType.ALL)
-  private Set<Photo> photos = new HashSet<>();
+  private List<Photo> photos = new ArrayList<>();
 }

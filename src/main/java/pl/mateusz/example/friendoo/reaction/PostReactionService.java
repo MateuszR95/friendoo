@@ -12,10 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.mateusz.example.friendoo.exceptions.ReactionNotFoundException;
 import pl.mateusz.example.friendoo.exceptions.UserNotFoundException;
 import pl.mateusz.example.friendoo.exceptions.UserPostNotFoundException;
+import pl.mateusz.example.friendoo.post.PostService;
 import pl.mateusz.example.friendoo.post.user.UserPost;
 import pl.mateusz.example.friendoo.post.user.UserPostRepository;
 import pl.mateusz.example.friendoo.user.User;
 import pl.mateusz.example.friendoo.user.UserRepository;
+import pl.mateusz.example.friendoo.user.UserService;
 
 /**
  * Service class for managing user post reactions.
@@ -26,22 +28,28 @@ public class PostReactionService {
 
   private final PostReactionRepository postReactionRepository;
   private final UserRepository userRepository;
+
+  private final UserService userService;
+
   private final UserPostRepository userPostRepository;
   private final ReactionRepository reactionRepository;
 
   /**
    * Constructor for PostReactionService.
    *
-   * @param postReactionRepository the repository for user post reactions
-   * @param userRepository         the repository for users
-   * @param userPostRepository     the repository for user posts
-   * @param reactionRepository     the repository for reactions
+   * @param postReactionRepository the repository for post reactions
+   * @param userRepository the repository for users
+   * @param userService the service for user-related operations
+   * @param userPostRepository the repository for user posts
+   * @param reactionRepository the repository for reactions
    */
   public PostReactionService(PostReactionRepository postReactionRepository,
-                             UserRepository userRepository, UserPostRepository userPostRepository,
+                             UserRepository userRepository, UserService userService,
+                             UserPostRepository userPostRepository,
                              ReactionRepository reactionRepository) {
     this.postReactionRepository = postReactionRepository;
     this.userRepository = userRepository;
+    this.userService = userService;
     this.userPostRepository = userPostRepository;
     this.reactionRepository = reactionRepository;
   }
@@ -62,51 +70,59 @@ public class PostReactionService {
       .collect(Collectors.groupingBy(PostReactionDto::getUserPostId));
   }
 
-
   /**
-   * Adds, updates, or removes a user's reaction to a specific user post.
-   * <p>
-   * If the reaction already exists and is of the same type, it is removed (toggled off).
-   * If the reaction exists but is of a different type, the existing reaction is updated.
-   * If no previous reaction exists, a new reaction is created and saved.
-   * </p>
+   * Handles user post reactions.
    *
-   * @param postReactionDto Data transfer object containing details about the
-   *                       reaction and target post.
-   * @param authentication The authentication token containing user details.
-   * @throws UserNotFoundException if the authenticated user cannot be found in the database.
-   * @throws UserPostNotFoundException if the post specified by {@code postReactionDto}
-   *                                   cannot be found.
-   * @throws ReactionNotFoundException if the reaction type specified by {@code postReactionDto}
-   *                                   cannot be found.
+   * @param postReactionDto reaction details
+   * @param authentication  user authentication
+   * @return updated or new reaction, or null if removed
+   * @throws UserNotFoundException       if user not found
+   * @throws UserPostNotFoundException   if post not found
+   * @throws ReactionNotFoundException   if reaction type not found
    */
   @Transactional
-  public void reactToUserPost(PostReactionDto postReactionDto,
+  public PostReactionDto reactToUserPost(PostReactionDto postReactionDto,
                               Authentication authentication) {
-    String userEmail = ((UserDetails) authentication.getPrincipal()).getUsername();
-    User user = userRepository.findUserByEmail(userEmail).orElseThrow(
-        () -> new UserNotFoundException("Nie znaleziono użytkownika"));
-    UserPost userPost = userPostRepository.findById(postReactionDto.getUserPostId())
-        .orElseThrow(() -> new UserPostNotFoundException("Nie znaleziono posta"));
-    Reaction reaction = reactionRepository.findByReactionType(postReactionDto.getReactionType())
-        .orElseThrow(() -> new ReactionNotFoundException("Nie znaleziono reakcji"));
+    User user = userService.getUserFromAuthentication(authentication);
+    UserPost userPost = userPostRepository.findById(postReactionDto.getUserPostId()).orElseThrow(
+        () -> new UserPostNotFoundException("Nie znaleziono posta"));
+    Reaction reaction = findReactionByType(postReactionDto);
     Optional<PostReaction> reactionOnPostOptional = postReactionRepository
         .findByUserPostIdAndAuthorId(userPost.getId(), user.getId());
     if (reactionOnPostOptional.isPresent()) {
       PostReaction postReaction = reactionOnPostOptional.get();
-      if (postReaction.getReaction().getReactionType().equals(postReactionDto
-          .getReactionType())) {
-        postReactionRepository.delete(postReaction);
-      } else {
-        postReaction.setReaction(reaction);
-        postReaction.setReactionTime(LocalDateTime.now());
-        postReactionRepository.save(postReaction);
-      }
+      return handleExistingReaction(postReactionDto, postReaction, reaction);
     } else {
-      PostReaction postReaction = createPostReactionFromDto(postReactionDto,
-          authentication);
-      postReactionRepository.save(postReaction);
+      return createAndSaveNewReaction(postReactionDto, authentication);
     }
+  }
+
+  private PostReactionDto createAndSaveNewReaction(PostReactionDto postReactionDto,
+                                        Authentication authentication) {
+    PostReaction postReaction = createPostReactionFromDto(postReactionDto,
+        authentication);
+    PostReaction savedReaction = postReactionRepository.save(postReaction);
+    return PostReactionDtoMapper.mapToDto(savedReaction);
+  }
+
+  private PostReactionDto handleExistingReaction(PostReactionDto postReactionDto,
+                                      PostReaction postReaction,
+                                      Reaction reaction) {
+    if (postReaction.getReaction().getReactionType().equals(postReactionDto
+        .getReactionType())) {
+      postReactionRepository.delete(postReaction);
+      return null;
+    } else {
+      postReaction.setReaction(reaction);
+      postReaction.setReactionTime(LocalDateTime.now());
+      PostReaction updatedReaction = postReactionRepository.save(postReaction);
+      return PostReactionDtoMapper.mapToDto(updatedReaction);
+    }
+  }
+
+  private Reaction findReactionByType(PostReactionDto postReactionDto) {
+    return reactionRepository.findByReactionType(postReactionDto.getReactionType())
+        .orElseThrow(() -> new ReactionNotFoundException("Nie znaleziono reakcji"));
   }
 
   private PostReaction createPostReactionFromDto(PostReactionDto postReactionDto,
@@ -116,11 +132,10 @@ public class PostReactionService {
     User user = userRepository.findUserByEmail(userDetails.getUsername()).orElseThrow(
         () -> new UserNotFoundException("Nie znaleziono użytkownika"));
     postReaction.setAuthor(user);
-    UserPost userPost = userPostRepository.findById(postReactionDto.getUserPostId())
-        .orElseThrow(() -> new UserPostNotFoundException("Nie znaleziono posta"));
+    UserPost userPost = userPostRepository.findById(postReactionDto.getUserPostId()).orElseThrow(
+        () -> new UserPostNotFoundException("Nie znaleziono posta"));
     postReaction.setUserPost(userPost);
-    Reaction reaction = reactionRepository.findByReactionType(postReactionDto.getReactionType())
-        .orElseThrow(() -> new ReactionNotFoundException("Nie znaleziono reakcji"));
+    Reaction reaction = findReactionByType(postReactionDto);
     postReaction.setReaction(reaction);
     postReaction.setReactionTime(LocalDateTime.now());
     return postReaction;

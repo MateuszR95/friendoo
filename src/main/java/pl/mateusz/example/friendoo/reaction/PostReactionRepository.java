@@ -2,6 +2,7 @@ package pl.mateusz.example.friendoo.reaction;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -24,5 +25,9 @@ public interface PostReactionRepository extends JpaRepository<PostReaction, Long
   List<PostReaction> findByUserPostIds(@Param("postIds") List<Long> postIds);
 
   Optional<PostReaction> findByUserPostIdAndAuthorId(Long postId, Long authorId);
+
+  Set<PostReaction> findAllByUserPostId(Long id);
+
+  Set<PostReaction> findAllByPagePostId(Long id);
 
 }

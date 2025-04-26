@@ -1,5 +1,6 @@
 package pl.mateusz.example.friendoo.comment.user;
 
+import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -8,4 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  for the PostComment entity. */
 public interface PostCommentRepository extends JpaRepository<PostComment, Long> {
 
+  Set<PostComment> findAllByUserPostId(Long id);
+
+  Set<PostComment> findAllByPagePostId(Long id);
 }

@@ -22,12 +22,23 @@ public class PostReactionController {
     this.postReactionService = postReactionService;
   }
 
+  /**
+   * Endpoint to react to a user post.
+   *
+   * @param dto the PostReactionDto containing reaction details
+   * @param authentication the authentication object containing user details
+   * @return ResponseEntity containing the PostReactionDto
+   */
   @PostMapping("/reactions")
   @ResponseBody
   public ResponseEntity<PostReactionDto> reactOnUserPost(@RequestBody PostReactionDto dto,
                                                              Authentication authentication) {
-    postReactionService.reactToUserPost(dto, authentication);
-    return ResponseEntity.ok(dto);
+    PostReactionDto postReactionDto = postReactionService.reactToUserPost(dto, authentication);
+    if (postReactionDto == null) {
+      return ResponseEntity.noContent().build();
+    } else {
+      return ResponseEntity.ok(postReactionDto);
+    }
   }
 
 }

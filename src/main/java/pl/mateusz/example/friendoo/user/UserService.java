@@ -390,5 +390,18 @@ public class UserService {
       .toList();
   }
 
+  /**
+   * Retrieves the user from the authentication object.
+   *
+   * @param authentication the authentication object containing user details
+   * @return the User object
+   * @throws UserNotFoundException if the user is not found
+   */
+  public User getUserFromAuthentication(Authentication authentication) {
+    String userEmail = ((UserDetails) authentication.getPrincipal()).getUsername();
+    return userRepository.findUserByEmail(userEmail).orElseThrow(
+      () -> new UserNotFoundException("Nie znaleziono użytkownika"));
+  }
+
 }
 
