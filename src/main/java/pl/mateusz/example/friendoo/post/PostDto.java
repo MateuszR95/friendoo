@@ -1,5 +1,6 @@
 package pl.mateusz.example.friendoo.post;
 
+import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -25,6 +26,7 @@ public class PostDto {
   private Long id;
   private Long userAuthorId;
   private Long pageAuthorId;
+  @NotBlank
   private String content;
   private LocalDateTime createdAt;
   private String createdAtDisplay;

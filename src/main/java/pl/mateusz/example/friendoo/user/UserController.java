@@ -19,7 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import pl.mateusz.example.friendoo.page.category.PageCategoryDto;
 import pl.mateusz.example.friendoo.page.category.PageCategoryService;
 import pl.mateusz.example.friendoo.post.PostDto;
-import pl.mateusz.example.friendoo.post.user.UserPostService;
+import pl.mateusz.example.friendoo.post.PostService;
 import pl.mateusz.example.friendoo.reaction.PostReactionService;
 
 /**
@@ -29,7 +29,7 @@ import pl.mateusz.example.friendoo.reaction.PostReactionService;
 public class UserController {
   private final UserService userService;
   private final PageCategoryService pageCategoryService;
-  private final UserPostService userPostService;
+  private final PostService postService;
   private final PostReactionService postReactionService;
   private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -38,14 +38,14 @@ public class UserController {
    *
    * @param userService          the user service
    * @param pageCategoryService  the page category service
-   * @param userPostService      the user post service
+   * @param postService      the user post service
    * @param postReactionService  the post reaction service
    */
   public UserController(UserService userService, PageCategoryService pageCategoryService,
-                        UserPostService userPostService, PostReactionService postReactionService) {
+                        PostService postService, PostReactionService postReactionService) {
     this.userService = userService;
     this.pageCategoryService = pageCategoryService;
-    this.userPostService = userPostService;
+    this.postService = postService;
     this.postReactionService = postReactionService;
   }
 
@@ -110,7 +110,7 @@ public class UserController {
       logger.warn("Użytkownik {} {} o numerze id {} nie znaleziony", firstName, lastName, id);
       return "error/404";
     }
-    List<PostDto> userPostsByAuthorId = userPostService.getUserPostsByAuthorId(id);
+    List<PostDto> userPostsByAuthorId = postService.getUserPostsByAuthorId(id);
     List<Long> currentLoggedUserFriendsIds = userService
         .getCurrentLoggedUserFriendsIds(authentication);
     UserCredentialsDto currentLoggedUser = userService.findCredentialsByEmail(authentication

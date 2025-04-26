@@ -181,3 +181,53 @@ document.querySelectorAll('textarea.auto-expand').forEach(textarea => {
         textarea.style.height = textarea.scrollHeight + 'px';
     });
 });
+
+
+document.getElementById('postForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    clearErrors();
+
+    const content = document.getElementById('postContent').value.trim();
+
+    const postDto = {
+        content: content,
+        postType: "USER_POST"
+    };
+
+    try {
+        const response = await fetch('/api/posts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(postDto)
+        });
+
+        if (response.ok) {
+            const newPost = await response.json();
+            console.log('Post dodany:', newPost);
+            location.reload();
+        } else if (response.status === 400) {
+            const errorData = await response.json();
+            for (const [field, message] of Object.entries(errorData)) {
+                showError(`${message}`);
+            }
+        } else {
+            alert("Wystąpił błąd przy dodawaniu posta.");
+        }
+    } catch (error) {
+        console.error('Błąd:', error);
+        alert("Błąd sieci lub serwera.");
+    }
+});
+
+function showError(message) {
+    const errorDiv = document.getElementById('errorDiv');
+    errorDiv.innerHTML += `<p style="color:red;">${message}</p>`;
+}
+
+function clearErrors() {
+    const errorDiv = document.getElementById('errorDiv');
+    errorDiv.innerHTML = '';
+}
