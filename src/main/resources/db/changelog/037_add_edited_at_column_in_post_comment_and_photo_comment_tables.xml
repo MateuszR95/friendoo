@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.2.xsd">
+
+    <changeSet id="037_add_edited_at_column_in_post_comment_and_photo_comment_tables" author="mrojek">
+        <addColumn tableName="post_comment">
+            <column name="edited_at" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="photo_comment">
+            <column name="edited_at" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

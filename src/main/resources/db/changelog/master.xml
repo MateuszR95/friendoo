@@ -52,9 +52,12 @@
     <include file="030_create_photo_reaction_table.xml" relativeToChangelogFile="true"/>
     <include file="031_create_post_reaction_table.xml" relativeToChangelogFile="true"/>
     <include file="032_create_post_comment_table.xml" relativeToChangelogFile="true"/>
+    <include file="037_add_edited_at_column_in_post_comment_and_photo_comment_tables.xml" relativeToChangelogFile="true"/>
     <include file="033_create_post_comment_reaction_table.xml" relativeToChangelogFile="true"/>
     <include file="034_remove_page_user_comment_reaction_structures.xml" relativeToChangelogFile="true"/>
+    <include file="036_add_quoted_comment_id_column_id_post_comment_table.xml" relativeToChangelogFile="true"/>
     <include file="../testdata/025_post_comment.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="../testdata/026_post_comment_reaction.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="../testdata/027_post_reaction.sql" relativeToChangelogFile="true" context="dev"/>
+    <include file="035_remove_user_post_comment_and_user_post_comment_reaction_tables.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

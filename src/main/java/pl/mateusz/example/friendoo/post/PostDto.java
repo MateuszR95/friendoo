@@ -5,11 +5,13 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import pl.mateusz.example.friendoo.comment.PostCommentDto;
 import pl.mateusz.example.friendoo.reaction.PostReactionDto;
 import pl.mateusz.example.friendoo.reaction.ReactionType;
 
@@ -32,7 +34,8 @@ public class PostDto {
   private String createdAtDisplay;
   private int reactionsCount;
   private int commentsCount;
-  private List<PostReactionDto> reactions;
+  private Set<PostReactionDto> reactions;
+  private List<PostCommentDto> comments;
   private PostType postType;
 
   /**
@@ -67,7 +70,7 @@ public class PostDto {
   }
 
   @SuppressWarnings("checkstyle:MissingJavadocMethod")
-  public ReactionType getUserPostReactionTypeByCurrentLoggedUserId(Long id) {
+  public ReactionType getUserPostReactionTypeByUserId(Long id) {
     return reactions.stream()
     .filter(userPostReactionDto -> userPostReactionDto.getUserAuthorId()
       .equals(id))
@@ -75,4 +78,6 @@ public class PostDto {
     .findFirst()
     .orElse(null);
   }
+
+
 }

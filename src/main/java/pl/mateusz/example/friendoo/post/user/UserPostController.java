@@ -1,4 +1,4 @@
-package pl.mateusz.example.friendoo.comment.user;
+package pl.mateusz.example.friendoo.post.user;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +33,10 @@ public class UserPostController {
    */
   @PostMapping("/posts")
   @ResponseBody
-  public ResponseEntity<PostDto> publishUserPost(@RequestBody@Valid PostDto postDto,
+  public ResponseEntity<PostDto> publishUserPost(@RequestBody @Valid PostDto postDto,
                                                  Authentication authentication) {
     PostDto savedPost = postService.addUserPost(postDto, authentication);
     return ResponseEntity.ok(savedPost);
   }
+
 }

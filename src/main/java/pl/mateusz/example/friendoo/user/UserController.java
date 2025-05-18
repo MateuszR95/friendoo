@@ -2,6 +2,7 @@ package pl.mateusz.example.friendoo.user;
 
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.TreeSet;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import pl.mateusz.example.friendoo.comment.PostCommentAuthorDto;
 import pl.mateusz.example.friendoo.page.category.PageCategoryDto;
 import pl.mateusz.example.friendoo.page.category.PageCategoryService;
 import pl.mateusz.example.friendoo.post.PostDto;
@@ -115,10 +117,14 @@ public class UserController {
         .getCurrentLoggedUserFriendsIds(authentication);
     UserCredentialsDto currentLoggedUser = userService.findCredentialsByEmail(authentication
         .getName()).orElseThrow(() -> new UsernameNotFoundException("Brak takiego użytkownika"));
+    Map<Long, List<PostCommentAuthorDto>> uniquePostCommentAuthorByUserPosts = postService
+        .getUniqueCommentAuthorsByPostId(userPostsByAuthorId);
     model.addAttribute("currentLoggedUserFriendsIds", currentLoggedUserFriendsIds);
     model.addAttribute("posts", userPostsByAuthorId);
     model.addAttribute("user", userDisplayDtoOptional.get());
     model.addAttribute("currentLoggedUser", currentLoggedUser);
+    model.addAttribute("uniqueCommentAuthorsPerPost", uniquePostCommentAuthorByUserPosts);
     return "user-activity";
   }
+
 }

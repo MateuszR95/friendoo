@@ -11,7 +11,7 @@ import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.mateusz.example.friendoo.comment.user.PostComment;
+import pl.mateusz.example.friendoo.comment.PostComment;
 
 /**
  * Entity representing a reaction given to a comment on a user post.
