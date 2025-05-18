@@ -1,4 +1,4 @@
-package pl.mateusz.example.friendoo.comment.user;
+package pl.mateusz.example.friendoo.comment;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -43,4 +43,7 @@ public class PostComment extends CommentEntry {
   @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
   private Set<PostCommentReaction> reactions = new HashSet<>();
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "quoted_comment_id")
+  private PostComment quotedComment;
 }

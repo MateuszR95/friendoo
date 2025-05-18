@@ -1,6 +1,8 @@
 package pl.mateusz.example.friendoo.post;
 
 import java.util.List;
+import java.util.Set;
+import pl.mateusz.example.friendoo.comment.PostCommentDto;
 import pl.mateusz.example.friendoo.post.page.PagePost;
 import pl.mateusz.example.friendoo.reaction.PostReactionDto;
 
@@ -18,7 +20,7 @@ public class PagePostWrapper implements MappablePost {
   }
 
   @Override
-  public PostDto toDto(List<PostReactionDto> reactions) {
+  public PostDto toDto(Set<PostReactionDto> reactions, List<PostCommentDto> comments) {
     return PostDto.builder()
       .id(pagePost.getId())
       .userAuthorId(pagePost.getPageAdminUser().getId())
@@ -29,6 +31,7 @@ public class PagePostWrapper implements MappablePost {
       .reactionsCount(pagePost.getReactions().size())
       .commentsCount(pagePost.getComments().size())
       .reactions(reactions)
+      .comments(comments)
       .postType(PostType.PAGE_POST)
       .build();
   }

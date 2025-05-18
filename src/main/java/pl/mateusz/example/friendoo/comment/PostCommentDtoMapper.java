@@ -1,4 +1,4 @@
-package pl.mateusz.example.friendoo.comment.user;
+package pl.mateusz.example.friendoo.comment;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -8,6 +8,7 @@ import pl.mateusz.example.friendoo.page.Page;
 import pl.mateusz.example.friendoo.post.page.PagePost;
 import pl.mateusz.example.friendoo.post.user.UserPost;
 import pl.mateusz.example.friendoo.reaction.PostCommentReaction;
+import pl.mateusz.example.friendoo.reaction.PostCommentReactionDtoMapper;
 import pl.mateusz.example.friendoo.user.User;
 
 /**
@@ -29,10 +30,13 @@ public class PostCommentDtoMapper {
     return PostCommentDto.builder()
         .id(postComment.getId())
         .createdAt(postComment.getCreatedAt())
+        .editedAt(postComment.getEditedAt())
         .content(postComment.getContent())
         .userAuthorId(Optional.ofNullable(postComment.getAuthor())
           .map(User::getId)
           .orElse(null))
+        .authorFirstName(postComment.getAuthor().getFirstName())
+        .authorLastName(postComment.getAuthor().getLastName())
         .pageAuthorId(Optional.ofNullable(postComment.getPageAuthor())
           .map(Page::getId)
           .orElse(null))
@@ -44,6 +48,23 @@ public class PostCommentDtoMapper {
           .orElse(null))
         .creationDateDescription(formatCommentDateToDescription(postComment.getCreatedAt()))
         .reactionsCount(postComment.getReactions().size())
+        .reactions(postComment.getReactions().stream()
+          .map(PostCommentReactionDtoMapper::mapToPostCommentReactionDto)
+          .toList())
+      .quotedCommentId(Optional.ofNullable(postComment.getQuotedComment())
+        .map(PostComment::getId)
+        .orElse(null))
+      .quotedAuthorFirstName(Optional.ofNullable(postComment.getQuotedComment())
+        .map(PostComment::getAuthor)
+        .map(User::getFirstName)
+        .orElse(null))
+      .quotedAuthorLastName(Optional.ofNullable(postComment.getQuotedComment())
+        .map(PostComment::getAuthor)
+        .map(User::getLastName)
+        .orElse(null))
+      .quotedContent(Optional.ofNullable(postComment.getQuotedComment())
+        .map(PostComment::getContent)
+        .orElse(null))
         .build();
   }
 
@@ -64,6 +85,7 @@ public class PostCommentDtoMapper {
     postComment.setContent(dto.getContent());
     postComment.setCreatedAt(dto.getCreatedAt());
     postComment.setUserPost(userPost);
+    postComment.setEditedAt(dto.getEditedAt());
     postComment.setAuthor(user);
     postComment.setReactions(userPostCommentReactions);
     return postComment;
@@ -72,7 +94,7 @@ public class PostCommentDtoMapper {
   private static String formatCommentDateToDescription(LocalDateTime createdAt) {
     LocalDateTime now = LocalDateTime.now();
     long seconds = ChronoUnit.SECONDS.between(createdAt, now);
-    if (seconds == 1) {
+    if (seconds >= 0 && seconds < 2) {
       return "1 sekundę temu";
     } else if (seconds >= 2 && seconds <= 4) {
       return seconds + " sekundy temu";

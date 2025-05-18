@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.mateusz.example.friendoo.comment.user.PhotoComment;
+import pl.mateusz.example.friendoo.comment.PhotoComment;
 
 /**
  * Entity representing a reaction given to a comment on a user photo.

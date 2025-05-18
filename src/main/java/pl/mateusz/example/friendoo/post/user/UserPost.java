@@ -16,7 +16,7 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.mateusz.example.friendoo.comment.user.PostComment;
+import pl.mateusz.example.friendoo.comment.PostComment;
 import pl.mateusz.example.friendoo.photo.Photo;
 import pl.mateusz.example.friendoo.post.Post;
 import pl.mateusz.example.friendoo.reaction.PostReaction;
@@ -43,7 +43,7 @@ public class UserPost extends Post {
   private Set<PostReaction> reactions = new HashSet<>();
 
   @OneToMany(mappedBy = "userPost", cascade = CascadeType.ALL)
-  private Set<PostComment> comments = new HashSet<>();
+  private List<PostComment> comments = new ArrayList<>();
 
   @OneToMany(mappedBy = "userPost", cascade = CascadeType.ALL)
   private List<Photo> userPostPhoto = new ArrayList<>();

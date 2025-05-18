@@ -31,12 +31,16 @@
                                     <h4 class="m-t-10 m-b-5" th:text="|${user.firstName} ${user.lastName}|">Imię
                                         Nazwisko</h4>
                                     <p class="m-b-10" style="visibility: hidden;">Opis</p>
-                                    <a th:if="${currentLoggedUser.id == user.id}"
+
+                                    <a th:if="${currentUser.id == user.id}"
                                        href="#"
                                        class="btn btn-sm btn-info mb-2">Edytuj profil</a>
-
-                                    <a th:if="${currentLoggedUser.id != user.id}"
-                                       class="btn btn-sm btn-info mb-2 invisible">Edytuj profil</a>
+                                    <a th:if="${currentUser.id != user.id and !friendsIds.contains(user.id)}"
+                                       href="#"
+                                       class="btn btn-sm btn-info mb-2">Dodaj znajomego</a>
+                                    <a th:if="${currentUser.id != user.id}"
+                                       href="#"
+                                       class="btn btn-sm btn-info mb-2">Wyślij wiadomość</a>
 
                                 </div>
                                 <!-- END profile-header-info -->
@@ -48,7 +52,7 @@
                                         th:href="@{'/{firstName}.{lastName}.{id}'(firstName=${user.firstName}, lastName=${user.lastName}, id=${user.id})}"
                                         class="nav-link_">INFORMACJE</a></li>
                                 <li class="nav-item"><a
-                                        th:href="@{'/{firstName}.{lastName}.{id}/activity'(firstName=${user.firstName}, lastName=${user.lastName}, id=${user.id})}">AKTYWNOŚĆ</a>
+                                        th:href="@{'/{firstName}.{lastName}.{id}/activity'(firstName=${user.firstName}, lastName=${user.lastName}, id=${user.id})}">POSTY</a>
                                 </li>
                                 <li class="nav-item"><a href="https://www.bootdey.com/snippets/view/profile-photos"
                                                         target="__blank" class="nav-link_">ZDJĘCIA</a></li>
@@ -67,17 +71,19 @@
                             <!-- begin #profile-post tab -->
                             <div class="tab-pane fade active show" id="profile-post">
 
-                                <div class="timeline-comment-box outer-comment-box">
+                                    <div class="timeline-comment-box outer-comment-box" th:if="${currentLoggedUser.id == user.id}">
                                     <div class="user">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
+                                        <a th:href="@{'/{firstName}.{lastName}.{id}'(firstName=${currentUser.firstName}, lastName=${currentUser.lastName},
+                                                 id=${currentUser.id})}">
+                                            <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="avatar" class="profile-avatar">
+                                        </a>
                                     </div>
                                     <div class="input">
                                         <form id="postForm">
                                             <div id="errorDiv"></div>
                                             <div class="input-group">
-
                                             <textarea id="postContent" class="form-control rounded-corner auto-expand"
-                                            rows="1" placeholder="Co słychać?"></textarea>
+                                                      rows="1" placeholder="Co słychać?"></textarea>
                                                 <span class="input-group-btn p-l-10">
                                             <button class="btn btn-primary f-s-12 rounded-corner" type="submit">Opublikuj</button>
                                             </span>
@@ -89,7 +95,7 @@
 
                                 <!-- begin timeline -->
                                 <ul class="timeline" th:if="${!posts.isEmpty()}">
-                                    <li th:each="post: ${posts}">
+                                    <li th:each="post: ${posts}" th:attr="data-post-id=${post.id}">
                                         <!-- begin timeline-time -->
                                         <div class="timeline-time">
                                             <span class="date" th:text="${post.createdAtDisplay}">Date</span>
@@ -103,33 +109,60 @@
                                         <!-- end timeline-icon -->
                                         <!-- begin timeline-body -->
                                         <div class="timeline-body">
-                                            <div class="timeline-header">
-                                                <span class="userimage"><img
-                                                        src="https://bootdey.com/img/Content/avatar/avatar3.png" alt=""></span>
-                                                <span class="username"><a th:href="@{'/{firstName}.{lastName}.{id}'(firstName=${user.firstName}, lastName=${user.lastName},
-                                                 id=${user.id})}" th:text="|${user.firstName} ${user.lastName}|">Imie Nazwisko</a> <small></small></span>
-                                            </div>
-                                            <div class="timeline-content">
-                                                <p th:text="${post.content}">
-                                                    Post content
-                                                </p>
-                                            </div>
+                                                    <div class="timeline-header">
+                                                        <span class="userimage"><img
+                                                                src="https://bootdey.com/img/Content/avatar/avatar3.png" alt=""></span>
+                                                        <span class="username"><a th:href="@{'/{firstName}.{lastName}.{id}'(firstName=${user.firstName}, lastName=${user.lastName},
+                                                         id=${user.id})}" th:text="|${user.firstName} ${user.lastName}|">Imie Nazwisko</a> <small></small></span>
+                                                    </div>
+                                                    <div class="timeline-content">
+                                                        <p th:text="${post.content}">
+                                                            Post content
+                                                        </p>
+                                                    </div>
+
                                             <div class="timeline-likes">
+
                                                 <div class="stats-right">
-                                                    <span class="stats-text" th:if="${post.getCommentsCount() == 1}"
-                                                          th:text="|${post.getCommentsCount()} komentarz|">
-                                                        Liczba komentarzy</span>
-                                                    <span class="stats-text"
-                                                          th:if="${post.getCommentsCount() > 1 && post.getCommentsCount() < 5}"
-                                                          th:text="|${post.getCommentsCount()} komentarze|">
-                                                        Liczba komentarzy</span>
-                                                    <span class="stats-text" th:if="${post.getCommentsCount() > 4}"
-                                                          th:text="|${post.getCommentsCount()} komentarzy|">
-                                                        Liczba komentarzy</span>
+                                                    <div class="reaction" th:if="${!post.comments.isEmpty()}">
+                                                    <span class="emoji" th:text="|${post.comments.size()} komentarzy|"
+                                                          style="background:white; padding:10px; cursor:pointer">Liczba komentarzy</span>
+
+
+                                                        <div class="reaction-tooltip">
+                                                            <div class="reaction-header">
+                                                                <strong th:text="|Komentarze (${post.comments.size()})|">Komentarze(0)</strong>
+                                                            </div>
+
+                                                            <ul>
+                                                                <li th:each="commentAuthor : ${uniqueCommentAuthorsPerPost.get(post.id)}">
+                                                                    <div class="user-hover-content">
+                                                                        <img class="user-avatar" th:src="@{/img/default_profile_picture.jpg}" alt="avatar"/>
+                                                                        <div class="user-info">
+                                                                            <a class="user-link"
+                                                                               th:href="@{/{firstName}.{lastName}.{id}(firstName=${#strings.toUpperCase(commentAuthor.firstName)},
+                                                                                lastName=${#strings.toUpperCase(commentAuthor.lastName)},
+                                                                                id=${commentAuthor.id})}"
+                                                                               th:text="|${commentAuthor.firstName} ${commentAuthor.lastName}|">
+                                                                            </a>
+                                                                            <button class="message-btn"
+                                                                                    th:if="${currentLoggedUserFriendsIds.contains(commentAuthor.id) and currentLoggedUser.id != commentAuthor.id}">
+                                                                                Wyślij wiadomość
+                                                                            </button>
+                                                                            <button class="add-friend-btn"
+                                                                                    th:if="${!currentLoggedUserFriendsIds.contains(commentAuthor.id) and currentLoggedUser.id != commentAuthor.id}">
+                                                                                Dodaj znajomego
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
                                                 </div>
 
-                                                <div class="stats">
 
+                                                <div class="stats">
                                                     <div class="reaction" th:each="entry : ${post.getPostReactionDtoByReactionType()}">
                                                         <span class="emoji" th:text="${entry.key.emoji}">👍</span>
                                                         <div class="reaction-tooltip">
@@ -150,11 +183,9 @@
                                                                                th:text="|${reaction.authorFirstName} ${reaction.authorLastName}|">
                                                                             </a>
                                                                             <button class="message-btn"
-                                                                                    th:if="${currentLoggedUserFriendsIds.contains(reaction.userAuthorId)
-                                                                                    and currentLoggedUser.id != user.id}">Wyślij wiadomość</button>
+                                                                                    th:if="${currentLoggedUserFriendsIds.contains(reaction.userAuthorId) and currentLoggedUser.id != reaction.userAuthorId}">Wyślij wiadomość</button>
                                                                             <button class="add-friend-btn"
-                                                                                    th:if="${!currentLoggedUserFriendsIds.contains(reaction.userAuthorId)
-                                                                                    and currentLoggedUser.id != user.id}">Dodaj znajomego</button>
+                                                                                    th:if="${!currentLoggedUserFriendsIds.contains(reaction.userAuthorId) and currentLoggedUser.id != reaction.userAuthorId}">Dodaj znajomego</button>
                                                                         </div>
                                                                     </div>
                                                                 </li>
@@ -173,14 +204,15 @@
                                     Liczba reakcji
                                     </span>
 
-                             </div>
-                          </div>
+                                                </div>
+                                            </div>
+
                                             <div class="timeline-footer">
                                                 <div class="reaction-button-wrapper" th:attr="data-post-id=${post.id}">
                                                     <button class="like-btn">
                                                     <span class="reaction-label"
                                                           th:utext="${!post.isUserPostReactedByCurrentLoggedUserId(currentLoggedUser.id) ?
-                                                                '<i class=&quot;fa fa-thumbs-up fa-fw fa-lg m-r-3&quot;></i> Lubię to': post.getUserPostReactionTypeByCurrentLoggedUserId(currentLoggedUser.id).emoji}">
+                                                                '<i class=&quot;fa fa-thumbs-up fa-fw fa-lg m-r-3&quot;></i> Lubię to': post.getUserPostReactionTypeByUserId(currentLoggedUser.id).emoji}">
                                                     </span>
                                                     </button>
                                                     <div class="reaction-picker">
@@ -192,28 +224,177 @@
                                                 </div>
 
 
-                                                <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i
-                                                        class="fa fa-comments fa-fw fa-lg m-r-3"></i> Skomentuj</a>
-
-                                                <a href="javascript:;" class="m-r-15 text-inverse-lighter">
-                                                    <i class="fa fa-share fa-fw fa-lg m-r-3"></i> Udostępnij</a>
+                                                <a href="javascript:;" class="m-r-15 text-inverse-lighter comment-trigger"
+                                                   th:attr="data-post-id=${post.id}">
+                                                    <i class="fa fa-comments fa-fw fa-lg m-r-3"></i> Skomentuj
+                                                </a>
                                             </div>
-                                            <div class="timeline-comment-box">
-                                                <div class="user"><img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt=""></div>
+
+                                            <div class="comment-list" th:id="'comments-' + ${post.id}">
+
+                                                <div class="comment-sorter" style="margin: 10px 0;">
+                                                    <label for="sortComments" style="margin-right: 8px;"></label>
+                                                    <select id="sortComments" class="form-select form-select-sm" data-post-id="${post.id}"
+                                                            style="width: auto; display: inline-block;">
+                                                        <option value="oldest" selected>Najstarsze</option>
+                                                        <option value="newest">Najnowsze</option>
+                                                        <option value="mostPopular">Popularne</option>
+                                                    </select>
+
+
+                                                </div>
+
+                                                <div class="comment-item" th:each="comment : ${post.comments}" th:attr="data-comment-id=${comment.id}">
+                                                    <div class="userimage">
+                                                        <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="avatar">
+                                                    </div>
+                                                    <div class="comment-content-wrapper">
+                                                        <div class="timeline-header comment-header">
+                                                            <a th:href="@{'/{firstName}.{lastName}.{id}'(firstName=${comment.authorFirstName}, lastName=${comment.authorLastName}, id=${comment.userAuthorId})}"
+                                                               th:text="|${comment.authorFirstName} ${comment.authorLastName}|"></a>
+
+                                                            <div class="comment-meta">
+                                                                <div class="comment-meta">
+                                                                <span class="comment-date"
+                                                                th:text="${comment.creationDateDescription}"
+                                                                th:title="|${#temporals.format(comment.createdAt, 'dd-MM-yyyy HH:mm')}
+                                                                ${comment.editedAt != null ? 'Edytowano: ' + #temporals.format(comment.editedAt, 'dd-MM-yyyy HH:mm') : ''}|">
+                                                                    data
+                                                                </span>
+                                                                </div>
+
+                                                                <div class="comment-options-wrapper">
+                                                                    <button class="comment-options-btn">⋯</button>
+                                                                    <div class="comment-options-menu">
+                                                                        <button class="report-comment-btn" th:attr="data-comment-id=${comment.id}">Zgłoś</button>
+                                                                        <button th:if="${currentLoggedUser.id == comment.userAuthorId}" class="edit-comment-btn">Edytuj</button>
+                                                                        <button th:if="${currentLoggedUser.id == comment.userAuthorId}" class="delete-comment-btn" th:attr="data-comment-id=${comment.id}">Usuń</button>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <div class="timeline-content">
+
+                                                            <div th:if="${comment.quotedCommentId != null}" class="quoted-comment-box">
+                                                                <a href="javascript:;" class="quote-link" th:attr="data-comment-id=${comment.quotedCommentId}">
+                                                                    <div class="quoted-comment-inner">
+                                                                        <strong th:text="|${comment.quotedAuthorFirstName} ${comment.quotedAuthorLastName} napisał(a):|"></strong>
+                                                                        <blockquote th:text="|&quot;${comment.quotedContent}&quot;|">"Cytowana treść"</blockquote>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
+
+                                                            <p th:text="${comment.content}" class="comment-text">Treść komentarza</p>
+                                                            <div class="edit-comment-area" style="display: none;">
+                                                                <div th:attr="id='editErrorDiv-' + ${comment.id}" style="color: red;"></div>
+
+                                                                <textarea class="edit-comment-textarea" rows="3"></textarea>
+                                                                <div style="margin-top: 10px;">
+                                                                    <button class="btn btn-success save-edit-btn">Zapisz</button>
+                                                                    <button class="btn btn-success cancel-edit-btn">Anuluj</button>
+                                                                </div>
+                                                            </div>
+
+
+
+                                                            <div class="comment-reactions">
+                                                                <div class="reaction" th:each="entry : ${comment.getPostReactionDtoByReactionType()}">
+                                                                    <span class="emoji" th:text="${entry.key.emoji}">👍</span>
+                                                                    <div class="reaction-tooltip">
+                                                                        <div class="reaction-header">
+                                                                            <strong th:text="|${entry.key.plName} (${entry.value.size()})|">Like(0)</strong>
+                                                                        </div>
+                                                                        <ul th:each="reaction : ${entry.value}">
+                                                                            <li>
+                                                                                <div class="user-hover-content">
+                                                                                    <img class="user-avatar" th:src="@{/img/default_profile_picture.jpg}" alt="avatar"/>
+                                                                                    <div class="user-info">
+                                                                                        <a class="user-link"
+                                                                                           th:href="@{/{firstName}.{lastName}.{id}(firstName=${reaction.userAuthorFirstName},
+                                                                                            lastName=${reaction.userAuthorLastName}, id=${reaction.userAuthorId})}"
+                                                                                           th:text="|${reaction.userAuthorFirstName} ${reaction.userAuthorLastName}|"></a>
+                                                                                        <button class="message-btn"
+                                                                                                th:if="${currentLoggedUserFriendsIds.contains(reaction.userAuthorId) and currentLoggedUser.id != reaction.userAuthorId}">
+                                                                                            Wyślij wiadomość
+                                                                                        </button>
+                                                                                        <button class="add-friend-btn"
+                                                                                                th:if="${!currentLoggedUserFriendsIds.contains(reaction.userAuthorId) and currentLoggedUser.id != reaction.userAuthorId}">
+                                                                                            Dodaj znajomego
+                                                                                        </button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+
+                                                                <span class="stats-total"
+                                                                      th:if="${comment.getReactionsCount() gt 0 and comment.getReactionsCount() lt 1000}"
+                                                                      th:text="${comment.getReactionsCount()}">Liczba reakcji</span>
+                                                                <span class="stats-total"
+                                                                      th:if="${comment.getReactionsCount() >= 1000}"
+                                                                      th:text="${#numbers.formatDecimal(comment.getReactionsCount() / 1000.0, 1, 'POINT', 'COMMA')} + 'k'">
+                                                                    Liczba reakcji
+                                                                    </span>
+                                                            </div>
+
+
+                                                            <div class="comment-footer">
+                                                                <div class="reaction-button-wrapper"
+                                                                     th:attr="data-comment-id=${comment.id}, data-post-id=${post.id}">
+
+                                                                <button class="like-comment-btn">
+                                                                     <span class="reaction-label"
+                                                                     th:utext="${!comment.isUserPostCommentReactedByCurrentLoggedUserId(currentLoggedUser.id) ?
+                                                                        '<i class=&quot;fa fa-thumbs-up fa-fw fa-lg m-r-3&quot;></i> Lubię to' :
+                                                                            comment.getUserPostCommentReactionTypeByUserId(currentLoggedUser.id).emoji}">
+                                                                    </span>
+                                                                    </button>
+                                                                    <div class="reaction-picker">
+                                                                        <span class="reaction-option"
+                                                                    th:each="reaction : ${T(pl.mateusz.example.friendoo.reaction.ReactionType).values()}"
+                                                                    th:attr="data-reaction=${reaction.name()}, title=${reaction.plName}"
+                                                                    th:text="${reaction.emoji}">emoji</span>
+                                                                    </div>
+                                                                </div>
+
+                                                                <button class="reply-btn" th:attr="data-comment-id=${comment.id}">
+                                                                    <i class="fa fa-reply"></i> Odpowiedz
+                                                                </button>
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="timeline-comment-box" th:attr="data-post-id=${post.id}">
+                                                <div class="user">
+                                                    <a th:href="@{'/{firstName}.{lastName}.{id}'(firstName=${currentUser.firstName}, lastName=${currentUser.lastName},
+                                                 id=${currentUser.id})}">
+                                                        <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="avatar" class="profile-avatar">
+                                                    </a>
+                                                </div>
                                                 <div class="input">
-                                                    <form action="">
+                                                    <form class="commentForm">
+                                                        <div th:attr="id='errorDiv-post-' + ${post.id}" style="color: red;"></div>
                                                         <div class="input-group">
-                                                            <input type="text" class="form-control rounded-corner"
-                                                                   placeholder="Napisz komentarz...">
+                                                            <textarea class="commentContent auto-expand form-control rounded-corner" rows="1"
+                                                                      placeholder="Napisz komentarz..."></textarea>
                                                             <span class="input-group-btn p-l-10">
-                                          <button class="btn btn-primary f-s-12 rounded-corner"
-                                                  type="button">Skomentuj</button>
-                                          </span>
+                                                     <button class="btn btn-primary f-s-12 rounded-corner" type="submit">Skomentuj</button>
+                                                        </span>
                                                         </div>
                                                     </form>
                                                 </div>
                                             </div>
+
                                         </div>
+
                                         <!-- end timeline-body -->
                                     </li>
                                     <li>
@@ -242,21 +423,51 @@
             </div>
         </div>
     </div>
-</main>
-<div class="modal fade" id="reactionModal" tabindex="-1" aria-labelledby="reactionModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+
+    <div id="deleteCommentModal" class="modal comment-modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="reactionModalLabel">Reakcje</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+            <h5>Usuń komentarz</h5>
+            <p>Czy na pewno chcesz usunąć ten komentarz? Tej operacji nie można cofnąć.</p>
+            <button type="button" class="btn comment-modal-btn" id="confirmDeleteCommentBtn">Usuń</button>
+            <button type="button" class="btn comment-modal-btn closeModal">Anuluj</button>
+        </div>
+    </div>
+
+    <div id="reportCommentModal" class="modal comment-modal">
+        <div class="modal-content">
+            <h5>Zgłoś komentarz</h5>
+            <p>Czy na pewno chcesz zgłosić ten komentarz jako nieodpowiedni?</p>
+            <button type="button" class="btn comment-modal-btn" id="confirmReportCommentBtn">Zgłoś</button>
+            <button type="button" class="btn comment-modal-btn closeModal">Anuluj</button>
+        </div>
+    </div>
+
+
+
+
+</main>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/scripts.js"></script>
+
+
+<template id="comment-template">
+    <div class="comment-item">
+        <div class="userimage">
+            <img src="..." alt="avatar">
+        </div>
+        <div class="comment-content-wrapper">
+            <div class="timeline-header">
+                <a class="comment-author-link"></a>
             </div>
-            <div class="modal-body">
-                <ul id="reactionList" class="list-group">
-                </ul>
+            <div class="timeline-content">
+                <p class="comment-content"></p>
             </div>
         </div>
     </div>
-</div>
-<script src="/js/scripts.js"></script>
+</template>
+
+
 </body>
 </html>

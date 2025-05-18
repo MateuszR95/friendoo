@@ -2,7 +2,7 @@ package pl.mateusz.example.friendoo.post;
 
 import java.util.List;
 import java.util.Set;
-import pl.mateusz.example.friendoo.comment.user.PostComment;
+import pl.mateusz.example.friendoo.comment.PostComment;
 import pl.mateusz.example.friendoo.page.Page;
 import pl.mateusz.example.friendoo.photo.Photo;
 import pl.mateusz.example.friendoo.post.page.PagePost;
@@ -22,7 +22,7 @@ public class PostMapper {
    * @param dto the PostDto object to be mapped
    * @return the mapped UserPost object
    */
-  public static UserPost mapFromDtoToUserPost(PostDto dto, User user, Set<PostComment> comments,
+  public static UserPost mapFromDtoToUserPost(PostDto dto, User user, List<PostComment> comments,
                                               Set<PostReaction> reactions,
                                               List<Photo> userPostPhotos) {
     UserPost userPost = new UserPost();
@@ -43,7 +43,7 @@ public class PostMapper {
    * @return the mapped PagePost object
    */
   public static PagePost mapFromDtoToPagePost(PostDto dto, Page page, User postCreator,
-                                              Set<PostComment> comments,
+                                              List<PostComment> comments,
                                               Set<PostReaction> reactions,
                                               List<Photo> pagePostPhotos) {
     PagePost pagePost = new PagePost();

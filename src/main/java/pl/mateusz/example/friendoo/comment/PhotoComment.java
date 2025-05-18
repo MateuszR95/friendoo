@@ -1,4 +1,4 @@
-package pl.mateusz.example.friendoo.comment.user;
+package pl.mateusz.example.friendoo.comment;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;

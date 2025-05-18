@@ -22,8 +22,8 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.mateusz.example.friendoo.comment.user.PhotoComment;
-import pl.mateusz.example.friendoo.comment.user.PostComment;
+import pl.mateusz.example.friendoo.comment.PhotoComment;
+import pl.mateusz.example.friendoo.comment.PostComment;
 import pl.mateusz.example.friendoo.gender.UserGender;
 import pl.mateusz.example.friendoo.invitation.InvitationToFriendship;
 import pl.mateusz.example.friendoo.page.Page;
@@ -59,14 +59,14 @@ public class User {
   private String password;
   private LocalDate dateOfBirth;
   private String bio;
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "hometown_id")
   private UserAddress hometown;
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "current_city_id")
   private UserAddress currentCity;
   private String phoneNumber;
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_gender_id")
   private UserGender gender;
   private LocalDateTime joinedAt;
@@ -101,11 +101,11 @@ public class User {
   @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
   private Set<PostComment> postComments = new HashSet<>();
 
-  @OneToOne
+  @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "profile_photo_id")
   private Photo profilePicture;
 
-  @OneToOne
+  @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "background_photo_id")
   private Photo backgroundPhoto;
 

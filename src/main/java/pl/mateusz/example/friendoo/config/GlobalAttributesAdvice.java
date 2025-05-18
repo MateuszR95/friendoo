@@ -1,6 +1,8 @@
 package pl.mateusz.example.friendoo.config;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -42,14 +44,32 @@ public class GlobalAttributesAdvice {
    * Adds the current user's friends to the model.
    *
    * @param authentication the authentication object
-   * @return the list of friends
+   * @return the list of current user's friends
    */
   @ModelAttribute("friends")
-  public List<UserDisplayDto> getUserFriends(Authentication authentication) {
+  public List<UserDisplayDto> getFriends(Authentication authentication) {
     if (authentication == null || !authentication.isAuthenticated()) {
       return null;
     }
     String userEmail = authentication.getName();
     return userService.getUserFriendsList(userEmail);
+  }
+
+  /**
+   * Adds the current user's friends to the model.
+   *
+   * @param authentication the authentication object
+   * @return the set of IDs of the current user's friends
+   */
+  @ModelAttribute("friendsIds")
+  public Set<Long> getUserFriends(Authentication authentication) {
+    if (authentication == null || !authentication.isAuthenticated()) {
+      return null;
+    }
+    String userEmail = authentication.getName();
+    return userService.getUserFriendsList(userEmail)
+      .stream()
+      .map(UserDisplayDto::getId)
+      .collect(Collectors.toSet());
   }
 }

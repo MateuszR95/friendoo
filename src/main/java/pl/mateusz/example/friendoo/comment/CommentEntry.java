@@ -1,5 +1,6 @@
-package pl.mateusz.example.friendoo.comment.user;
+package pl.mateusz.example.friendoo.comment;
 
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MappedSuperclass;
@@ -25,12 +26,14 @@ public abstract class CommentEntry {
 
   private String content;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "author_id")
   private User author;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "page_author_id")
   private Page pageAuthor;
+
+  private LocalDateTime editedAt;
 
 }

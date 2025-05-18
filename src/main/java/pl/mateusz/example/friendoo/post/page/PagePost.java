@@ -17,7 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.mateusz.example.friendoo.comment.user.PostComment;
+import pl.mateusz.example.friendoo.comment.PostComment;
 import pl.mateusz.example.friendoo.page.Page;
 import pl.mateusz.example.friendoo.photo.Photo;
 import pl.mateusz.example.friendoo.post.Post;
@@ -50,7 +50,7 @@ public class PagePost extends Post {
   private Set<PostReaction> reactions = new HashSet<>();
 
   @OneToMany(mappedBy = "pagePost", cascade = CascadeType.ALL)
-  private Set<PostComment> comments = new HashSet<>();
+  private List<PostComment> comments = new ArrayList<>();
 
   @OneToMany(mappedBy = "pagePost", cascade = CascadeType.ALL)
   private List<Photo> photos = new ArrayList<>();

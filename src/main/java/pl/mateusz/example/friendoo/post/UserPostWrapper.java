@@ -1,6 +1,8 @@
 package pl.mateusz.example.friendoo.post;
 
 import java.util.List;
+import java.util.Set;
+import pl.mateusz.example.friendoo.comment.PostCommentDto;
 import pl.mateusz.example.friendoo.post.user.UserPost;
 import pl.mateusz.example.friendoo.reaction.PostReactionDto;
 
@@ -14,7 +16,7 @@ public class UserPostWrapper implements MappablePost {
   }
 
   @Override
-  public PostDto toDto(List<PostReactionDto> reactions) {
+  public PostDto toDto(Set<PostReactionDto> reactions, List<PostCommentDto> comments) {
     return PostDto.builder()
       .id(userPost.getId())
       .userAuthorId(userPost.getAuthor().getId())
@@ -24,8 +26,9 @@ public class UserPostWrapper implements MappablePost {
       .createdAtDisplay(PostDateFormatter.updatePostDateDisplay(userPost.getCreatedAt()))
       .postType(PostType.USER_POST)
       .reactions(reactions)
-      .reactionsCount(userPost.getReactions().size())
-      .commentsCount(userPost.getComments().size())
+      .comments(comments)
+      .reactionsCount(reactions.size())
+      .commentsCount(comments.size())
       .build();
   }
 }

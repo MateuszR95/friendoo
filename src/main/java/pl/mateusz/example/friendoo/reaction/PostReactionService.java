@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.mateusz.example.friendoo.exceptions.ReactionNotFoundException;
 import pl.mateusz.example.friendoo.exceptions.UserNotFoundException;
 import pl.mateusz.example.friendoo.exceptions.UserPostNotFoundException;
-import pl.mateusz.example.friendoo.post.PostService;
 import pl.mateusz.example.friendoo.post.user.UserPost;
 import pl.mateusz.example.friendoo.post.user.UserPostRepository;
 import pl.mateusz.example.friendoo.user.User;
@@ -63,11 +63,14 @@ public class PostReactionService {
    * @param postIds a list of user post IDs for which reactions should be retrieved
    * @return a map where the key is the user post ID and the value is a list of PostReactionDto
    */
-  public Map<Long, List<PostReactionDto>> getReactionsForMultipleUserPosts(List<Long> postIds) {
+  public Map<Long, Set<PostReactionDto>> getReactionsForMultipleUserPosts(List<Long> postIds) {
     return postReactionRepository.findByUserPostIds(postIds)
       .stream()
       .map(PostReactionDtoMapper::mapToDto)
-      .collect(Collectors.groupingBy(PostReactionDto::getUserPostId));
+      .collect(Collectors.groupingBy(
+        PostReactionDto::getUserPostId,
+        Collectors.toSet()
+      ));
   }
 
   /**

@@ -1,19 +1,23 @@
 package pl.mateusz.example.friendoo.post;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.mateusz.example.friendoo.comment.user.PostComment;
-import pl.mateusz.example.friendoo.comment.user.PostCommentRepository;
+import pl.mateusz.example.friendoo.comment.PostComment;
+import pl.mateusz.example.friendoo.comment.PostCommentAuthorDto;
+import pl.mateusz.example.friendoo.comment.PostCommentDto;
+import pl.mateusz.example.friendoo.comment.PostCommentRepository;
+import pl.mateusz.example.friendoo.comment.PostCommentService;
 import pl.mateusz.example.friendoo.exceptions.PageNotFoundException;
 import pl.mateusz.example.friendoo.exceptions.UserNotFoundException;
-import pl.mateusz.example.friendoo.exceptions.UserPostNotFoundException;
 import pl.mateusz.example.friendoo.page.Page;
 import pl.mateusz.example.friendoo.page.PageRepository;
 import pl.mateusz.example.friendoo.photo.Photo;
@@ -21,6 +25,8 @@ import pl.mateusz.example.friendoo.photo.PhotoRepository;
 import pl.mateusz.example.friendoo.post.page.PagePost;
 import pl.mateusz.example.friendoo.post.user.UserPost;
 import pl.mateusz.example.friendoo.post.user.UserPostRepository;
+import pl.mateusz.example.friendoo.reaction.PostCommentReactionDto;
+import pl.mateusz.example.friendoo.reaction.PostCommentReactionService;
 import pl.mateusz.example.friendoo.reaction.PostReaction;
 import pl.mateusz.example.friendoo.reaction.PostReactionDto;
 import pl.mateusz.example.friendoo.reaction.PostReactionRepository;
@@ -48,21 +54,28 @@ public class PostService {
 
   private final PageRepository pageRepository;
 
+  private final PostCommentService postCommentService;
+
+  private final PostCommentReactionService postCommentReactionService;
+
   /**
    * Constructor for PostService.
    *
-   * @param userPostRepository the repository for user posts
-   * @param postReactionService the service for handling post reactions
-   * @param userRepository the repository for users
-   * @param postCommentRepository the repository for post comments
-   * @param postReactionRepository the repository for post reactions
-   * @param photoRepository the repository for photos
-   * @param pageRepository the repository for pages
+   * @param userPostRepository       repository for user posts
+   * @param postReactionService      service for handling post reactions
+   * @param userRepository           repository for users
+   * @param postCommentRepository    repository for post comments
+   * @param postReactionRepository   repository for post reactions
+   * @param photoRepository          repository for photos
+   * @param pageRepository           repository for pages
+   * @param postCommentService       service for handling post comments
+   * @param postCommentReactionService service for handling comment reactions
    */
   public PostService(UserPostRepository userPostRepository, PostReactionService postReactionService,
                      UserRepository userRepository, PostCommentRepository postCommentRepository,
                      PostReactionRepository postReactionRepository, PhotoRepository photoRepository,
-                     PageRepository pageRepository) {
+                     PageRepository pageRepository, PostCommentService postCommentService,
+                     PostCommentReactionService postCommentReactionService) {
     this.userPostRepository = userPostRepository;
     this.postReactionService = postReactionService;
     this.userRepository = userRepository;
@@ -70,6 +83,8 @@ public class PostService {
     this.postReactionRepository = postReactionRepository;
     this.photoRepository = photoRepository;
     this.pageRepository = pageRepository;
+    this.postCommentService = postCommentService;
+    this.postCommentReactionService = postCommentReactionService;
   }
 
   /**
@@ -81,12 +96,30 @@ public class PostService {
   public List<PostDto> getUserPostsByAuthorId(Long authorId) {
     List<UserPost> posts = userPostRepository.findUserPostsByAuthorIdOrderByCreatedAtDesc(authorId);
     List<Long> postIds = posts.stream().map(UserPost::getId).toList();
-    Map<Long, List<PostReactionDto>> reactionsMap = postReactionService
+    Map<Long, Set<PostReactionDto>> reactionsMap = postReactionService
         .getReactionsForMultipleUserPosts(postIds);
+    Map<Long, List<PostCommentDto>> commentMap = postCommentService
+        .getCommentsForMultipleUserPosts(postIds);
+    List<PostCommentDto> postComments = commentMap.values()
+        .stream()
+        .flatMap(List::stream)
+        .toList();
+    List<Long> postCommentsIds = postComments.stream()
+        .map(PostCommentDto::getId)
+        .toList();
+    Map<Long, List<PostCommentReactionDto>> reactionsForMultipleUserPostComments =
+        postCommentReactionService.getReactionsForMultipleUserPostComments(postCommentsIds);
+    postComments.forEach(comment -> {
+      List<PostCommentReactionDto> reactions = reactionsForMultipleUserPostComments
+              .getOrDefault(comment.getId(), List.of());
+      comment.setReactions(reactions);
+    });
+
     return posts.stream()
       .map(post -> {
         MappablePost wrapper = new UserPostWrapper(post);
-        return wrapper.toDto(reactionsMap.getOrDefault(post.getId(), List.of()));
+        return wrapper.toDto(reactionsMap.getOrDefault(post.getId(), Set.of()),
+            commentMap.getOrDefault(post.getId(), List.of()));
       })
       .collect(Collectors.toList());
   }
@@ -102,22 +135,45 @@ public class PostService {
   @Transactional
   public PostDto addUserPost(PostDto postDto, Authentication authentication) {
     String userEmail = ((UserDetails) authentication.getPrincipal()).getUsername();
-    User user = userRepository.findUserByEmail(userEmail)
+    User loggedUser = userRepository.findUserByEmail(userEmail)
         .orElseThrow(() -> new UserNotFoundException("Nie znaleziono użytkownika"));
     UserPost userPost = new UserPost();
-    userPost.setAuthor(user);
+    userPost.setAuthor(loggedUser);
     userPost.setContent(postDto.getContent());
     userPost.setCreatedAt(LocalDateTime.now());
     UserPost saved = userPostRepository.save(userPost);
     MappablePost wrapper = new UserPostWrapper(saved);
-    return wrapper.toDto(List.of());
+    return wrapper.toDto(Collections.emptySet(), List.of());
+  }
+
+  /**
+   * Retrieves a map of unique post comment authors by user posts.
+   *
+   * @param userPostsByAuthorId list of user posts
+   * @return a map of post IDs to lists of unique post comment authors
+   */
+  public Map<Long, List<PostCommentAuthorDto>> getUniqueCommentAuthorsByPostId(List<PostDto>
+                                                          userPostsByAuthorId) {
+    return userPostsByAuthorId.stream()
+      .collect(Collectors.toMap(
+        PostDto::getId,
+        post -> post.getComments().stream()
+          .map(c -> new PostCommentAuthorDto(c.getUserAuthorId(), c.getAuthorFirstName(),
+            c.getAuthorLastName()))
+          .collect(Collectors.toMap(
+            PostCommentAuthorDto::getId,
+            Function.identity(),
+            (a, b) -> a
+          ))
+          .values().stream().toList()
+      ));
   }
 
   private UserPost createUserPostEntity(PostDto postDto) {
     User user = userRepository.findById(postDto.getUserAuthorId())
         .orElseThrow(() -> new UserNotFoundException("Nie znaleziono użytkownika"));
 
-    Set<PostComment> comments = postCommentRepository.findAllByUserPostId(postDto.getId());
+    List<PostComment> comments = postCommentRepository.findAllByUserPostId(postDto.getId());
     Set<PostReaction> reactions = postReactionRepository.findAllByUserPostId(postDto.getId());
     List<Photo> photos = photoRepository.findAllByUserPostId(postDto.getId());
 
@@ -129,8 +185,8 @@ public class PostService {
         .orElseThrow(() -> new UserNotFoundException("Nie znaleziono użytkownika"));
     Page page = pageRepository.findById(postDto.getPageAuthorId())
         .orElseThrow(() -> new PageNotFoundException("Nie znaleziono strony"));
-    Set<PostComment> comments = postCommentRepository.findAllByPagePostId(postDto.getId());
-    Set<PostReaction> reactions = postReactionRepository.findAllByPagePostId(postDto.getId());
+    List<PostComment> comments = postCommentRepository.findAllByPagePostId(postDto.getId());
+    Set<PostReaction> reactions = postReactionRepository.findAllByUserPostId(postDto.getId());
     List<Photo> photos = photoRepository.findAllByPagePostId(postDto.getId());
     return PostMapper.mapFromDtoToPagePost(postDto, page, user, comments, reactions, photos);
   }

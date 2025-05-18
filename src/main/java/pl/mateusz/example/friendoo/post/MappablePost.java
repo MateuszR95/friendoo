@@ -1,6 +1,8 @@
 package pl.mateusz.example.friendoo.post;
 
 import java.util.List;
+import java.util.Set;
+import pl.mateusz.example.friendoo.comment.PostCommentDto;
 import pl.mateusz.example.friendoo.reaction.PostReactionDto;
 
 /**
@@ -9,5 +11,5 @@ import pl.mateusz.example.friendoo.reaction.PostReactionDto;
  */
 public interface MappablePost {
 
-  PostDto toDto(List<PostReactionDto> reactions);
+  PostDto toDto(Set<PostReactionDto> reactions, List<PostCommentDto> comments);
 }

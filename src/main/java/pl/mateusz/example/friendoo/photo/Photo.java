@@ -13,7 +13,7 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.mateusz.example.friendoo.comment.user.PhotoComment;
+import pl.mateusz.example.friendoo.comment.PhotoComment;
 import pl.mateusz.example.friendoo.page.Page;
 import pl.mateusz.example.friendoo.post.page.PagePost;
 import pl.mateusz.example.friendoo.post.user.UserPost;
