@@ -7,6 +7,7 @@
     <include file="025_create_user_adresses_table.xml" relativeToChangelogFile="true"/>
     <include file="../testdata/024_user_adresses.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="001_create_initial_schema.xml" relativeToChangelogFile="true" />
+    <include file="038_add_edited_at_column_in_user_post_and_page_post_tables.xml" relativeToChangelogFile="true"/>
     <include file="../testdata/001_user_gender.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="019_rename_city_column_to_current_city_and_constraints_adjustment_in_users_table.xml" relativeToChangelogFile="true"/>
     <include file="026_change_current_city_and_hometown_columns_types_in_user_table.xml" relativeToChangelogFile="true"/>
@@ -60,4 +61,5 @@
     <include file="../testdata/026_post_comment_reaction.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="../testdata/027_post_reaction.sql" relativeToChangelogFile="true" context="dev"/>
     <include file="035_remove_user_post_comment_and_user_post_comment_reaction_tables.xml" relativeToChangelogFile="true"/>
+    <include file="039_create_post_version_table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

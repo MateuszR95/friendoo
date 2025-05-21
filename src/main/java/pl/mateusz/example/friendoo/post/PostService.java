@@ -16,13 +16,16 @@ import pl.mateusz.example.friendoo.comment.PostCommentAuthorDto;
 import pl.mateusz.example.friendoo.comment.PostCommentDto;
 import pl.mateusz.example.friendoo.comment.PostCommentRepository;
 import pl.mateusz.example.friendoo.comment.PostCommentService;
+import pl.mateusz.example.friendoo.exceptions.AccessDeniedException;
 import pl.mateusz.example.friendoo.exceptions.PageNotFoundException;
 import pl.mateusz.example.friendoo.exceptions.UserNotFoundException;
+import pl.mateusz.example.friendoo.exceptions.UserPostNotFoundException;
 import pl.mateusz.example.friendoo.page.Page;
 import pl.mateusz.example.friendoo.page.PageRepository;
 import pl.mateusz.example.friendoo.photo.Photo;
 import pl.mateusz.example.friendoo.photo.PhotoRepository;
 import pl.mateusz.example.friendoo.post.page.PagePost;
+import pl.mateusz.example.friendoo.post.postversion.PostVersionService;
 import pl.mateusz.example.friendoo.post.user.UserPost;
 import pl.mateusz.example.friendoo.post.user.UserPostRepository;
 import pl.mateusz.example.friendoo.reaction.PostCommentReactionDto;
@@ -58,24 +61,27 @@ public class PostService {
 
   private final PostCommentReactionService postCommentReactionService;
 
+  private final PostVersionService postVersionService;
+
   /**
    * Constructor for PostService.
    *
-   * @param userPostRepository       repository for user posts
-   * @param postReactionService      service for handling post reactions
-   * @param userRepository           repository for users
-   * @param postCommentRepository    repository for post comments
-   * @param postReactionRepository   repository for post reactions
-   * @param photoRepository          repository for photos
-   * @param pageRepository           repository for pages
-   * @param postCommentService       service for handling post comments
-   * @param postCommentReactionService service for handling comment reactions
+   * @param userPostRepository         repository for user posts
+   * @param postReactionService        service for post reactions
+   * @param userRepository             repository for users
+   * @param postCommentRepository      repository for post comments
+   * @param postReactionRepository     repository for post reactions
+   * @param photoRepository            repository for photos
+   * @param pageRepository             repository for pages
+   * @param postCommentService         service for post comments
+   * @param postCommentReactionService service for post comment reactions
+   * @param postVersionService         service for post versions
    */
   public PostService(UserPostRepository userPostRepository, PostReactionService postReactionService,
                      UserRepository userRepository, PostCommentRepository postCommentRepository,
                      PostReactionRepository postReactionRepository, PhotoRepository photoRepository,
                      PageRepository pageRepository, PostCommentService postCommentService,
-                     PostCommentReactionService postCommentReactionService) {
+                     PostCommentReactionService postCommentReactionService, PostVersionService postVersionService) {
     this.userPostRepository = userPostRepository;
     this.postReactionService = postReactionService;
     this.userRepository = userRepository;
@@ -85,6 +91,7 @@ public class PostService {
     this.pageRepository = pageRepository;
     this.postCommentService = postCommentService;
     this.postCommentReactionService = postCommentReactionService;
+    this.postVersionService = postVersionService;
   }
 
   /**
@@ -169,6 +176,65 @@ public class PostService {
       ));
   }
 
+  /**
+   * Deletes a user post by its ID.
+   *
+   * @param userPostId      the ID of the user post to delete
+   * @param authentication  the authentication object containing user details
+   * @throws UserPostNotFoundException if the user post is not found
+   * @throws AccessDeniedException     if the user does not have permission to delete the post
+   */
+  @Transactional
+  public void deleteUserPost(Long userPostId, Authentication authentication) {
+    UserPost userPost = userPostRepository.findById(userPostId)
+        .orElseThrow(() -> new UserPostNotFoundException("Nie znaleziono postu użytkownika"));
+    String currentlyLoggedUserEmail = ((UserDetails) authentication.getPrincipal()).getUsername();
+    User currentlyLoggedUser = userRepository.findUserByEmail(currentlyLoggedUserEmail)
+        .orElseThrow(() -> new UserNotFoundException("Nie znaleziono użytkownika"));
+    if (userPost.getAuthor().getId().equals(currentlyLoggedUser.getId())) {
+      userPostRepository.deleteById(userPostId);
+    } else {
+      throw new AccessDeniedException("Nie masz uprawnień do usunięcia tego postu");
+    }
+  }
+
+  /**
+   * Edits a user post by its ID.
+   *
+   * @param userPostId      the ID of the user post to edit
+   * @param dto             the new content for the post
+   * @param authentication  the authentication object containing user details
+   * @return the edited post as {@link PostDto}
+   * @throws UserNotFoundException     if the user is not found
+   * @throws UserPostNotFoundException if the user post is not found
+   * @throws AccessDeniedException     if the user does not have permission to edit the post
+   */
+  @Transactional
+  public PostDto editUserPost(Long userPostId, PostEditDto dto,
+                                            Authentication authentication) {
+    String currentLoggedUserEmail = ((UserDetails) authentication.getPrincipal()).getUsername();
+    User loggedUser = userRepository.findUserByEmail(currentLoggedUserEmail)
+        .orElseThrow(() -> new UserNotFoundException("Nie znaleziono użytkownika"));
+    UserPost userPost = userPostRepository.findById(userPostId)
+        .orElseThrow(() -> new UserPostNotFoundException("Nie znaleziono posta"));
+    postVersionService.createAndSavePostVersion(userPost, null, loggedUser.getId(),
+        userPost.getContent());
+    if (!userPost.getAuthor().getId().equals(loggedUser.getId())) {
+      throw new AccessDeniedException("Brak autoryzacji do edytowania posta");
+    }
+    userPost.setContent(dto.getContent());
+    userPost.setEditedAt(LocalDateTime.now());
+    UserPost editedUserPost = userPostRepository.save(userPost);
+    Map<Long, Set<PostReactionDto>> reactionsMap = postReactionService
+        .getReactionsForMultipleUserPosts(List.of(userPostId));
+    Map<Long, List<PostCommentDto>> commentsMap = postCommentService
+        .getCommentsForMultipleUserPosts(List.of(userPostId));
+    Set<PostReactionDto> reactions = reactionsMap.getOrDefault(userPostId, Set.of());
+    List<PostCommentDto> comments = commentsMap.getOrDefault(userPostId, List.of());
+    MappablePost wrapper = new UserPostWrapper(editedUserPost);
+    return wrapper.toDto(reactions, comments);
+  }
+
   private UserPost createUserPostEntity(PostDto postDto) {
     User user = userRepository.findById(postDto.getUserAuthorId())
         .orElseThrow(() -> new UserNotFoundException("Nie znaleziono użytkownika"));
@@ -177,7 +243,7 @@ public class PostService {
     Set<PostReaction> reactions = postReactionRepository.findAllByUserPostId(postDto.getId());
     List<Photo> photos = photoRepository.findAllByUserPostId(postDto.getId());
 
-    return PostMapper.mapFromDtoToUserPost(postDto, user, comments, reactions, photos);
+    return PostDtoMapper.mapFromDtoToUserPost(postDto, user, comments, reactions, photos);
   }
 
   private PagePost createPagePostEntity(PostDto postDto) {
@@ -188,7 +254,7 @@ public class PostService {
     List<PostComment> comments = postCommentRepository.findAllByPagePostId(postDto.getId());
     Set<PostReaction> reactions = postReactionRepository.findAllByUserPostId(postDto.getId());
     List<Photo> photos = photoRepository.findAllByPagePostId(postDto.getId());
-    return PostMapper.mapFromDtoToPagePost(postDto, page, user, comments, reactions, photos);
+    return PostDtoMapper.mapFromDtoToPagePost(postDto, page, user, comments, reactions, photos);
   }
 
 

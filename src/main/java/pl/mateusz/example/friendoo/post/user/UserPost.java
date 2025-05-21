@@ -19,6 +19,7 @@ import lombok.Setter;
 import pl.mateusz.example.friendoo.comment.PostComment;
 import pl.mateusz.example.friendoo.photo.Photo;
 import pl.mateusz.example.friendoo.post.Post;
+import pl.mateusz.example.friendoo.post.postversion.PostVersion;
 import pl.mateusz.example.friendoo.reaction.PostReaction;
 import pl.mateusz.example.friendoo.user.User;
 
@@ -47,5 +48,8 @@ public class UserPost extends Post {
 
   @OneToMany(mappedBy = "userPost", cascade = CascadeType.ALL)
   private List<Photo> userPostPhoto = new ArrayList<>();
+
+  @OneToMany(mappedBy = "userPost", cascade = CascadeType.ALL)
+  private List<PostVersion> versions = new ArrayList<>();
 
 }

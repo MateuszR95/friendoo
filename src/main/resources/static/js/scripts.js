@@ -456,7 +456,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const reportModal = document.getElementById('reportCommentModal');
     const confirmDeleteBtn = document.getElementById('confirmDeleteCommentBtn');
     const confirmReportBtn = document.getElementById('confirmReportCommentBtn');
+    const deletePostModal = document.getElementById('deletePostModal');
+    const confirmDeletePostBtn = document.getElementById('confirmDeletePostBtn');
 
+    let currentPostId = null;
     let currentCommentId = null;
 
     function openModal(modalType, commentId) {
@@ -467,6 +470,11 @@ document.addEventListener('DOMContentLoaded', function () {
             reportModal.style.display = 'block';
         }
     }
+    function openDeletePostModal(postId) {
+        currentPostId = postId;
+        deletePostModal.style.display = 'block';
+    }
+
 
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('delete-comment-btn')) {
@@ -477,6 +485,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const commentId = e.target.closest('.comment-item')?.getAttribute('data-comment-id');
             openModal('report', commentId);
         }
+        if (e.target.classList.contains('delete-post-btn')) {
+            const postId = e.target.getAttribute('data-post-id');
+            openDeletePostModal(postId);
+        }
+
     });
 
     confirmDeleteBtn.addEventListener('click', () => {
@@ -516,6 +529,23 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    confirmDeletePostBtn.addEventListener('click', () => {
+        if (!currentPostId) return;
+
+        fetch(`/api/posts/${currentPostId}`, { method: 'DELETE' })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Błąd podczas usuwania posta.');
+                }
+            })
+            .finally(() => {
+                closeAllModals();
+            });
+    });
+
+
 
     document.querySelectorAll('.closeModal').forEach(btn => {
         btn.addEventListener('click', closeAllModals);
@@ -530,8 +560,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function closeAllModals() {
         deleteModal.style.display = 'none';
         reportModal.style.display = 'none';
+        deletePostModal.style.display = 'none';
         currentCommentId = null;
+        currentPostId = null;
     }
+
 
     document.addEventListener('click', function (e) {
         if (e.target.classList.contains('edit-comment-btn')) {
@@ -605,9 +638,154 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         }
 
+    });
 
+    document.addEventListener('click', function(event) {
+        const isOptionsBtn = event.target.matches('.post-options-btn');
+        document.querySelectorAll('.post-options-menu').forEach(menu => {
+            if (!menu.contains(event.target)) menu.style.display = 'none';
+        });
+        if (isOptionsBtn) {
+            const menu = event.target.nextElementSibling;
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+        }
+    });
+
+
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('edit-post-btn')) {
+            const postItem = e.target.closest('li[data-post-id]');
+            const postId = postItem.getAttribute('data-post-id');
+            const postContent = postItem.querySelector('.timeline-content p');
+            const existingEditArea = postItem.querySelector('.edit-post-area');
+
+            if (!existingEditArea) {
+                const editArea = document.createElement('div');
+                editArea.classList.add('edit-post-area');
+
+                editArea.innerHTML = `
+                <textarea class="edit-post-textarea form-control" rows="3" style="width: 100%; margin-top: 10px;"></textarea>
+                <div style="margin-top: 10px;">
+                    <button class="btn btn-success save-post-edit-btn" style="margin-right: 5px;">Zapisz</button>
+                    <button class="btn btn-success cancel-post-edit-btn">Anuluj</button>
+                </div>
+            `;
+                postItem.querySelector('.timeline-content').appendChild(editArea);
+            }
+
+            const textarea = postItem.querySelector('.edit-post-textarea');
+            textarea.value = postContent.textContent.trim();
+
+            postItem.querySelector('.edit-post-area').style.display = 'block';
+            postContent.style.display = 'none';
+        }
+
+        if (e.target.classList.contains('cancel-post-edit-btn')) {
+            const postItem = e.target.closest('li[data-post-id]');
+            postItem.querySelector('.edit-post-area').style.display = 'none';
+            postItem.querySelector('.timeline-content p').style.display = 'block';
+        }
+
+        if (e.target.classList.contains('save-post-edit-btn')) {
+            const postItem = e.target.closest('li[data-post-id]');
+            const postId = postItem.getAttribute('data-post-id');
+            const textarea = postItem.querySelector('.edit-post-textarea');
+            const newText = textarea.value.trim();
+            const postContent = postItem.querySelector('.timeline-content p');
+            const errorDiv = postItem.querySelector(`#editErrorDiv-${postId}`);
+
+            if (errorDiv) errorDiv.innerHTML = '';
+
+            if (!newText) {
+                if (errorDiv) {
+                    errorDiv.innerHTML = `<p style="color:red;">Treść posta nie może być pusta.</p>`;
+                }
+                return;
+            }
+
+            fetch(`/api/posts/${postId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: newText })
+            })
+                .then(async response => {
+                    if (response.ok) {
+                        postContent.textContent = newText;
+                        postItem.querySelector('.edit-post-area').style.display = 'none';
+                        postContent.style.display = 'block';
+
+                        const historyBtn = postItem.querySelector('.view-history-btn');
+                        if (!historyBtn) {
+                            const menu = postItem.querySelector('.post-options-menu');
+                            const newBtn = document.createElement('button');
+                            newBtn.className = 'view-history-btn';
+                            newBtn.setAttribute('data-post-id', postId);
+                            newBtn.textContent = 'Historia edycji';
+                            menu.appendChild(newBtn);
+                        }
+
+                    } else if (response.status === 400) {
+                        const errorData = await response.json();
+                        if (errorDiv) {
+                            Object.values(errorData).forEach(message => {
+                                errorDiv.innerHTML += `<p style="color:red; margin:0;">${message}</p>`;
+                            });
+                        }
+                    } else {
+                        alert('Błąd podczas edycji posta.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Błąd sieci przy edycji posta:', error);
+                    alert('Nie udało się edytować posta.');
+                });
+        }
 
     });
+
+    document.addEventListener('click', async function (e) {
+        if (e.target.textContent.includes("Historia edycji")) {
+            const postId = e.target.getAttribute('data-post-id');
+            if (!postId) return;
+
+            try {
+                const response = await fetch(`/api/posts/${postId}/versions`);
+                if (!response.ok) throw new Error("Nie udało się pobrać historii edycji.");
+
+                const versions = await response.json();
+                const modal = document.getElementById("editHistoryModal");
+                const contentDiv = document.getElementById("editHistoryContent");
+
+                contentDiv.innerHTML = '';
+
+                const template = document.getElementById("edit-history-template");
+
+                versions.forEach(version => {
+                    const clone = template.content.cloneNode(true);
+
+                    const authorLink = clone.querySelector(".author-link");
+                    authorLink.href = `/${version.authorFirstName}.${version.authorLastName}.${version.editorId}`;
+                    authorLink.textContent = `${version.authorFirstName} ${version.authorLastName}`;
+                    clone.querySelector(".edit-date").textContent = new Date(version.createdAt).toLocaleString();
+                    clone.querySelector(".edit-content").textContent = version.content;
+
+                    contentDiv.appendChild(clone);
+                });
+
+
+                modal.style.display = "block";
+
+            } catch (error) {
+                console.error("Błąd:", error);
+                alert("Nie udało się załadować historii edycji.");
+            }
+        }
+    });
+
+    document.getElementById("closeEditHistoryModal").addEventListener("click", () => {
+        document.getElementById("editHistoryModal").style.display = "none";
+    });
+
 
 
 });

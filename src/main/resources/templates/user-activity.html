@@ -114,12 +114,35 @@
                                                                 src="https://bootdey.com/img/Content/avatar/avatar3.png" alt=""></span>
                                                         <span class="username"><a th:href="@{'/{firstName}.{lastName}.{id}'(firstName=${user.firstName}, lastName=${user.lastName},
                                                          id=${user.id})}" th:text="|${user.firstName} ${user.lastName}|">Imie Nazwisko</a> <small></small></span>
+
+                                                        <div class="post-options-wrapper">
+                                                            <button class="comment-options-btn post-options-btn">⋯</button>
+                                                            <div class="comment-options-menu post-options-menu">
+                                                                <button class="report-post-btn" th:attr="data-post-id=${post.id}">Zgłoś</button>
+                                                                <button th:if="${currentLoggedUser.id == post.userAuthorId}" class="edit-post-btn" th:attr="data-post-id=${post.id}">Edytuj</button>
+                                                                <button th:if="${editedPostIds.contains(post.id)}" th:attr="data-post-id=${post.id}" class="view-history-btn">Historia edycji</button>
+                                                                <button th:if="${currentLoggedUser.id == post.userAuthorId}" class="delete-post-btn" th:attr="data-post-id=${post.id}">Usuń</button>
+                                                            </div>
+                                                        </div>
+
+
+
                                                     </div>
                                                     <div class="timeline-content">
                                                         <p th:text="${post.content}">
                                                             Post content
                                                         </p>
                                                     </div>
+
+                                            <div class="edit-post-area" style="display: none;">
+                                                <div th:attr="id='editErrorDiv-' + ${post.id}" style="color: red;"></div>
+                                                <textarea class="edit-post-textarea form-control" rows="3" style="width: 100%; margin-top: 10px;"></textarea>
+                                                <div style="margin-top: 10px;">
+                                                    <button class="btn btn-success save-post-edit-btn" style="margin-right: 5px;">Zapisz</button>
+                                                    <button class="btn btn-secondary cancel-post-edit-btn">Anuluj</button>
+                                                </div>
+                                            </div>
+
 
                                             <div class="timeline-likes">
 
@@ -441,8 +464,33 @@
             <button type="button" class="btn comment-modal-btn closeModal">Anuluj</button>
         </div>
     </div>
+    <div id="deletePostModal" class="modal comment-modal">
+        <div class="modal-content">
+            <h5>Usuń post</h5>
+            <p>Czy na pewno chcesz usunąć ten post? Tej operacji nie można cofnąć.</p>
+            <button type="button" class="btn comment-modal-btn" id="confirmDeletePostBtn">Usuń</button>
+            <button type="button" class="btn comment-modal-btn closeModal">Anuluj</button>
+        </div>
+    </div>
 
+    <div id="editHistoryModal" class="modal comment-modal">
+        <div class="modal-content">
+            <button class="closeModal" id="closeEditHistoryModal" aria-label="Zamknij modal">&times;</button>
+            <h5 class="modal-title">Historia edycji</h5>
+            <div id="editHistoryContent"></div>
+        </div>
 
+    </div>
+
+    <template id="edit-history-template">
+        <div class="edit-history-entry" style="border-bottom: 1px solid #ddd; padding: 10px 0;">
+            <p>
+                <a class="author-link" href="#" style="font-weight: bold; text-decoration: none; color: #000;"></a>
+                - <span class="edit-date"></span>
+            </p>
+            <p class="edit-content"></p>
+        </div>
+    </template>
 
 
 </main>

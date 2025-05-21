@@ -1,10 +1,9 @@
 package pl.mateusz.example.friendoo.user;
 
 import jakarta.validation.Valid;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeSet;
+
+import java.util.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -22,6 +21,7 @@ import pl.mateusz.example.friendoo.page.category.PageCategoryDto;
 import pl.mateusz.example.friendoo.page.category.PageCategoryService;
 import pl.mateusz.example.friendoo.post.PostDto;
 import pl.mateusz.example.friendoo.post.PostService;
+import pl.mateusz.example.friendoo.post.postversion.PostVersionService;
 import pl.mateusz.example.friendoo.reaction.PostReactionService;
 
 /**
@@ -32,7 +32,7 @@ public class UserController {
   private final UserService userService;
   private final PageCategoryService pageCategoryService;
   private final PostService postService;
-  private final PostReactionService postReactionService;
+  private final PostVersionService postVersionService;
   private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
   /**
@@ -40,15 +40,15 @@ public class UserController {
    *
    * @param userService          the user service
    * @param pageCategoryService  the page category service
-   * @param postService      the user post service
-   * @param postReactionService  the post reaction service
+   * @param postService          the post service
+   * @param postVersionService    the post version service
    */
   public UserController(UserService userService, PageCategoryService pageCategoryService,
-                        PostService postService, PostReactionService postReactionService) {
+                        PostService postService, PostVersionService postVersionService) {
     this.userService = userService;
     this.pageCategoryService = pageCategoryService;
     this.postService = postService;
-    this.postReactionService = postReactionService;
+    this.postVersionService = postVersionService;
   }
 
   @GetMapping("/home")
@@ -119,11 +119,13 @@ public class UserController {
         .getName()).orElseThrow(() -> new UsernameNotFoundException("Brak takiego użytkownika"));
     Map<Long, List<PostCommentAuthorDto>> uniquePostCommentAuthorByUserPosts = postService
         .getUniqueCommentAuthorsByPostId(userPostsByAuthorId);
+    Set<Long> editedPostIds = postVersionService.getDistinctEditedUserPostIds();
     model.addAttribute("currentLoggedUserFriendsIds", currentLoggedUserFriendsIds);
     model.addAttribute("posts", userPostsByAuthorId);
     model.addAttribute("user", userDisplayDtoOptional.get());
     model.addAttribute("currentLoggedUser", currentLoggedUser);
     model.addAttribute("uniqueCommentAuthorsPerPost", uniquePostCommentAuthorByUserPosts);
+    model.addAttribute("editedPostIds", editedPostIds);
     return "user-activity";
   }
 

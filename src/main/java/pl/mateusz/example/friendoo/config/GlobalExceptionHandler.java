@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pl.mateusz.example.friendoo.exceptions.AccessDeniedException;
 import pl.mateusz.example.friendoo.exceptions.PostCommentNotFoundException;
 import pl.mateusz.example.friendoo.exceptions.UserNotFoundException;
+import pl.mateusz.example.friendoo.exceptions.UserPostNotFoundException;
 
 /**
  * Global exception handler for handling validation exceptions in the application.
@@ -51,6 +52,11 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(UserNotFoundException.class)
   public ResponseEntity<String> handleUserNotFound(UserNotFoundException ex) {
+    return ResponseEntity.status(404).body(ex.getMessage());
+  }
+
+  @ExceptionHandler(UserPostNotFoundException.class)
+  public ResponseEntity<String> handleUserPostNotFound(UserPostNotFoundException ex) {
     return ResponseEntity.status(404).body(ex.getMessage());
   }
 
