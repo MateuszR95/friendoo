@@ -21,6 +21,7 @@ import pl.mateusz.example.friendoo.comment.PostComment;
 import pl.mateusz.example.friendoo.page.Page;
 import pl.mateusz.example.friendoo.photo.Photo;
 import pl.mateusz.example.friendoo.post.Post;
+import pl.mateusz.example.friendoo.post.postversion.PostVersion;
 import pl.mateusz.example.friendoo.reaction.PostReaction;
 import pl.mateusz.example.friendoo.user.User;
 
@@ -54,4 +55,8 @@ public class PagePost extends Post {
 
   @OneToMany(mappedBy = "pagePost", cascade = CascadeType.ALL)
   private List<Photo> photos = new ArrayList<>();
+
+  @OneToMany(mappedBy = "pagePost", cascade = CascadeType.ALL)
+  private List<PostVersion> versions = new ArrayList<>();
+
 }

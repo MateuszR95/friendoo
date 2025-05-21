@@ -14,7 +14,7 @@ import pl.mateusz.example.friendoo.user.User;
  * Mapper class for converting between PostDto and Post entities.
  * This class provides methods to map data between the DTO and entity classes.
  */
-public class PostMapper {
+public class PostDtoMapper {
 
   /**
    * Maps a PostDto object to a UserPost object.
