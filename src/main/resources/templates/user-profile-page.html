@@ -34,16 +34,63 @@
                                                 <h4 class="m-t-10 m-b-5" th:text="|${user.firstName} ${user.lastName}|">Imię
                                                     Nazwisko</h4>
                                                 <p class="m-b-10" style="visibility: hidden;">Opis</p>
+
                                                 <a th:if="${currentUser.id == user.id}"
                                                    href="#"
                                                    class="btn btn-sm btn-info mb-2">Edytuj profil</a>
-                                                <a th:if="${currentUser.id != user.id and !friendsIds.contains(user.id)}"
-                                                   href="#"
-                                                   class="btn btn-sm btn-info mb-2">Dodaj znajomego</a>
-                                                <a th:if="${currentUser.id != user.id}"
-                                                   href="#"
-                                                   class="btn btn-sm btn-info mb-2">Wyślij wiadomość</a>
 
+                                                <div th:if="${currentUser.id != user.id}">
+
+                                                    <div th:if="${friendsIds.contains(user.id)}" class="btn-group mb-2">
+                                                        <button class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown">
+                                                            <i class="fa fa-check"></i> Znajomy
+                                                        </button>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item action-btn remove-friend-btn" href="javascript:;" th:attr="data-user-id=${user.id}">
+                                                                <i class="fa fa-trash text-danger"></i> Usuń z grona znajomych
+                                                            </a>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div th:if="${pendingInvitationsSentByUser.contains(user.id)}" class="btn-group mb-2">
+                                                        <button class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown">
+                                                            <i class="fa fa-clock-o"></i> Zaproszenie wysłane
+                                                        </button>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item action-btn" href="javascript:;" data-action="cancel-invite" th:attr="data-user-id=${user.id}">
+                                                                <i class="fa fa-times text-danger"></i> Anuluj zaproszenie
+                                                            </a>
+                                                        </div>
+                                                    </div>
+
+                                                    <div th:if="${pendingInvitationsReceivedByUser.contains(user.id)}" class="btn-group mb-2">
+                                                        <button class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown">
+                                                            <i class="fa fa-user-clock"></i> Potwierdź zaproszenie
+                                                        </button>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item action-btn" href="javascript:;" data-action="accept" th:attr="data-user-id=${user.id}">
+                                                                <i class="fa fa-check text-success"></i> Akceptuj zaproszenie
+                                                            </a>
+                                                            <a class="dropdown-item action-btn" href="javascript:;" data-action="reject-invite" th:attr="data-user-id=${user.id}">
+                                                                <i class="fa fa-times text-danger"></i> Odrzuć zaproszenie
+                                                            </a>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <button th:if="${!friendsIds.contains(user.id) and
+                                        !pendingInvitationsSentByUser.contains(user.id) and
+                                                 !pendingInvitationsReceivedByUser.contains(user.id)}"
+                                                            type="button"
+                                                            data-action="send-invite"
+                                                            th:attr="data-user-id=${user.id}"
+                                                            class="btn btn-sm btn-primary send-invite-btn mb-2">
+                                                        <i class="fa fa-user-plus"></i> Dodaj znajomego
+                                                    </button>
+
+                                                    <a href="#" class="btn btn-sm btn-info mb-2">Wyślij wiadomość</a>
+                                                </div>
                                             </div>
                                             <!-- END profile-header-info -->
                                         </div>
@@ -57,7 +104,9 @@
                                                     class="nav-link_">POSTY</a>
                                                 </li>
                                             <li class="nav-item"><a href="https://www.bootdey.com/snippets/view/profile-photos" target="__blank" class="nav-link_">ZDJĘCIA</a></li>
-                                            <li class="nav-item"><a href="https://www.bootdey.com/snippets/view/bs4-profile-friend-list" target="__blank" class="nav-link_">ZNAJOMI</a></li>
+                                            <li class="nav-item"><a
+                                                    th:href="@{'/{firstName}.{lastName}.{id}/friends'(firstName=${user.firstName}, lastName=${user.lastName},
+                                         id=${user.id})}">ZNAJOMI</a></li>
                                         </ul>
                                         <!-- END profile-header-tab -->
                                     </div>
@@ -141,6 +190,16 @@
             </div>
         </div>
     </div>
+    <div id="confirmUnfriendModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1050;">
+        <div class="modal-content" style="max-width: 400px; margin: 10% auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+            <h5 style="margin-bottom: 20px;">Czy na pewno chcesz usunąć tego użytkownika z grona znajomych?</h5>
+            <div style="text-align: center;">
+                <button id="confirmUnfriendBtn" class="btn btn-success" style="margin-right: 10px;">Tak</button>
+                <button id="cancelUnfriendBtn" class="btn btn-success">Anuluj</button>
+            </div>
+        </div>
+    </div>
+
 </main>
 </body>
 </html>

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/navbar-layout}">
+<head>
+    <title>Friendoo</title>
+    <link rel="stylesheet" href="../styles/user-activity-page-style.css">
+    <link rel="stylesheet" href="../styles/user-friends-page-style.css">
+</head>
+<body>
+<main layout:fragment="mainContent">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="content" class="content content-full-width">
+                    <!-- begin profile -->
+                    <div class="profile">
+                        <div class="profile-header">
+                            <!-- BEGIN profile-header-cover -->
+                            <div class="profile-header-cover"></div>
+                            <!-- END profile-header-cover -->
+                            <!-- BEGIN profile-header-content -->
+                            <div class="profile-header-content">
+                                <!-- BEGIN profile-header-img -->
+                                <div class="profile-header-img">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="">
+                                </div>
+                                <!-- END profile-header-img -->
+                                <!-- BEGIN profile-header-info -->
+                                <div class="profile-header-info">
+                                    <h4 class="m-t-10 m-b-5" th:text="|${user.firstName} ${user.lastName}|">Imię
+                                        Nazwisko</h4>
+                                    <p class="m-b-10" style="visibility: hidden;">Opis</p>
+
+                                    <a th:if="${currentUser.id == user.id}"
+                                       href="#"
+                                       class="btn btn-sm btn-info mb-2">Edytuj profil</a>
+
+                                    <div th:if="${currentUser.id != user.id}">
+
+                                        <div th:if="${friendsIds.contains(user.id)}" class="btn-group mb-2">
+                                            <button class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown">
+                                                <i class="fa fa-check"></i> Znajomy
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item action-btn remove-friend-btn"
+                                                   href="javascript:;"
+                                                   th:attr="data-user-id=${user.id}">
+                                                    <i class="fa fa-trash text-danger"></i> Usuń z grona znajomych
+                                                </a>
+
+                                            </div>
+                                        </div>
+
+
+                                        <div th:if="${pendingInvitationsSentByUser.contains(user.id)}" class="btn-group mb-2">
+                                            <button class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown">
+                                                <i class="fa fa-clock-o"></i> Zaproszenie wysłane
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item action-btn" href="javascript:;" data-action="cancel-invite" th:attr="data-user-id=${user.id}">
+                                                    <i class="fa fa-times text-danger"></i> Anuluj zaproszenie
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <div th:if="${pendingInvitationsReceivedByUser.contains(user.id)}" class="btn-group mb-2 dropdown-invite-fix">
+                                            <button class="btn btn-sm btn-warning dropdown-toggle" data-toggle="dropdown">
+                                                <i class="fa fa-user-clock"></i> Potwierdź zaproszenie
+                                            </button>
+                                            <div class="dropdown-menu">
+                                            <a class="dropdown-item action-btn" href="javascript:;" data-action="accept" th:attr="data-user-id=${user.id}">
+                                                    <i class="fa fa-check text-success"></i> Akceptuj zaproszenie
+                                                </a>
+                                                <a class="dropdown-item action-btn" href="javascript:;" data-action="reject-invite" th:attr="data-user-id=${user.id}">
+                                                    <i class="fa fa-times text-danger"></i> Odrzuć zaproszenie
+                                                </a>
+                                            </div>
+                                        </div>
+
+
+                                        <button th:if="${!friendsIds.contains(user.id) and
+                                        !pendingInvitationsSentByUser.contains(user.id) and
+                                                 !pendingInvitationsReceivedByUser.contains(user.id)}"
+                                                type="button"
+                                                data-action="send-invite"
+                                                th:attr="data-user-id=${user.id}"
+                                                class="btn btn-sm btn-primary send-invite-btn mb-2">
+                                            <i class="fa fa-user-plus"></i> Dodaj znajomego
+                                        </button>
+
+
+                                        <a href="#" class="btn btn-sm btn-info mb-2">Wyślij wiadomość</a>
+                                    </div>
+                                </div>
+
+                                <!-- END profile-header-info -->
+                            </div>
+                            <!-- END profile-header-content -->
+                            <!-- BEGIN profile-header-tab -->
+                            <ul class="profile-header-tab nav nav-tabs">
+                                <li class="nav-item"><a
+                                        th:href="@{'/{firstName}.{lastName}.{id}'(firstName=${user.firstName}, lastName=${user.lastName}, id=${user.id})}"
+                                        class="nav-link_">INFORMACJE</a></li>
+                                <li class="nav-item"><a
+                                        th:href="@{'/{firstName}.{lastName}.{id}/activity'(firstName=${user.firstName}, lastName=${user.lastName}, id=${user.id})}">POSTY</a>
+                                </li>
+                                <li class="nav-item"><a href="https://www.bootdey.com/snippets/view/profile-photos"
+                                                        target="__blank" class="nav-link_">ZDJĘCIA</a></li>
+                                <li class="nav-item"><a
+                                        th:href="@{'/{firstName}.{lastName}.{id}/friends'(firstName=${user.firstName}, lastName=${user.lastName},
+                                         id=${user.id})}">ZNAJOMI</a></li>
+                            </ul>
+                            <!-- END profile-header-tab -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- begin profile-content -->
+            <div class="profile-content">
+                <!-- begin tab-content -->
+                <div class="tab-content p-0">
+                    <!-- begin #profile-friends tab -->
+                    <div class="tab-pane fade in active show" id="profile-friends">
+                        <!-- begin row -->
+                        <div class="friends-tabs-container">
+                            <ul id="friend-tabs" class="nav nav-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link" th:classappend="${tab} == 'all' ? ' active' : ''"
+                                       th:href="@{|/${user.firstName}.${user.lastName}.${user.id}/friends|}">
+                                        Wszyscy znajomi</a>
+                                </li>
+                                <li class="nav-item" th:unless="${user.id == currentUser.id}">
+                                    <a class="nav-link" th:classappend="${tab} == 'mutual' ? ' active' : ''"
+                                       th:href="@{|/${user.firstName}.${user.lastName}.${user.id}/friends_mutual|}">
+                                        Wspólni znajomi</a>
+
+                                </li>
+                            </ul>
+
+                        </div>
+
+                        <form th:if="${tab.equals('all')}" method="get" th:action="@{|/${user.firstName.toLowerCase()}.${user.lastName.toLowerCase()}.${user.id}/friends|}"
+                              class="form-inline mb-3">
+                        <input type="text" name="query" th:value="${param.query}"
+                                   class="form-control mr-2"
+                                   placeholder="Szukaj znajomego"/>
+                            <button type="submit" class="btn btn-primary">Szukaj</button>
+                        </form>
+
+                        <form th:if="${tab.equals('mutual')}" method="get" th:action="@{|/${user.firstName.toLowerCase()}.${user.lastName.toLowerCase()}.${user.id}/friends_mutual|}"
+                              class="form-inline mb-3">
+                            <input type="text" name="query" th:value="${param.query}"
+                                   class="form-control mr-2"
+                                   placeholder="Szukaj znajomego"/>
+                            <button type="submit" class="btn btn-primary">Szukaj</button>
+                        </form>
+
+
+                        <div id="all-friends-list" th:style="${tab} == 'mutual' ? 'display:none;' : ''">
+
+                            <h4 class="friends-heading"
+                                th:text="|Znajomi(${allFriends != null ? #lists.size(allFriends) : 0})|">Znajomi</h4>
+                            <div class="row row-space-2">
+
+                                <div class="col-md-6 m-b-2" th:each="friend : ${allFriends}">
+                                    <div class="p-10 bg-white">
+                                        <div class="media media-xs overflow-visible">
+                                            <a class="media-left" href="javascript:;">
+                                                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="media-object img-circle">
+                                            </a>
+                                            <div class="media-body valign-middle">
+                                                <a class="text-inverse"
+                                                   th:href="@{|/${friend.firstName}.${friend.lastName}.${friend.id}|}"
+                                                   th:text="|${friend.firstName} ${friend.lastName}|"></a>
+                                            </div>
+                                            <div class="media-body valign-middle text-right overflow-visible" th:unless="${currentUser.id == friend.id}">
+                                                <div class="btn-group dropdown">
+                                                    <div class="friend-invite-container">
+
+                                                        <div th:if="${friendsIds.contains(friend.id)}" class="btn-group mb-2">
+                                                            <button type="button" class="btn btn-sm btn-secondary">
+                                                                <i class="fa fa-check"></i> Znajomy
+                                                            </button>
+                                                            <div class="dropdown-menu">
+                                                                <a class="dropdown-item action-btn remove-friend-btn"
+                                                                   href="javascript:;"
+                                                                   th:attr="data-user-id=${friend.id}">
+                                                                    <i class="fa fa-trash text-danger"></i> Usuń z grona znajomych
+                                                                </a>
+
+                                                                <a class="dropdown-item action-btn" href="javascript:;" data-action="remove-friend" th:attr="data-user-id=${friend.id}">
+                                                                    <i class="fa fa-envelope text-primary"></i> Wyślij wiadomość
+                                                                </a>
+                                                            </div>
+                                                        </div>
+
+                                                        <div th:if="${!friendsIds.contains(friend.id) and pendingInvitationsReceivedByUser.contains(friend.id)}" class="btn-group mb-2">
+                                                            <button type="button" class="btn btn-sm btn-secondary">
+                                                                <i class="fa fa-check"></i> Otrzymano zaproszenie
+                                                            </button>
+                                                        </div>
+
+                                                        <div th:if="${!friendsIds.contains(friend.id) and pendingInvitationsSentByUser.contains(friend.id)}" class="btn-group mb-2">
+                                                            <button type="button" class="btn btn-sm btn-secondary">
+                                                                <i class="fa fa-clock-o"></i> Zaproszenie wysłane
+                                                            </button>
+                                                        </div>
+
+                                                        <div th:if="${!friendsIds.contains(friend.id)
+                                                        and !pendingInvitationsSentByUser.contains(friend.id)
+                                                        and !pendingInvitationsReceivedByUser.contains(friend.id)}"
+                                                             class="btn-group mb-2">
+                                                            <a data-action="send-invite"
+                                                               th:attr="data-user-id=${friend.id}"
+                                                               class="btn btn-sm btn-primary send-invite-btn">
+                                                                <i class="fa fa-user-plus"></i> Dodaj znajomego
+                                                            </a>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <a href="javascript:;" data-toggle="dropdown" class="btn btn-default dropdown-toggle"></a>
+                                                    <ul class="dropdown-menu dropdown-menu-right">
+                                                        <li>
+                                                            <a class="dropdown-item action-btn" href="javascript:;"th:attr="data-user-id=${friend.id}">
+                                                                <i class="fa fa-envelope text-primary"></i> Wyślij wiadomość
+                                                            </a>
+                                                        </li>
+                                                        <li th:if="${pendingInvitationsSentByUser.contains(friend.id)}">
+                                                            <a class="dropdown-item action-btn" href="javascript:;" data-action="cancel-invite" th:attr="data-user-id=${friend.id}">
+                                                                <i class="fa fa-times text-danger"></i> Anuluj zaproszenie</a>
+                                                        </li>
+                                                        <li th:if="${pendingInvitationsReceivedByUser.contains(friend.id)}">
+                                                            <a class="dropdown-item action-btn" href="javascript:;" data-action="accept" th:attr="data-user-id=${friend.id}">
+                                                                <i class="fa fa-check text-success"></i> Akceptuj zaproszenie
+                                                            </a>
+                                                        </li>
+                                                        <li th:if="${pendingInvitationsReceivedByUser.contains(friend.id)}">
+                                                            <a class="dropdown-item action-btn" href="javascript:;" data-action="reject-invite" th:attr="data-user-id=${friend.id}">
+                                                                <i class="fa fa-times text-danger"></i> Odrzuć zaproszenie
+                                                            </a>
+                                                        </li>
+                                                        <li th:if="${friendsIds.contains(friend.id)}">
+                                                            <a class="dropdown-item action-btn remove-friend-btn"
+                                                               href="javascript:;"
+                                                               th:attr="data-user-id=${friend.id}">
+                                                                <i class="fa fa-trash text-danger"></i> Usuń z grona znajomych
+                                                            </a>
+
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div id="mutual-friends-list" th:style="${tab} == 'mutual' ? '' : 'display:none;'">
+                            <h4 class="friends-heading"
+                                th:text="|Wspólni znajomi(${mutualFriends != null ? #lists.size(mutualFriends) : 0})|">Wspólni znajomi</h4>
+                            <div class="row row-space-2">
+                                <div class="col-md-6 m-b-2" th:each="friend : ${mutualFriends}">
+                                    <div class="p-10 bg-white">
+                                        <div class="media media-xs overflow-visible">
+                                            <a class="media-left" href="javascript:;">
+                                                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="" class="media-object img-circle">
+                                            </a>
+                                            <div class="media-body valign-middle">
+                                                <a class="text-inverse"
+                                                   th:href="@{|/${friend.firstName}.${friend.lastName}.${friend.id}|}"
+                                                   th:text="|${friend.firstName} ${friend.lastName}|"></a>
+                                            </div>
+                                            <div class="media-body valign-middle text-right overflow-visible"
+                                                 th:unless="${currentUser.id == friend.id}">
+                                                <div class="btn-group dropdown">
+                                                    <div class="friend-invite-container">
+
+                                                        <div th:if="${friendsIds.contains(friend.id)}" class="btn-group mb-2">
+                                                            <button type="button" class="btn btn-sm btn-secondary">
+                                                                <i class="fa fa-check"></i> Znajomy
+                                                            </button>
+                                                            <button type="button" class="btn btn-sm btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
+                                                                <span class="sr-only">Menu</span>
+                                                            </button>
+                                                            <div class="dropdown-menu">
+                                                                <a class="dropdown-item action-btn remove-friend-btn"
+                                                                   href="javascript:;"
+                                                                   th:attr="data-user-id=${friend.id}">
+                                                                    <i class="fa fa-trash text-danger"></i> Usuń z grona znajomych
+                                                                </a>
+
+                                                                <a class="dropdown-item action-btn" th:href="@{/messages/{id}(id=${friend.id})}">
+                                                                    <i class="fa fa-envelope text-primary"></i> Wyślij wiadomość
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- end #profile-friends tab -->
+                </div>
+                <!-- end tab-content -->
+            </div>
+            <!-- end profile-content -->
+        </div>
+    </div>
+    <div id="confirmUnfriendModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 1050;">
+        <div class="modal-content" style="max-width: 400px; margin: 10% auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+            <h5 style="margin-bottom: 20px;">Czy na pewno chcesz usunąć tego użytkownika z grona znajomych?</h5>
+            <div style="text-align: center;">
+                <button id="confirmUnfriendBtn" class="btn btn-success" style="margin-right: 10px;">Tak</button>
+                <button id="cancelUnfriendBtn" class="btn btn-success">Anuluj</button>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<script src="/js/scripts.js" th:src="@{/js/scripts.js}"></script>
+
+
+
+</body>
+</html>

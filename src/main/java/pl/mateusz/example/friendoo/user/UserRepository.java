@@ -34,6 +34,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
       """)
   List<User> findFriendsByUserEmail(@Param("email") String email);
 
+  @Query("""
+  SELECT DISTINCT f FROM User u
+  JOIN u.friends f
+  LEFT JOIN FETCH f.roles
+  LEFT JOIN FETCH f.gender
+  LEFT JOIN FETCH f.hometown
+  LEFT JOIN FETCH f.currentCity
+  WHERE u.id = :userId
+      """)
+  List<User> findFriendsByUserId(@Param("userId") Long userId);
+
 
   @Modifying
   @Transactional
@@ -51,6 +62,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
   void deleteRolesForInactiveUsersWithoutValidActivationToken();
 
 
-
+  boolean existsByEmailAndFriends_Id(String loggedUserEmail, Long friendId);
 
 }

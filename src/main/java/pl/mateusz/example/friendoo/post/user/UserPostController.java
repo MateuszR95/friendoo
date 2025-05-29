@@ -1,6 +1,7 @@
 package pl.mateusz.example.friendoo.post.user;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,7 +19,6 @@ import pl.mateusz.example.friendoo.post.PostService;
 import pl.mateusz.example.friendoo.post.postversion.PostVersionDto;
 import pl.mateusz.example.friendoo.post.postversion.PostVersionService;
 
-import java.util.List;
 
 /**
  REST controller for handling user post-related operations.

@@ -7,6 +7,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pl.mateusz.example.friendoo.exceptions.AccessDeniedException;
+import pl.mateusz.example.friendoo.exceptions.FriendshipException;
+import pl.mateusz.example.friendoo.exceptions.PendingInvitationToFriendshipAlreadyExists;
 import pl.mateusz.example.friendoo.exceptions.PostCommentNotFoundException;
 import pl.mateusz.example.friendoo.exceptions.UserNotFoundException;
 import pl.mateusz.example.friendoo.exceptions.UserPostNotFoundException;
@@ -58,6 +60,17 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(UserPostNotFoundException.class)
   public ResponseEntity<String> handleUserPostNotFound(UserPostNotFoundException ex) {
     return ResponseEntity.status(404).body(ex.getMessage());
+  }
+
+  @ExceptionHandler(PendingInvitationToFriendshipAlreadyExists.class)
+  public ResponseEntity<String> handlePendingInvitationToFriendship(
+      PendingInvitationToFriendshipAlreadyExists ex) {
+    return ResponseEntity.status(409).body(ex.getMessage());
+  }
+
+  @ExceptionHandler(FriendshipException.class)
+  public ResponseEntity<String> handleFriendshipException(FriendshipException ex) {
+    return ResponseEntity.status(400).body(ex.getMessage());
   }
 
 }

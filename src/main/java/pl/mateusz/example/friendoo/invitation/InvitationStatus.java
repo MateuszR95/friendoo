@@ -1,17 +1,14 @@
 package pl.mateusz.example.friendoo.invitation;
 
 /**
- * Enum representing the status of an invitation.
+ * Enum representing the status of an invitation to friendship.
+ * It can be in one of the following states: PENDING, ACCEPTED, REJECTED, or CANCELED.
  */
 public enum InvitationStatus {
 
-  PENDING("oczekujące"),
-  ACCEPTED("zaakceptowane"),
-  DECLINED("odrzucone");
+  PENDING,
+  ACCEPTED,
+  REJECTED,
+  CANCELED
 
-  private final String description;
-
-  InvitationStatus(String description) {
-    this.description = description;
-  }
 }
