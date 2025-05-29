@@ -81,7 +81,8 @@ public class PostService {
                      UserRepository userRepository, PostCommentRepository postCommentRepository,
                      PostReactionRepository postReactionRepository, PhotoRepository photoRepository,
                      PageRepository pageRepository, PostCommentService postCommentService,
-                     PostCommentReactionService postCommentReactionService, PostVersionService postVersionService) {
+                     PostCommentReactionService postCommentReactionService, PostVersionService
+                       postVersionService) {
     this.userPostRepository = userPostRepository;
     this.postReactionService = postReactionService;
     this.userRepository = userRepository;

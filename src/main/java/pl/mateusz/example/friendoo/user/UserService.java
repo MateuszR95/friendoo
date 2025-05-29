@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.mateusz.example.friendoo.email.MailService;
 import pl.mateusz.example.friendoo.exceptions.AccountAlreadyActivatedException;
 import pl.mateusz.example.friendoo.exceptions.ExpiredActivationTokenException;
+import pl.mateusz.example.friendoo.exceptions.FriendshipException;
 import pl.mateusz.example.friendoo.exceptions.InvalidTokenException;
 import pl.mateusz.example.friendoo.exceptions.MailSendingException;
 import pl.mateusz.example.friendoo.exceptions.UserLocationNotFoundException;
@@ -112,15 +113,50 @@ public class UserService {
       .map(UserDisplayDtoMapper::mapToUserDisplayDto);
   }
 
+  @Transactional
+  public void saveUser(User user) {
+    userRepository.save(user);
+  }
+
   /**
    * Retrieves a list of friends for the user with the specified email.
    *
    * @param email the email of the user
    * @return a list of UserDisplayDto representing the user's friends
    */
-  public List<UserDisplayDto> getUserFriendsList(String email) {
+  public List<UserDisplayDto> getUserFriendsListByUserEmail(String email) {
     List<User> friendsByEmail = userRepository.findFriendsByUserEmail(email);
     return friendsByEmail.stream().map(UserDisplayDtoMapper::mapToUserDisplayDto)
+      .collect(Collectors.toList());
+  }
+
+  /**
+   * Retrieves a list of friends for the user with the specified ID.
+   *
+   * @param id the ID of the user
+   * @return a list of UserDisplayDto representing the user's friends
+   */
+  public List<UserDisplayDto> getUserFriendsListByUserId(Long id) {
+    List<User> friendsByEmail = userRepository.findFriendsByUserId(id);
+    return friendsByEmail.stream().map(UserDisplayDtoMapper::mapToUserDisplayDto)
+      .collect(Collectors.toList());
+  }
+
+  /**
+   * Retrieves a list of mutual friends between the logged-in user and the user with the specified
+   * ID.
+   *
+   * @param id the ID of the user
+   * @param authentication the authentication object containing user details
+   * @return a list of UserDisplayDto representing the mutual friends
+   */
+  public List<UserDisplayDto> getMutualFriendsByUserId(Long id, Authentication authentication) {
+    List<UserDisplayDto> loggedUserFriends = getUserFriendsListByUserEmail(
+        authentication.getName());
+    List<UserDisplayDto> viewedUserFriends = getUserFriendsListByUserId(id);
+    return loggedUserFriends.stream()
+      .filter(friend -> viewedUserFriends.stream()
+        .anyMatch(viewedFriend -> viewedFriend.getId().equals(friend.getId())))
       .collect(Collectors.toList());
   }
 
@@ -362,12 +398,13 @@ public class UserService {
    * Finds a user by their ID.
    *
    * @param id the ID of the user
-   * @return an Optional containing the UserDisplayDto if found, or empty if not found
+   * @return the User object if found
+   * @throws UsernameNotFoundException if the user is not found
    */
-  public Optional<UserDisplayDto> findUserById(Long id) {
-    User user = userRepository.findById(id)
-        .orElseThrow(() -> new UsernameNotFoundException("Brak użytkownika o wskazanym id"));
-    return Optional.of(UserDisplayDtoMapper.mapToUserDisplayDto(user));
+  public User findUserById(Long id) {
+    return userRepository.findById(id)
+        .orElseThrow(() -> new UserNotFoundException("Brak użytkownika o wskazanym id"));
+
   }
 
   public Optional<UserDisplayDto> findUserByNameAndId(String firstName, String lastName, Long id) {
@@ -383,7 +420,7 @@ public class UserService {
    */
   public List<Long> getCurrentLoggedUserFriendsIds(Authentication authentication) {
     UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-    return getUserFriendsList(userDetails
+    return getUserFriendsListByUserEmail(userDetails
         .getUsername())
       .stream()
       .map(UserDisplayDto::getId)
@@ -398,10 +435,54 @@ public class UserService {
    * @throws UserNotFoundException if the user is not found
    */
   public User getUserFromAuthentication(Authentication authentication) {
-    String userEmail = ((UserDetails) authentication.getPrincipal()).getUsername();
+    String userEmail = authentication.getName();
     return userRepository.findUserByEmail(userEmail).orElseThrow(
       () -> new UserNotFoundException("Nie znaleziono użytkownika"));
   }
 
+  /**
+   * Filters the user's friends list based on a search query.
+   *
+   * @param friends the list of UserDisplayDto representing the user's friends
+   * @param query the search query to filter friends by first or last name
+   * @return a filtered list of UserDisplayDto matching the search query
+   */
+  public List<UserDisplayDto> filterUserFriendsByQuery(List<UserDisplayDto> friends, String query) {
+    return friends.stream()
+        .filter(friend -> friend.getFirstName().toLowerCase()
+          .contains(query.toLowerCase()) || friend.getLastName().toLowerCase()
+          .contains(query.toLowerCase())).toList();
+  }
+
+  /**
+   * Deletes a friendship between the logged-in user and another user.
+   *
+   * @param authentication the authentication object containing user details
+   * @param userToDeleteId the ID of the user to delete from friends
+   */
+  @Transactional
+  public void deleteFriendship(Authentication authentication, Long userToDeleteId) {
+    User loggedUser = getUserFromAuthentication(authentication);
+    User userToDelete = findUserById(userToDeleteId);
+    Set<User> loggedUserFriends = loggedUser.getFriends();
+    if (loggedUser.getId().equals(userToDelete.getId())) {
+      throw new FriendshipException("Nie można usunąć samego siebie z listy znajomych.");
+    }
+    if (!loggedUserFriends.contains(userToDelete)) {
+      throw new FriendshipException("Użytkownik nie znajduje się na liście znajomych.");
+    }
+    Set<User> userToDeleteFriends = userToDelete.getFriends();
+    loggedUserFriends.remove(userToDelete);
+    userToDeleteFriends.remove(loggedUser);
+    logger.info("Usunięto znajomość między {} a {}", loggedUser.getEmail(),
+        userToDelete.getEmail());
+    userRepository.save(loggedUser);
+    userRepository.save(userToDelete);
+  }
+
+
+
 }
+
+
 

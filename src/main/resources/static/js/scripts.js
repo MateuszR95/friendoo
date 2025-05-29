@@ -123,7 +123,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
 
-
         document.addEventListener('click', function (e) {
             const isInsideTooltip = e.target.closest('.reaction-tooltip');
             const isInsideReaction = e.target.closest('.reaction');
@@ -261,7 +260,7 @@ document.addEventListener('DOMContentLoaded', function () {
             try {
                 const response = await fetch('/api/user-post-comments', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({
                         content: commentContent,
                         userPostId: postId,
@@ -285,7 +284,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
-
 
 
     const commentButtons = document.querySelectorAll(".comment-trigger");
@@ -314,7 +312,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (commentId) {
             const commentElement = document.querySelector(`.comment-item[data-comment-id="${commentId}"]`);
             if (commentElement) {
-                commentElement.scrollIntoView({ behavior: "smooth", block: "center" });
+                commentElement.scrollIntoView({behavior: "smooth", block: "center"});
                 commentElement.classList.add("highlight-comment");
             }
             localStorage.removeItem('highlightCommentId');
@@ -388,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const quotedId = quoteLink.getAttribute('data-comment-id');
             const quotedEl = document.querySelector(`.comment-item[data-comment-id="${quotedId}"]`);
             if (quotedEl) {
-                quotedEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                quotedEl.scrollIntoView({behavior: 'smooth', block: 'center'});
                 quotedEl.classList.add('highlight-comment');
                 setTimeout(() => quotedEl.classList.remove('highlight-comment'), 2000);
             }
@@ -470,6 +468,7 @@ document.addEventListener('DOMContentLoaded', function () {
             reportModal.style.display = 'block';
         }
     }
+
     function openDeletePostModal(postId) {
         currentPostId = postId;
         deletePostModal.style.display = 'block';
@@ -498,7 +497,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const commentElement = document.querySelector(`.comment-item[data-comment-id="${currentCommentId}"]`);
         const postId = commentElement?.closest('.timeline-body')?.parentElement?.dataset.postId;
 
-        fetch(`/api/user-post-comments/${currentCommentId}`, { method: 'DELETE' })
+        fetch(`/api/user-post-comments/${currentCommentId}`, {method: 'DELETE'})
             .then(response => {
                 if (response.ok) {
                     if (postId) {
@@ -517,7 +516,7 @@ document.addEventListener('DOMContentLoaded', function () {
     confirmReportBtn.addEventListener('click', () => {
         if (!currentCommentId) return;
 
-        fetch(`/api/user-post-comments/report/${currentCommentId}`, { method: 'POST' })
+        fetch(`/api/user-post-comments/report/${currentCommentId}`, {method: 'POST'})
             .then(response => {
                 if (response.ok) {
                     alert('Komentarz został zgłoszony.');
@@ -532,7 +531,7 @@ document.addEventListener('DOMContentLoaded', function () {
     confirmDeletePostBtn.addEventListener('click', () => {
         if (!currentPostId) return;
 
-        fetch(`/api/posts/${currentPostId}`, { method: 'DELETE' })
+        fetch(`/api/posts/${currentPostId}`, {method: 'DELETE'})
             .then(response => {
                 if (response.ok) {
                     window.location.reload();
@@ -544,7 +543,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 closeAllModals();
             });
     });
-
 
 
     document.querySelectorAll('.closeModal').forEach(btn => {
@@ -613,8 +611,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             fetch(`/api/user-post-comments/${commentId}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content: newText })
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({content: newText})
             })
                 .then(async response => {
                     if (response.ok) {
@@ -640,7 +638,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', function (event) {
         const isOptionsBtn = event.target.matches('.post-options-btn');
         document.querySelectorAll('.post-options-menu').forEach(menu => {
             if (!menu.contains(event.target)) menu.style.display = 'none';
@@ -705,8 +703,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             fetch(`/api/posts/${postId}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content: newText })
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({content: newText})
             })
                 .then(async response => {
                     if (response.ok) {
@@ -785,6 +783,158 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("closeEditHistoryModal").addEventListener("click", () => {
         document.getElementById("editHistoryModal").style.display = "none";
     });
+
+});
+
+function showTab(type) {
+    const allTab = document.getElementById('all-friends-list');
+    const mutualTab = document.getElementById('mutual-friends-list');
+
+    if (type === 'all') {
+        allTab.style.display = 'block';
+        mutualTab.style.display = 'none';
+    } else {
+        allTab.style.display = 'none';
+        mutualTab.style.display = 'block';
+    }
+
+    const tabContainer = document.getElementById('friend-tabs');
+    const tabs = tabContainer.querySelectorAll('.nav-link');
+    tabs.forEach(tab => tab.classList.remove('active'));
+
+    const clicked = Array.from(tabs).find(tab => tab.textContent.includes(type === 'all' ? 'Wszyscy' : 'Wspólni'));
+    if (clicked) clicked.classList.add('active');
+}
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.send-invite-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            const userId = this.getAttribute('data-user-id');
+
+            fetch('/api/friends?userId=' + userId, {
+                method: 'POST'
+            })
+                .then(response => {
+
+                    if (response.ok) {
+                        location.reload();
+                    }
+
+                    else if (response.status === 409) {
+                        alert('Zaproszenie już istnieje.');
+                    } else if (response.status === 400) {
+                        alert('Nie można wysłać zaproszenia do samego siebie.');
+                    } else {
+                        alert('Wystąpił błąd przy wysyłaniu zaproszenia.');
+                    }
+                });
+        });
+    });
+
+    let userIdToUnfriend = null;
+
+    document.querySelectorAll('.remove-friend-btn').forEach(button => {
+        button.addEventListener('click', function () {
+            userIdToUnfriend = this.getAttribute('data-user-id');
+            document.getElementById('confirmUnfriendModal').style.display = 'block';
+        });
+    });
+
+    document.getElementById('cancelUnfriendBtn').addEventListener('click', function () {
+        document.getElementById('confirmUnfriendModal').style.display = 'none';
+        userIdToUnfriend = null;
+    });
+
+    document.getElementById('confirmUnfriendBtn').addEventListener('click', function () {
+        if (!userIdToUnfriend) return;
+
+        fetch(`/api/friends/${userIdToUnfriend}`, {
+            method: 'DELETE',
+            credentials: 'same-origin'
+        })
+            .then(response => {
+                if (response.ok || response.status === 204) {
+                    location.reload();
+                } else {
+                    return response.text().then(msg => alert(msg));
+                }
+            })
+            .catch(err => {
+                console.error('Błąd sieci:', err);
+                alert('Nie udało się usunąć znajomego.');
+            })
+            .finally(() => {
+                document.getElementById('confirmUnfriendModal').style.display = 'none';
+                userIdToUnfriend = null;
+            });
+    });
+
+
+    document.querySelectorAll('[data-action="cancel-invite"]').forEach(button => {
+        button.addEventListener('click', function () {
+            const userId = this.getAttribute('data-user-id');
+
+            fetch(`/api/friends/${userId}`, {
+                method: 'PUT',
+                credentials: 'same-origin'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        return response.text().then(msg => alert(msg || 'Nie udało się anulować zaproszenia.'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Błąd sieci:', error);
+                    alert('Wystąpił problem z anulowaniem zaproszenia.');
+                });
+        });
+    });
+
+    document.querySelectorAll('[data-action="accept"]').forEach(button => {
+        button.addEventListener('click', function () {
+            const userId = this.getAttribute('data-user-id');
+
+            fetch(`/api/friends/invitations/${userId}/accept`, {
+                method: 'PUT',
+                credentials: 'same-origin'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        return response.text().then(msg => alert(msg || 'Nie udało się zaakceptować zaproszenia.'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Błąd sieci:', error);
+                    alert('Wystąpił problem z akceptacją zaproszenia.');
+                });
+        });
+    });
+
+    document.querySelectorAll('[data-action="reject-invite"]').forEach(button => {
+        button.addEventListener('click', function () {
+            const userId = this.getAttribute('data-user-id');
+
+            fetch(`/api/friends/invitations/${userId}/reject`, {
+                method: 'PUT',
+                credentials: 'same-origin'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        return response.text().then(msg => alert(msg || 'Nie udało się odrzucić zaproszenia.'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Błąd sieci:', error);
+                    alert('Wystąpił problem z odrzuceniem zaproszenia.');
+                });
+        });
+    });
+
 
 
 

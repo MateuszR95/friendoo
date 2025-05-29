@@ -178,7 +178,7 @@ public class UserServiceTests {
       String email = "nonexistent@byom.de";
       when(userRepository.findFriendsByUserEmail(email)).thenReturn(Collections.emptyList());
       // when
-      List<UserDisplayDto> userFriendsList = userService.getUserFriendsList(email);
+      List<UserDisplayDto> userFriendsList = userService.getUserFriendsListByUserEmail(email);
       // then
       assertTrue(userFriendsList.isEmpty());
     }
@@ -189,7 +189,7 @@ public class UserServiceTests {
       String userEmail = "usertest@byom.de";
       when(userRepository.findFriendsByUserEmail(userEmail)).thenReturn(Collections.emptyList());
       // when
-      List<UserDisplayDto> userFriendsList = userService.getUserFriendsList(userEmail);
+      List<UserDisplayDto> userFriendsList = userService.getUserFriendsListByUserEmail(userEmail);
       // then
       assertTrue(userFriendsList.isEmpty());
     }
@@ -206,7 +206,7 @@ public class UserServiceTests {
         true);
       when(userRepository.findFriendsByUserEmail(userEmail)).thenReturn(List.of(userFriend1, userFriend2));
       // when
-      List<UserDisplayDto> userFriendsList = userService.getUserFriendsList(userEmail);
+      List<UserDisplayDto> userFriendsList = userService.getUserFriendsListByUserEmail(userEmail);
       // then
       assertAll(
         () -> assertFalse(userFriendsList.isEmpty()),
@@ -223,7 +223,7 @@ public class UserServiceTests {
         true);
       when(userRepository.findFriendsByUserEmail(userEmail)).thenReturn(List.of(userFriend1));
       // when
-      List<UserDisplayDto> userFriendsList = userService.getUserFriendsList(userEmail);
+      List<UserDisplayDto> userFriendsList = userService.getUserFriendsListByUserEmail(userEmail);
       // then
       assertInstanceOf(UserDisplayDto.class, userFriendsList.get(0));
     }

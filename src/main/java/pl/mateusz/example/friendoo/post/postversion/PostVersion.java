@@ -8,13 +8,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pl.mateusz.example.friendoo.post.page.PagePost;
 import pl.mateusz.example.friendoo.post.user.UserPost;
-
-import java.time.LocalDateTime;
 
 /**
  * Entity representing a version of a post.
